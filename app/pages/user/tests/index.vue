@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import { useTestsStore } from "~/stores/tests";
-import { useAuthStore } from "~/stores/auth";
 
 definePageMeta({
-  layout: "admin",
+  layout: "user",
   middleware: ["auth", "role"],
 });
 
 const testsStore = useTestsStore();
-const authStore = useAuthStore();
 
 onMounted(async () => {
-  if (authStore.currentDrivingSchoolId) {
-    await testsStore.fetchTests(authStore.currentDrivingSchoolId);
-  }
+  await testsStore.fetchUserTests();
 });
 </script>
 
 <template>
-  <UDashboardPanel id="tests">
+  <UDashboardPanel id="user-tests">
     <template #header>
       <UDashboardNavbar title="Tests" :ui="{ right: 'gap-3' }">
         <template #leading>
@@ -28,18 +24,12 @@ onMounted(async () => {
     </template>
 
     <div class="p-6">
-      <div class="mb-4">
-        <UButton to="/admin/tests/create" icon="i-lucide-plus">
-          Create Test
-        </UButton>
-      </div>
-
       <div v-if="testsStore.isLoading" class="text-center py-8">
         <p>Loading...</p>
       </div>
 
       <div v-else-if="testsStore.tests.length === 0" class="text-center py-8">
-        <p class="text-gray-600 dark:text-gray-400">No tests found.</p>
+        <p class="text-gray-600 dark:text-gray-400">No tests available.</p>
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -47,7 +37,7 @@ onMounted(async () => {
           v-for="test in testsStore.tests"
           :key="test.id"
           class="cursor-pointer hover:shadow-lg transition-shadow"
-          @click="navigateTo(`/admin/tests/${test.id}`)"
+          @click="navigateTo(`/user/tests/${test.id}`)"
         >
           <template #header>
             <h3 class="font-semibold">{{ test.title }}</h3>
@@ -64,3 +54,4 @@ onMounted(async () => {
     </div>
   </UDashboardPanel>
 </template>
+

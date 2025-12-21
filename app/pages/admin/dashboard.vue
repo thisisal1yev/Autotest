@@ -3,6 +3,7 @@ import type { DropdownMenuItem } from '@nuxt/ui'
 
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth', 'role'],
 })
 
 const items = [[{

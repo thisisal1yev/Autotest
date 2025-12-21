@@ -1,41 +1,33 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
+import { useAuthStore } from "~/stores/auth";
 
 defineProps<{
   collapsed?: boolean;
 }>();
 
 const colorMode = useColorMode();
-const appConfig = useAppConfig();
+const authStore = useAuthStore();
+const router = useRouter();
 
-const colors = [
-  "red",
-  "orange",
-  "amber",
-  "yellow",
-  "lime",
-  "green",
-  "emerald",
-  "teal",
-  "cyan",
-  "sky",
-  "blue",
-  "indigo",
-  "violet",
-  "purple",
-  "fuchsia",
-  "pink",
-  "rose",
-];
-const neutrals = ["slate", "gray", "zinc", "neutral", "stone"];
-
-const user = ref({
-  name: "Benjamin Canac",
+const user = computed(() => ({
+  name: authStore.user?.fullName || "User",
   avatar: {
-    src: "https://github.com/benjamincanac.png",
-    alt: "Benjamin Canac",
+    src: undefined,
+    alt: authStore.user?.fullName || "User",
   },
-});
+}));
+
+const handleLogout = async () => {
+  await authStore.logout();
+  await router.push("/login");
+};
+
+const getSettingsRoute = () => {
+  if (authStore.isSuperadmin) return "/superadmin/settings";
+  if (authStore.isAdmin) return "/admin/settings";
+  return "/user/settings";
+};
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
@@ -46,7 +38,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Settings",
       icon: "i-lucide-settings",
-      to: "/settings",
+      to: getSettingsRoute(),
     },
   ],
   [
@@ -61,7 +53,6 @@ const items = computed<DropdownMenuItem[][]>(() => [
           checked: colorMode.value === "light",
           onSelect(e: Event) {
             e.preventDefault();
-
             colorMode.preference = "light";
           },
         },
@@ -87,6 +78,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
       label: "Log out",
       icon: "i-lucide-log-out",
       color: "error",
+      onSelect: handleLogout,
     },
   ],
 ]);
@@ -102,8 +94,8 @@ const items = computed<DropdownMenuItem[][]>(() => [
   >
     <UButton
       v-bind="{
-        ...user,
-        label: collapsed ? undefined : user?.name,
+        ...user.value,
+        label: collapsed ? undefined : user.value?.name,
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down',
       }"
       color="neutral"

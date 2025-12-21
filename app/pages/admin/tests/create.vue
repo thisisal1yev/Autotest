@@ -1,0 +1,25 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: "admin",
+  middleware: ["auth", "role"],
+});
+</script>
+
+<template>
+  <UDashboardPanel id="create-test">
+    <template #header>
+      <UDashboardNavbar title="Create Test" :ui="{ right: 'gap-3' }">
+        <template #leading>
+          <UDashboardSidebarCollapse />
+        </template>
+      </UDashboardNavbar>
+    </template>
+
+    <div class="p-6">
+      <p class="text-gray-600 dark:text-gray-400">
+        Create test form will be here.
+      </p>
+    </div>
+  </UDashboardPanel>
+</template>
+

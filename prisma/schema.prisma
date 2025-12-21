@@ -20,13 +20,85 @@ enum Role {
 }
 
 model User {
-  id        Int   @id @default(autoincrement())
-  email     String   @unique
-  login     String   @unique
-  password  String 
-  fullName  String
-  role      Role     @default(USER)
+  id             Int           @id @default(autoincrement())
+  email          String        @unique
+  login          String        @unique
+  password       String
+  fullName       String
+  role           Role          @default(USER)
+  drivingSchoolId Int?
+  drivingSchool  DrivingSchool? @relation(fields: [drivingSchoolId], references: [id])
+  isActive       Boolean       @default(true)
+  testResults    TestResult[]
+  
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([drivingSchoolId])
+}
+
+model DrivingSchool {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  users     User[]
+  tests     Test[]
+  tutorials Tutorial[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Test {
+  id           Int         @id @default(autoincrement())
+  title        String
+  description  String?
+  questions    Json        // Array of question objects
+  timeLimit    Int?        // Time limit in minutes
+  passingScore Int         @default(60) // Passing score percentage
+  drivingSchoolId Int
+  drivingSchool DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
+  testResults  TestResult[]
+  
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([drivingSchoolId])
+}
+
+model Tutorial {
+  id            Int           @id @default(autoincrement())
+  title         String
+  description   String?
+  videoUrl      String
+  thumbnailUrl  String?
+  duration      Int?          // Duration in seconds
+  order         Int           @default(0)
+  drivingSchoolId Int
+  drivingSchool DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([drivingSchoolId])
+}
+
+model TestResult {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  testId      Int
+  test        Test     @relation(fields: [testId], references: [id])
+  score       Int      // Score percentage
+  answers     Json     // User's answers
+  passed      Boolean
+  completedAt DateTime @default(now())
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([testId])
 }

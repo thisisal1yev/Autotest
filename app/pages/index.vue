@@ -1,3 +1,24 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: "default",
+  middleware: [],
+});
+</script>
+
 <template>
-  <h1>Landing page</h1>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-4xl w-full text-center space-y-8 p-8">
+      <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">
+        EDU Avtotest
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400">
+        Multi-tenant platform for driving schools
+      </p>
+      <div class="mt-8">
+        <UButton to="/login" size="xl" class="px-8">
+          Sign In
+        </UButton>
+      </div>
+    </div>
+  </div>
 </template>

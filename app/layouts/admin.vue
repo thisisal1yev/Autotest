@@ -7,17 +7,17 @@ const open = ref(false);
 const links = [
   [
     {
-      label: "Home",
-      icon: "i-lucide-house",
+      label: "Dashboard",
+      icon: "i-lucide-layout-dashboard",
       to: "/admin/dashboard",
       onSelect: () => {
         open.value = false;
       },
     },
     {
-      label: "Users",
+      label: "Students",
       icon: "i-lucide-users",
-      to: "/admin/users",
+      to: "/admin/students",
       onSelect: () => {
         open.value = false;
       },
@@ -39,35 +39,20 @@ const links = [
       },
     },
     {
+      label: "Analytics",
+      icon: "i-lucide-bar-chart",
+      to: "/admin/analytics",
+          onSelect: () => {
+            open.value = false;
+          },
+        },
+        {
       label: "Settings",
-      to: "/settings",
+      to: "/admin/settings",
       icon: "i-lucide-settings",
-      defaultOpen: false,
-      type: "trigger",
-      children: [
-        {
-          label: "General",
-          to: "/settings",
-          exact: true,
           onSelect: () => {
             open.value = false;
           },
-        },
-        {
-          label: "Members",
-          to: "/admin/settings/members",
-          onSelect: () => {
-            open.value = false;
-          },
-        },
-        {
-          label: "Security",
-          to: "/admin/settings/security",
-          onSelect: () => {
-            open.value = false;
-          },
-        },
-      ],
     },
   ],
   [
