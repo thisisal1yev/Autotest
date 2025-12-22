@@ -42,17 +42,17 @@ const links = [
       label: "Analytics",
       icon: "i-lucide-bar-chart",
       to: "/admin/analytics",
-          onSelect: () => {
-            open.value = false;
-          },
-        },
-        {
+      onSelect: () => {
+        open.value = false;
+      },
+    },
+    {
       label: "Settings",
       to: "/admin/settings",
       icon: "i-lucide-settings",
-          onSelect: () => {
-            open.value = false;
-          },
+      onSelect: () => {
+        open.value = false;
+      },
     },
   ],
   [

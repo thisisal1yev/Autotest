@@ -1,24 +1,37 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
+import type { DropdownMenuItem } from "@nuxt/ui";
+import { sub } from "date-fns";
+import type { Period, Range } from "~/types";
 
 definePageMeta({
-  layout: 'admin',
-  middleware: ['auth', 'role'],
-})
+  layout: "admin",
+  middleware: ["auth", "role"],
+});
 
-const items = [[{
-  label: 'New mail',
-  icon: 'i-lucide-send',
-  to: '/inbox'
-}, {
-  label: 'New customer',
-  icon: 'i-lucide-user-plus',
-  to: '/customers'
-}]] satisfies DropdownMenuItem[][]
+const items = [
+  [
+    {
+      label: "New mail",
+      icon: "i-lucide-send",
+      to: "/inbox",
+    },
+    {
+      label: "New customer",
+      icon: "i-lucide-user-plus",
+      to: "/customers",
+    },
+  ],
+] satisfies DropdownMenuItem[][];
+
+const range = shallowRef<Range>({
+  start: sub(new Date(), { days: 14 }),
+  end: new Date(),
+});
+const period = ref<Period>("daily");
 </script>
 
 <template>
-  <UDashboardPanel id="home">
+  <UDashboardPanel id="dashboard">
     <template #header>
       <UDashboardNavbar title="EDU Autotest" :ui="{ right: 'gap-3' }">
         <template #leading>
@@ -27,11 +40,7 @@ const items = [[{
 
         <template #right>
           <UTooltip text="Notifications" :shortcuts="['N']">
-            <UButton
-              color="neutral"
-              variant="ghost"
-              square
-            >
+            <UButton color="neutral" variant="ghost" square>
               <UChip color="error" inset>
                 <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
               </UChip>
@@ -46,8 +55,9 @@ const items = [[{
 
       <UDashboardToolbar>
         <template #left>
-          <!-- NOTE: The `-ms-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
+          <HomeDateRangePicker v-model="range" class="-ms-1" />
 
+          <HomePeriodSelect v-model="period" :range="range" />
         </template>
       </UDashboardToolbar>
     </template>

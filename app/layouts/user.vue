@@ -46,6 +46,20 @@ const links = [
       },
     },
   ],
+  [
+    {
+      label: "Feedback",
+      icon: "i-lucide-message-circle",
+      to: "mailto:polonchihonkok@gmail.com",
+      target: "_blank",
+    },
+    {
+      label: "Help & Support",
+      icon: "i-lucide-info",
+      to: "mailto:polonchihonkok@gmail.com",
+      target: "_blank",
+    },
+  ],
 ] satisfies NavigationMenuItem[][];
 
 const groups = computed(() => [
@@ -81,6 +95,14 @@ const groups = computed(() => [
           tooltip
           popover
         />
+
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="links[1]"
+          orientation="vertical"
+          tooltip
+          class="mt-auto"
+        />
       </template>
 
       <template #footer="{ collapsed }">
@@ -95,4 +117,3 @@ const groups = computed(() => [
     <NotificationsSlideover />
   </UDashboardGroup>
 </template>
-

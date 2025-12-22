@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 
+const toast = useToast();
 const open = ref(false);
 
 const links = [
@@ -38,6 +39,20 @@ const links = [
       },
     },
   ],
+  [
+    {
+      label: "Feedback",
+      icon: "i-lucide-message-circle",
+      to: "mailto:polonchihonkok@gmail.com",
+      target: "_blank",
+    },
+    {
+      label: "Help & Support",
+      icon: "i-lucide-info",
+      to: "mailto:polonchihonkok@gmail.com",
+      target: "_blank",
+    },
+  ],
 ] satisfies NavigationMenuItem[][];
 
 const groups = computed(() => [
@@ -47,6 +62,35 @@ const groups = computed(() => [
     items: links.flat(),
   },
 ]);
+
+onMounted(async () => {
+  const cookie = useCookie("cookie-consent");
+  if (cookie.value === "accepted") {
+    return;
+  }
+
+  toast.add({
+    title:
+      "We use first-party cookies to enhance your experience on our website.",
+    duration: 0,
+    close: false,
+    actions: [
+      {
+        label: "Accept",
+        color: "neutral",
+        variant: "outline",
+        onClick: () => {
+          cookie.value = "accepted";
+        },
+      },
+      {
+        label: "Opt out",
+        color: "neutral",
+        variant: "ghost",
+      },
+    ],
+  });
+});
 </script>
 
 <template>
@@ -73,6 +117,14 @@ const groups = computed(() => [
           tooltip
           popover
         />
+
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="links[1]"
+          orientation="vertical"
+          tooltip
+          class="mt-auto"
+        />
       </template>
 
       <template #footer="{ collapsed }">
@@ -87,4 +139,3 @@ const groups = computed(() => [
     <NotificationsSlideover />
   </UDashboardGroup>
 </template>
-

@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@nuxt/eslint", "@nuxt/ui", "@pinia/nuxt", "nuxt-auth-utils"],
+  modules: [
+    "@nuxt/eslint",
+    "@nuxt/ui",
+    "@pinia/nuxt",
+    "nuxt-auth-utils",
+    "@vueuse/nuxt",
+  ],
 
   devtools: {
     enabled: true,
@@ -18,8 +24,8 @@ export default defineNuxtConfig({
     processCSSVariables: true,
   },
 
-  pinia:{
-    storesDirs  :['./app/stores']
+  pinia: {
+    storesDirs: ["./app/stores"],
   },
 
   eslint: {
