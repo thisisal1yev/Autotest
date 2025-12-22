@@ -1,7 +1,5 @@
 import { compareSync } from "bcrypt";
 import { prisma } from "../../../prisma/db";
-import { signToken } from "../../utils/jwt";
-import { setAuthCookie } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -36,14 +34,17 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const token = signToken({
-    userId: user.id,
-    email: user.email,
-    role: user.role,
-    drivingSchoolId: user.drivingSchoolId,
+  await setUserSession(event, {
+    user: {
+      id: user.id,
+      email: user.email,
+      login: user.login,
+      fullName: user.fullName,
+      role: user.role,
+      drivingSchoolId: user.drivingSchoolId,
+      drivingSchool: user.drivingSchool,
+    },
   });
-
-  setAuthCookie(event, token);
 
   return {
     user: {
@@ -57,4 +58,3 @@ export default defineEventHandler(async (event) => {
     },
   };
 });
-

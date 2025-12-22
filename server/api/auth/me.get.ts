@@ -1,10 +1,17 @@
 import { prisma } from "../../../prisma/db";
-import { getUserFromToken } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  const payload = await getUserFromToken(event);
+  const session = await getUserSession(event);
   
-  if (!payload) {
+  if (!session?.user) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized",
+    });
+  }
+
+  const userId = (session.user as any).id;
+  if (!userId) {
     throw createError({
       statusCode: 401,
       message: "Unauthorized",
@@ -12,7 +19,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
+    where: { id: userId },
     include: {
       drivingSchool: true,
     },
@@ -37,4 +44,3 @@ export default defineEventHandler(async (event) => {
     },
   };
 });
-

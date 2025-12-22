@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/auth";
-import { getRoleRoute } from "~/utils/constants";
 
 definePageMeta({
   layout: "default",
@@ -38,7 +37,7 @@ const handleLogin = async () => {
 
 <template>
   <div
-    class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"
+    class="min-h-screen flex items-center justify-center"
   >
     <div class="max-w-md w-full space-y-8 p-8">
       <div>

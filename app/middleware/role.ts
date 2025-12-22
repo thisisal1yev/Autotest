@@ -1,52 +1,24 @@
-import { useAuthStore } from "~/stores/auth";
-
-type Role = "USER" | "ADMIN" | "SUPERADMIN";
+import { useAuthStore, type User } from "~/stores/auth";
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const path = to.path;
-  let userRole: Role | null = null;
+  const authStore = useAuthStore();
 
-  // On client side, check auth store
-  if (import.meta.client) {
-    const authStore = useAuthStore();
-    if (!authStore.isAuthenticated) {
-      try {
-        await authStore.fetchUser();
-      } catch {
-        return navigateTo("/login");
-      }
-    }
-    if (authStore.user) {
-      userRole = authStore.user.role as Role;
-    } else {
-      return navigateTo("/login");
-    }
-  } else {
-    // On server side, check JWT token
-    const event = useRequestEvent();
-    if (event) {
-      const { getUserFromToken } = await import("../../server/utils/auth");
-      const payload = await getUserFromToken(event);
-      if (!payload) {
-        return navigateTo("/login");
-      }
-      userRole = payload.role as Role;
-    } else {
-      return navigateTo("/login");
-    }
-  }
-
-  if (!userRole) {
+  if (!authStore.isAuthenticated) {
     return navigateTo("/login");
   }
 
-  // Superadmin can access everything
-  if (userRole === "SUPERADMIN") {
+  const user = authStore.user;
+
+  if (!user) {
+    return navigateTo("/login");
+  }
+
+  if (authStore.isSuperadmin) {
     return;
   }
 
-  // Admin can only access admin routes
-  if (userRole === "ADMIN") {
+  if (authStore.isAdmin) {
     if (path.startsWith("/superadmin")) {
       return navigateTo("/admin/dashboard");
     }
@@ -56,15 +28,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return;
   }
 
-  // User can only access user routes
-  if (userRole === "USER") {
+  if (authStore.isUser) {
     if (path.startsWith("/superadmin") || path.startsWith("/admin")) {
       return navigateTo("/user");
     }
     return;
   }
 
-  // Default: redirect to login
   return navigateTo("/login");
 });
-

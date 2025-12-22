@@ -6,7 +6,6 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
 async function up() {
-  // Create driving school
   const drivingSchool = await prisma.drivingSchool.create({
     data: {
       name: "Elite Driving School",
@@ -16,7 +15,6 @@ async function up() {
     },
   });
 
-  // Create superadmin (no driving school)
   const superadmin = await prisma.user.create({
     data: {
       email: "torvaldsDev@gmail.com",
@@ -28,7 +26,6 @@ async function up() {
     },
   });
 
-  // Create admin (belongs to driving school)
   const admin = await prisma.user.create({
     data: {
       email: "artificialSam@mail.com",
@@ -40,7 +37,6 @@ async function up() {
     },
   });
 
-  // Create students (belong to driving school)
   const student1 = await prisma.user.create({
     data: {
       email: "spaceElon@email.com",
@@ -63,7 +59,6 @@ async function up() {
     },
   });
 
-  // Create sample test
   const test = await prisma.test.create({
     data: {
       title: "Basic Traffic Rules Test",
@@ -98,7 +93,6 @@ async function up() {
     },
   });
 
-  // Create sample tutorial
   const tutorial = await prisma.tutorial.create({
     data: {
       title: "Introduction to Driving",
@@ -111,7 +105,6 @@ async function up() {
     },
   });
 
-  // Create sample test result
   await prisma.testResult.create({
     data: {
       userId: student1.id,
@@ -124,11 +117,6 @@ async function up() {
       passed: true,
     },
   });
-
-  console.log("Seed data created successfully!");
-  console.log("Superadmin:", superadmin.login, "Password: 87654321");
-  console.log("Admin:", admin.login, "Password: 1235678");
-  console.log("Student:", student1.login, "Password: password");
 }
 
 async function down() {

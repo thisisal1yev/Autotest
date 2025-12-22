@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 
 export interface User {
   id: number;
@@ -16,80 +17,98 @@ export interface User {
   } | null;
 }
 
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
+export const useAuthStore = defineStore("auth", () => {
+  const isLoading = ref(false);
 
-export const useAuthStore = defineStore("auth", {
-  state: (): AuthState => ({
-    user: null,
-    isAuthenticated: false,
-    isLoading: false,
-  }),
+  const session = useUserSession();
 
-  getters: {
-    isSuperadmin: (state): boolean => state.user?.role === "SUPERADMIN",
-    isAdmin: (state): boolean => state.user?.role === "ADMIN",
-    isUser: (state): boolean => state.user?.role === "USER",
-    currentDrivingSchoolId: (state): number | null => 
-      state.user?.drivingSchoolId || null,
-  },
+  const user = computed<User | null>(() => {
+    return (session.user.value as User) || null;
+  });
 
-  actions: {
-    async login(login: string, password: string) {
-      this.isLoading = true;
-      try {
-        const response = await $fetch<{ user: User }>("/api/auth/login", {
-          method: "POST",
-          body: { login, password },
-        });
-        this.user = response.user;
-        this.isAuthenticated = true;
-        return response.user;
-      } catch (error) {
-        this.user = null;
-        this.isAuthenticated = false;
-        throw error;
-      } finally {
-        this.isLoading = false;
-      }
-    },
+  const isAuthenticated = computed<boolean>(() => {
+    return session.loggedIn.value;
+  });
 
-    async logout() {
-      try {
-        await $fetch("/api/auth/logout", {
-          method: "POST",
-        });
-      } catch (error) {
-        console.error("Logout error:", error);
-      } finally {
-        this.user = null;
-        this.isAuthenticated = false;
-      }
-    },
+  const isSuperadmin = computed<boolean>(() => {
+    return user.value?.role === "SUPERADMIN";
+  });
 
-    async fetchUser() {
-      this.isLoading = true;
-      try {
-        const response = await $fetch<{ user: User }>("/api/auth/me");
-        this.user = response.user;
-        this.isAuthenticated = true;
-        return response.user;
-      } catch (error) {
-        this.user = null;
-        this.isAuthenticated = false;
-        throw error;
-      } finally {
-        this.isLoading = false;
-      }
-    },
+  const isAdmin = computed<boolean>(() => {
+    return user.value?.role === "ADMIN";
+  });
 
-    setUser(user: User | null) {
-      this.user = user;
-      this.isAuthenticated = !!user;
-    },
-  },
+  const isUser = computed<boolean>(() => {
+    return user.value?.role === "USER";
+  });
+
+  const currentDrivingSchoolId = computed<number | null>(() => {
+    return user.value?.drivingSchoolId || null;
+  });
+
+  async function login(loginValue: string, password: string) {
+    isLoading.value = true;
+    try {
+      const response = await $fetch<{ user: User }>("/api/auth/login", {
+        method: "POST",
+        body: { login: loginValue, password },
+      });
+      await session.fetch();
+      return response.user;
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function logout() {
+    try {
+      await $fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      await session.clear();
+    } catch (error) {
+      console.error("Logout error:", error);
+      await session.clear();
+    }
+  }
+
+  async function fetchUser() {
+    isLoading.value = true;
+    try {
+      const response = await $fetch<{ user: User }>("/api/auth/me");
+      await session.fetch();
+      return response.user;
+    } catch (error) {
+      await session.clear();
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  function setUser(userValue: User | null) {
+    if (userValue) {
+      session.session.value = {
+        user: userValue,
+      } as any;
+    } else {
+      session.session.value = null;
+    }
+  }
+
+  return {
+    isLoading,
+    user,
+    isAuthenticated,
+    isSuperadmin,
+    isAdmin,
+    isUser,
+    currentDrivingSchoolId,
+    login,
+    logout,
+    fetchUser,
+    setUser,
+  };
 });
-
