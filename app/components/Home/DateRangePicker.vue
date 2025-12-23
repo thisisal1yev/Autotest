@@ -123,7 +123,7 @@
             <UCalendar
               v-model="calendarRange"
               class="p-2"
-              :number-of-months="2"
+              :number-of-months="1"
               range
             />
           </div>

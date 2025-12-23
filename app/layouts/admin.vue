@@ -46,14 +46,6 @@ const links = [
         open.value = false;
       },
     },
-    {
-      label: "Settings",
-      to: "/admin/settings",
-      icon: "i-lucide-settings",
-      onSelect: () => {
-        open.value = false;
-      },
-    },
   ],
   [
     {

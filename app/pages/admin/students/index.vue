@@ -12,20 +12,17 @@ definePageMeta({
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+
+        <template #right>
+          <UModal>
+            <UButton icon="i-lucide-plus"> Create student </UButton>
+          </UModal>
+        </template>
       </UDashboardNavbar>
     </template>
 
-    <div class="p-6">
-      <div class="mb-4">
-        <UButton to="/admin/students/create" icon="i-lucide-plus">
-          Create Student
-        </UButton>
-      </div>
-
-      <p class="text-gray-600 dark:text-gray-400">
-        List of students will be displayed here.
-      </p>
-    </div>
+    <template #body>
+      <AdminStudentsTable />
+    </template>
   </UDashboardPanel>
 </template>
-

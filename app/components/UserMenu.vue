@@ -24,8 +24,8 @@ const handleLogout = async () => {
 };
 
 const getSettingsRoute = () => {
-  if (authStore.isSuperadmin) return "/superadmin/settings";
-  if (authStore.isAdmin) return "/admin/settings";
+  if (authStore.isSuperadmin) return "/superadmin/profile";
+  if (authStore.isAdmin) return "/admin/profile";
   return "/user/settings";
 };
 
@@ -34,14 +34,8 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Profile",
       icon: "i-lucide-user",
-    },
-    {
-      label: "Settings",
-      icon: "i-lucide-settings",
       to: getSettingsRoute(),
     },
-  ],
-  [
     {
       label: "Appearance",
       icon: "i-lucide-sun-moon",
@@ -93,11 +87,8 @@ const items = computed<DropdownMenuItem[][]>(() => [
     }"
   >
     <UButton
-      v-bind="{
-        ...user.value,
-        label: collapsed ? undefined : user.value?.name,
-        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down',
-      }"
+      :label="collapsed ? undefined : user.name"
+      trailing-icon="i-lucide-chevrons-up-down"
       color="neutral"
       variant="ghost"
       block

@@ -5,7 +5,7 @@ definePageMeta({
 });
 
 const route = useRoute();
-const schoolId = parseInt(route.params.id as string);
+const drivingSchoolId = parseInt(route.params.id as string);
 </script>
 
 <template>
@@ -17,13 +17,8 @@ const schoolId = parseInt(route.params.id as string);
         </template>
       </UDashboardNavbar>
     </template>
-
-    <div class="p-6">
-      <p>Driving School ID: {{ schoolId }}</p>
-      <p class="text-gray-600 dark:text-gray-400 mt-4">
-        Edit driving school details here.
-      </p>
-    </div>
+    <template #body>
+      <p>Driving School ID: {{ drivingSchoolId }}</p>
+    </template>
   </UDashboardPanel>
 </template>
-

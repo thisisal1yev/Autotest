@@ -11,14 +11,19 @@ definePageMeta({
 const items = [
   [
     {
-      label: "New mail",
-      icon: "i-lucide-send",
-      to: "/inbox",
+      label: "Add student",
+      icon: "i-lucide-user-plus",
+      to: "/admin/students",
     },
     {
-      label: "New customer",
-      icon: "i-lucide-user-plus",
-      to: "/customers",
+      label: "Add test",
+      icon: "i-lucide-file-text",
+      to: "/admin/tests",
+    },
+    {
+      label: "Add tutorial",
+      icon: "i-lucide-list-video",
+      to: "/admin/tutorials",
     },
   ],
 ] satisfies DropdownMenuItem[][];
@@ -28,6 +33,7 @@ const range = shallowRef<Range>({
   end: new Date(),
 });
 const period = ref<Period>("daily");
+const { isNotificationsSlideoverOpen } = useDashboard();
 </script>
 
 <template>
@@ -40,7 +46,12 @@ const period = ref<Period>("daily");
 
         <template #right>
           <UTooltip text="Notifications" :shortcuts="['N']">
-            <UButton color="neutral" variant="ghost" square>
+            <UButton
+              @click="isNotificationsSlideoverOpen = true"
+              color="neutral"
+              variant="ghost"
+              square
+            >
               <UChip color="error" inset>
                 <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
               </UChip>

@@ -3,23 +3,22 @@ definePageMeta({
   layout: "superadmin",
   middleware: ["auth", "role"],
 });
+
+const route = useRoute();
+const adminId = parseInt(route.params.id as string);
 </script>
 
 <template>
-  <UDashboardPanel id="create-admin">
+  <UDashboardPanel id="admin-detail">
     <template #header>
-      <UDashboardNavbar title="Create Admin" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar title="Admin Details" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
       </UDashboardNavbar>
     </template>
-
-    <div class="p-6">
-      <p class="text-gray-600 dark:text-gray-400">
-        Create new admin account form will be here.
-      </p>
-    </div>
+    <template #body>
+      <p>Admin ID: {{ adminId }}</p>
+    </template>
   </UDashboardPanel>
 </template>
-

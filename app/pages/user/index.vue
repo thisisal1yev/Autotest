@@ -7,24 +7,47 @@ definePageMeta({
 });
 
 const authStore = useAuthStore();
+const { isNotificationsSlideoverOpen } = useDashboard();
 </script>
 
 <template>
-  <UDashboardPanel id="user-home">
+  <UDashboardPanel id="student-home">
     <template #header>
       <UDashboardNavbar title="Main" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+
+        <template #right>
+          <UTooltip text="Notifications" :shortcuts="['N']">
+            <UButton
+              @click="isNotificationsSlideoverOpen = true"
+              color="neutral"
+              variant="ghost"
+              square
+            >
+              <UChip color="error" inset>
+                <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
+              </UChip>
+            </UButton>
+          </UTooltip>
+
+          <UButton
+            icon="i-lucide-play"
+            color="primary"
+            variant="soft"
+            to="/user/tests"
+          >
+            Start Test
+          </UButton>
+        </template>
       </UDashboardNavbar>
     </template>
 
-    <div class="p-6">
-      <h1 class="text-2xl font-bold mb-4">Welcome, {{ authStore.user?.fullName }}!</h1>
+    <template #body>
       <p class="text-gray-600 dark:text-gray-400">
-        This is your main dashboard. You can access tests, tutorials, and view your ratings.
+        School analytics and statistics will be displayed here.
       </p>
-    </div>
+    </template>
   </UDashboardPanel>
 </template>
-

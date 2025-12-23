@@ -40,7 +40,7 @@ export const useDrivingSchoolStore = defineStore("drivingSchool", {
       this.isLoading = true;
       try {
         const response = await $fetch<{ schools: DrivingSchool[] }>(
-          "/api/superadmin/driving-schools",
+          "/api/driving-schools",
         );
         this.schools = response.schools;
         return response.schools;

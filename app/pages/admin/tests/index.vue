@@ -1,19 +1,7 @@
 <script setup lang="ts">
-import { useTestsStore } from "~/stores/tests";
-import { useAuthStore } from "~/stores/auth";
-
 definePageMeta({
   layout: "admin",
   middleware: ["auth", "role"],
-});
-
-const testsStore = useTestsStore();
-const authStore = useAuthStore();
-
-onMounted(async () => {
-  if (authStore.currentDrivingSchoolId) {
-    await testsStore.fetchTests(authStore.currentDrivingSchoolId);
-  }
 });
 </script>
 
@@ -24,43 +12,17 @@ onMounted(async () => {
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+
+        <template #right>
+          <UModal>
+            <UButton icon="i-lucide-plus"> Create test </UButton>
+          </UModal>
+        </template>
       </UDashboardNavbar>
     </template>
 
-    <div class="p-6">
-      <div class="mb-4">
-        <UButton to="/admin/tests/create" icon="i-lucide-plus">
-          Create Test
-        </UButton>
-      </div>
-
-      <div v-if="testsStore.isLoading" class="text-center py-8">
-        <p>Loading...</p>
-      </div>
-
-      <div v-else-if="testsStore.tests.length === 0" class="text-center py-8">
-        <p class="text-gray-600 dark:text-gray-400">No tests found.</p>
-      </div>
-
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <UCard
-          v-for="test in testsStore.tests"
-          :key="test.id"
-          class="cursor-pointer hover:shadow-lg transition-shadow"
-          @click="navigateTo(`/admin/tests/${test.id}`)"
-        >
-          <template #header>
-            <h3 class="font-semibold">{{ test.title }}</h3>
-          </template>
-          <p v-if="test.description" class="text-sm text-gray-600 dark:text-gray-400">
-            {{ test.description }}
-          </p>
-          <div class="mt-2 text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Passing Score: </span>
-            <span class="font-semibold">{{ test.passingScore }}%</span>
-          </div>
-        </UCard>
-      </div>
-    </div>
+    <template #body>
+      <AdminTestsTable />
+    </template>
   </UDashboardPanel>
 </template>

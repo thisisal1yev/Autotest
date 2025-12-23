@@ -15,11 +15,10 @@ definePageMeta({
       </UDashboardNavbar>
     </template>
 
-    <div class="p-6">
+    <template #body>
       <p class="text-gray-600 dark:text-gray-400">
         System-wide analytics and statistics will be displayed here.
       </p>
-    </div>
+    </template>
   </UDashboardPanel>
 </template>
-

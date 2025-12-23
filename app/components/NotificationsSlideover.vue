@@ -1,49 +1,72 @@
 <script setup lang="ts">
-import type { Notification } from "~/types";
-import { formatDateTime } from "~/utils/formatting";
+interface RecentAction {
+  id: number;
+  type: string;
+  title: string;
+  description: string;
+  icon: string;
+  date: string;
+  unread?: boolean;
+}
+
+function formatDate(date: Date | string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 const { isNotificationsSlideoverOpen } = useDashboard();
-console.log(isNotificationsSlideoverOpen.value);
-const { data: notifications } = await useFetch<Notification[]>(
+const { data: actions } = await useFetch<RecentAction[]>(
   "/api/notifications"
 );
 </script>
 
 <template>
-  <USlideover v-model:open="isNotificationsSlideoverOpen" title="Notifications">
+  <USlideover v-model:open="isNotificationsSlideoverOpen" title="Recent Actions">
     <template #body>
-      <NuxtLink
-        v-for="notification in notifications"
-        :key="notification.id"
-        :to="`/inbox?id=${notification.id}`"
-        class="px-3 py-2.5 rounded-md hover:bg-elevated/50 flex items-center gap-3 relative -mx-3 first:-mt-3 last:-mb-3"
+      <div
+        v-for="action in actions"
+        :key="action.id"
+        class="px-3 py-2.5 rounded-md hover:bg-elevated/50 flex items-start gap-3 relative -mx-3 first:-mt-3 last:-mb-3 cursor-pointer"
       >
-        <UChip color="error" :show="!!notification.unread" inset>
-          <UAvatar
-            v-bind="notification.sender.avatar"
-            :alt="notification.sender.name"
-            size="md"
-          />
+        <UChip color="primary" :show="!!action.unread" inset>
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10"
+          >
+            <UIcon :name="action.icon" class="w-5 h-5 text-primary" />
+          </div>
         </UChip>
 
-        <div class="text-sm flex-1">
-          <p class="flex items-center justify-between">
+        <div class="text-sm flex-1 min-w-0">
+          <p class="flex items-start justify-between gap-2">
             <span class="text-highlighted font-medium">
-              {{ notification.sender.name }}
+              {{ action.title }}
             </span>
 
             <time
-              :datetime="notification.date"
-              class="text-muted text-xs"
-              v-text="formatDateTime(new Date(notification.date))"
+              :datetime="action.date"
+              class="text-muted text-xs whitespace-nowrap"
+              v-text="formatDate(new Date(action.date))"
             />
           </p>
 
-          <p class="text-dimmed">
-            {{ notification.body }}
+          <p class="text-dimmed mt-1">
+            {{ action.description }}
           </p>
         </div>
-      </NuxtLink>
+      </div>
+
+      <div
+        v-if="!actions || actions.length === 0"
+        class="flex flex-col items-center justify-center py-12"
+      >
+        <UIcon name="i-lucide-bell-off" class="w-12 h-12 text-muted mb-4" />
+        <p class="text-muted">No recent actions</p>
+      </div>
     </template>
   </USlideover>
 </template>

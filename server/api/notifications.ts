@@ -1,256 +1,141 @@
-import { sub } from 'date-fns'
+import { sub } from "date-fns";
 
-const notifications = [{
-  id: 1,
-  unread: true,
-  sender: {
-    name: 'Jordan Brown',
-    email: 'jordan.brown@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=2'
-    }
-  },
-  body: 'sent you a message',
-  date: sub(new Date(), { minutes: 7 }).toISOString()
-}, {
-  id: 2,
-  sender: {
-    name: 'Lindsay Walton'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { hours: 1 }).toISOString()
-}, {
-  id: 3,
-  unread: true,
-  sender: {
-    name: 'Taylor Green',
-    email: 'taylor.green@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=3'
-    }
-  },
-  body: 'sent you a message',
-  date: sub(new Date(), { hours: 3 }).toISOString()
-}, {
-  id: 4,
-  sender: {
-    name: 'Courtney Henry',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=4'
-    }
-  },
-  body: 'added you to a project',
-  date: sub(new Date(), { hours: 3 }).toISOString()
-}, {
-  id: 5,
-  sender: {
-    name: 'Tom Cook',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=5'
-    }
-  },
-  body: 'abandonned cart',
-  date: sub(new Date(), { hours: 7 }).toISOString()
-}, {
-  id: 6,
-  sender: {
-    name: 'Casey Thomas',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=6'
-    }
-  },
-  body: 'purchased your product',
-  date: sub(new Date(), { days: 1, hours: 3 }).toISOString()
-}, {
-  id: 7,
-  unread: true,
-  sender: {
-    name: 'Kelly Wilson',
-    email: 'kelly.wilson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=8'
-    }
-  },
-  body: 'sent you a message',
-  date: sub(new Date(), { days: 2 }).toISOString()
-}, {
-  id: 8,
-  sender: {
-    name: 'Jamie Johnson',
-    email: 'jamie.johnson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=9'
-    }
-  },
-  body: 'requested a refund',
-  date: sub(new Date(), { days: 5, hours: 4 }).toISOString()
-}, {
-  id: 9,
-  unread: true,
-  sender: {
-    name: 'Morgan Anderson',
-    email: 'morgan.anderson@example.com'
-  },
-  body: 'sent you a message',
-  date: sub(new Date(), { days: 6 }).toISOString()
-}, {
-  id: 10,
-  sender: {
-    name: 'Drew Moore'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 6 }).toISOString()
-}, {
-  id: 11,
-  sender: {
-    name: 'Riley Davis'
-  },
-  body: 'abandonned cart',
-  date: sub(new Date(), { days: 7 }).toISOString()
-}, {
-  id: 12,
-  sender: {
-    name: 'Jordan Taylor'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 9 }).toISOString()
-}, {
-  id: 13,
-  sender: {
-    name: 'Kelly Wilson',
-    email: 'kelly.wilson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=8'
-    }
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 10 }).toISOString()
-}, {
-  id: 14,
-  sender: {
-    name: 'Jamie Johnson',
-    email: 'jamie.johnson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=9'
-    }
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 11 }).toISOString()
-}, {
-  id: 15,
-  sender: {
-    name: 'Morgan Anderson'
-  },
-  body: 'purchased your product',
-  date: sub(new Date(), { days: 12 }).toISOString()
-}, {
-  id: 16,
-  sender: {
-    name: 'Drew Moore',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=16'
-    }
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 13 }).toISOString()
-}, {
-  id: 17,
-  sender: {
-    name: 'Riley Davis'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 14 }).toISOString()
-}, {
-  id: 18,
-  sender: {
-    name: 'Jordan Taylor'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 15 }).toISOString()
-}, {
-  id: 19,
-  sender: {
-    name: 'Kelly Wilson',
-    email: 'kelly.wilson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=8'
-    }
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 16 }).toISOString()
-}, {
-  id: 20,
-  sender: {
-    name: 'Jamie Johnson',
-    email: 'jamie.johnson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=9'
-    }
-  },
-  body: 'purchased your product',
-  date: sub(new Date(), { days: 17 }).toISOString()
-}, {
-  id: 21,
-  sender: {
-    name: 'Morgan Anderson'
-  },
-  body: 'abandonned cart',
-  date: sub(new Date(), { days: 17 }).toISOString()
-}, {
-  id: 22,
-  sender: {
-    name: 'Drew Moore'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 18 }).toISOString()
-}, {
-  id: 23,
-  sender: {
-    name: 'Riley Davis'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 19 }).toISOString()
-}, {
-  id: 24,
-  sender: {
-    name: 'Jordan Taylor',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=24'
-    }
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 20 }).toISOString()
-}, {
-  id: 25,
-  sender: {
-    name: 'Kelly Wilson',
-    email: 'kelly.wilson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=8'
-    }
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 20 }).toISOString()
-}, {
-  id: 26,
-  sender: {
-    name: 'Jamie Johnson',
-    email: 'jamie.johnson@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=9'
-    }
-  },
-  body: 'abandonned cart',
-  date: sub(new Date(), { days: 21 }).toISOString()
-}, {
-  id: 27,
-  sender: {
-    name: 'Morgan Anderson'
-  },
-  body: 'subscribed to your email list',
-  date: sub(new Date(), { days: 22 }).toISOString()
-}]
+interface RecentAction {
+  id: number;
+  type: "school_created" | "school_updated" | "school_deleted" | "admin_created" | "admin_updated" | "admin_deleted" | "user_registered";
+  title: string;
+  description: string;
+  icon: string;
+  date: string;
+  unread?: boolean;
+}
 
-export default eventHandler(async () => {
-  return notifications
-})
+const recentActions: RecentAction[] = [
+  {
+    id: 1,
+    type: "school_created",
+    title: "New driving school created",
+    description: "Driving School 'Auto Academy' was created",
+    icon: "i-lucide-school",
+    date: sub(new Date(), { minutes: 5 }).toISOString(),
+    unread: true,
+  },
+  {
+    id: 2,
+    type: "admin_created",
+    title: "New admin created",
+    description: "Admin 'John Doe' was created and assigned to 'Auto Academy'",
+    icon: "i-lucide-user-cog",
+    date: sub(new Date(), { minutes: 15 }).toISOString(),
+    unread: true,
+  },
+  {
+    id: 3,
+    type: "school_updated",
+    title: "Driving school updated",
+    description: "Driving School 'City Driving School' information was updated",
+    icon: "i-lucide-edit",
+    date: sub(new Date(), { hours: 1 }).toISOString(),
+  },
+  {
+    id: 4,
+    type: "admin_updated",
+    title: "Admin updated",
+    description: "Admin 'Jane Smith' information was updated",
+    icon: "i-lucide-user-cog",
+    date: sub(new Date(), { hours: 2 }).toISOString(),
+  },
+  {
+    id: 5,
+    type: "user_registered",
+    title: "New user registered",
+    description: "User 'Mike Johnson' registered in 'Auto Academy'",
+    icon: "i-lucide-user-plus",
+    date: sub(new Date(), { hours: 3 }).toISOString(),
+  },
+  {
+    id: 6,
+    type: "school_created",
+    title: "New driving school created",
+    description: "Driving School 'Elite Driving' was created",
+    icon: "i-lucide-school",
+    date: sub(new Date(), { hours: 5 }).toISOString(),
+  },
+  {
+    id: 7,
+    type: "admin_deleted",
+    title: "Admin deleted",
+    description: "Admin 'Bob Wilson' was deleted",
+    icon: "i-lucide-user-x",
+    date: sub(new Date(), { hours: 6 }).toISOString(),
+    unread: true,
+  },
+  {
+    id: 8,
+    type: "school_updated",
+    title: "Driving school updated",
+    description: "Driving School 'Fast Track' contact information was updated",
+    icon: "i-lucide-edit",
+    date: sub(new Date(), { hours: 8 }).toISOString(),
+  },
+  {
+    id: 9,
+    type: "admin_created",
+    title: "New admin created",
+    description: "Admin 'Sarah Connor' was created and assigned to 'Elite Driving'",
+    icon: "i-lucide-user-cog",
+    date: sub(new Date(), { hours: 10 }).toISOString(),
+  },
+  {
+    id: 10,
+    type: "user_registered",
+    title: "New user registered",
+    description: "User 'Alex Brown' registered in 'City Driving School'",
+    icon: "i-lucide-user-plus",
+    date: sub(new Date(), { days: 1 }).toISOString(),
+  },
+  {
+    id: 11,
+    type: "school_deleted",
+    title: "Driving school deleted",
+    description: "Driving School 'Old School' was deleted",
+    icon: "i-lucide-trash",
+    date: sub(new Date(), { days: 1, hours: 2 }).toISOString(),
+  },
+  {
+    id: 12,
+    type: "admin_updated",
+    title: "Admin updated",
+    description: "Admin 'Tom Anderson' was reassigned to different school",
+    icon: "i-lucide-user-cog",
+    date: sub(new Date(), { days: 1, hours: 5 }).toISOString(),
+  },
+  {
+    id: 13,
+    type: "school_created",
+    title: "New driving school created",
+    description: "Driving School 'Pro Drivers' was created",
+    icon: "i-lucide-school",
+    date: sub(new Date(), { days: 2 }).toISOString(),
+  },
+  {
+    id: 14,
+    type: "user_registered",
+    title: "New user registered",
+    description: "User 'Emma Davis' registered in 'Pro Drivers'",
+    icon: "i-lucide-user-plus",
+    date: sub(new Date(), { days: 2, hours: 3 }).toISOString(),
+  },
+  {
+    id: 15,
+    type: "admin_created",
+    title: "New admin created",
+    description: "Admin 'Chris Lee' was created and assigned to 'Pro Drivers'",
+    icon: "i-lucide-user-cog",
+    date: sub(new Date(), { days: 3 }).toISOString(),
+  },
+];
+
+export default defineEventHandler(async () => {
+  return recentActions;
+});

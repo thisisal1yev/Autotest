@@ -20,7 +20,7 @@ const items = [
       label: "Add new admin",
       icon: "i-lucide-user-cog",
       to: "/superadmin/admins",
-    }
+    },
   ],
 ] satisfies DropdownMenuItem[][];
 
@@ -34,7 +34,10 @@ const period = ref<Period>("daily");
 <template>
   <UDashboardPanel id="dashboard">
     <template #header>
-      <UDashboardNavbar title="EDU Autotest" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar
+        title="EDU Autotest - Dashboard"
+        :ui="{ right: 'gap-3' }"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
