@@ -1,24 +1,24 @@
 import { prisma } from "~~/prisma/db";
-import { getCurrentUser } from "~~/server/utils/session";
 
 export default defineEventHandler(async (event) => {
-  const user = await getCurrentUser(event);
   const { id } = getRouterParams(event);
+  const user = await getCurrentUser(event);
 
   if (user.role !== "ADMIN") {
     throw createError({ statusCode: 403, message: "Forbidden" });
   }
 
-  const student = await prisma.user.findUnique({
+  await prisma.testResult.deleteMany({
+    where: { userId: parseInt(id) },
+  });
+
+  const student = await prisma.user.delete({
     where: { id: parseInt(id) },
-    include: {
-      drivingSchool: true,
-    },
   });
 
   if (!student) {
-    throw createError({ statusCode: 404, message: "Student not found" });
+    throw createError({ statusCode: 400, message: "Student not deleted" });
   }
 
-  return student;
+  return { success: true };
 });

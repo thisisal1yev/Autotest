@@ -9,7 +9,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "seed": "bun tsx prisma/seed.ts"
+    "prisma:seed": "prisma db seed",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.82",
@@ -37,7 +38,10 @@
     "prisma": "^7.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vue-tsc": "^3.1.8"
+    "vue-tsc": "^3.2.1"
   },
-  "packageManager": "pnpm@10.23.0"
+  "packageManager": "pnpm@10.23.0",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
 }

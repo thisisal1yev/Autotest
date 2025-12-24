@@ -107,17 +107,32 @@
       },
       {
         accessorKey: "id",
-        header: "ID",
+        header: ({ column }) => {
+          const isSorted = column.getIsSorted();
+    
+          return h(UButton, {
+            color: "neutral",
+            variant: "ghost",
+            label: "ID",
+            icon: isSorted
+              ? isSorted === "asc"
+                ? "i-lucide-arrow-up-narrow-wide"
+                : "i-lucide-arrow-down-wide-narrow"
+              : "i-lucide-arrow-up-down",
+            class: "-mx-2.5",
+            onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+          });
+        },
+        cell: ({ row }) => row.original.id || "-",
       },
       {
-        accessorKey: "name",
-        header: "Name",
-        filterFn: (row, id, filterValue) => {
+        accessorKey: "fullName",
+        header: "Full Name",
+        filterFn: (row, _, filterValue) => {
           const searchValue = filterValue?.toLowerCase() || "";
           if (!searchValue) return true;
-          const name = (row.getValue(id) as string)?.toLowerCase() || "";
           const fullName = (row.original.fullName as string)?.toLowerCase() || "";
-          return name.includes(searchValue) || fullName.includes(searchValue);
+          return fullName.includes(searchValue);
         },
         cell: ({ row }) => {
           return h("div", { class: "flex items-center gap-3" }, [
@@ -137,20 +152,19 @@
             ),
             h("div", undefined, [
               h("p", { class: "font-medium text-highlighted" }, row.original.fullName),
-              h("p", { class: "text-sm text-muted" }, `ID: ${row.original.id}`),
             ]),
           ]);
         },
       },
       {
-        accessorKey: "email",
+        accessorKey: "login",
         header: ({ column }) => {
           const isSorted = column.getIsSorted();
     
           return h(UButton, {
             color: "neutral",
             variant: "ghost",
-            label: "Email",
+            label: "Login",
             icon: isSorted
               ? isSorted === "asc"
                 ? "i-lucide-arrow-up-narrow-wide"
@@ -161,11 +175,6 @@
           });
         },
         cell: ({ row }) => row.original.login || "-",
-      },
-      {
-        accessorKey: "fullName",
-        header: "Full Name",
-        cell: ({ row }) => row.original.fullName || "-",
       },
       {
         id: "actions",
