@@ -14,7 +14,7 @@ definePageMeta({
         </template>
 
         <template #right>
-          <UModal>
+          <UModal portal="body">
             <UButton icon="i-lucide-plus"> Create admin </UButton>
           </UModal>
         </template>

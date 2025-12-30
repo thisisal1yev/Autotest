@@ -21,7 +21,7 @@ onMounted(async () => {
     <template #header>
       <UDashboardNavbar title="Tutorial" :ui="{ right: 'gap-3' }">
         <template #leading>
-          <UDashboardSidebarCollapse />
+          <UDashboardSidebarCollapse/>
         </template>
       </UDashboardNavbar>
     </template>

@@ -1,5 +1,5 @@
 import type { H3Event } from "h3";
-import { prisma } from "../../prisma/db";
+import { prisma } from "~~/prisma/db";
 
 export interface SessionUser {
   id: number;

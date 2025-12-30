@@ -15,7 +15,7 @@ async function up() {
     },
   });
 
-  const superadmin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "torvaldsDev@gmail.com",
       login: "linusT",
@@ -26,7 +26,7 @@ async function up() {
     },
   });
 
-  const admin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "artificialSam@mail.com",
       login: "samA",
@@ -93,7 +93,7 @@ async function up() {
     },
   });
 
-  const tutorial = await prisma.tutorial.create({
+  await prisma.tutorial.create({
     data: {
       title: "Introduction to Driving",
       description: "Learn the basics of driving",
@@ -105,28 +105,34 @@ async function up() {
     },
   });
 
-  await prisma.testResult.create({
-    data: {
-      userId: student1.id,
-      testId: test.id,
-      score: 85,
-      answers: {
-        "1": "a",
-        "2": ["a", "b"],
+  await prisma.testResult.createMany({
+    data: [
+      {
+        userId: student1.id,
+        testId: test.id,
+        score: 85,
+        answers: {
+          "1": "a",
+          "2": ["a", "b"],
+        },
+        passed: true,
       },
-      passed: true,
-    },
+      {
+        userId: student2.id,
+        testId: test.id,
+        score: 100,
+        answers: {
+          "1": "a",
+          "2": ["a", "b"],
+        },
+        passed: true,
+      },
+    ],
   });
 }
 
 async function down() {
-  const tables = [
-    "TestResult",
-    "Tutorial",
-    "Test",
-    "User",
-    "DrivingSchool",
-  ];
+  const tables = ["TestResult", "Tutorial", "Test", "User", "DrivingSchool"];
 
   for (const t of tables) {
     await prisma.$executeRawUnsafe(

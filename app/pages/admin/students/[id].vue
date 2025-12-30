@@ -6,8 +6,9 @@ definePageMeta({
   middleware: ["auth", "role"],
 });
 
-const openDeleteModal = ref(false);
 const route = useRoute();
+const openDeleteModal = ref(false);
+const openEditModal = ref(false);
 const studentId = parseInt(route.params.id as string);
 
 const { data: student, status } = useFetch<User>(
@@ -20,6 +21,11 @@ const { data: student, status } = useFetch<User>(
 
 const router = useRouter();
 const toast = useToast();
+const formState = reactive({
+  fullName: student?.value?.fullName || "",
+  email: student?.value?.email || "",
+  login: student?.value?.login || "",
+});
 
 const { execute: deleteStudent, pending: deletePending } = useFetch(
   `/api/admin/students/${studentId}`,
@@ -44,6 +50,38 @@ const { execute: deleteStudent, pending: deletePending } = useFetch(
     },
   }
 );
+
+const { execute: updateStudent, pending: updatePending } = useFetch(
+  `/api/admin/students/${studentId}`,
+  {
+    method: "PATCH",
+    immediate: false,
+    body: {
+      data: {
+        fullName: formState.fullName,
+        email: formState.email,
+        login: formState.login,
+      },
+    },
+    onResponse({ response }) {
+      if (response.status === 200 || response.status === 204) {
+        toast.add({
+          title: "Student updated",
+          description: "The student has been successfully updated.",
+        });
+        openEditModal.value = false;
+      }
+    },
+    onResponseError() {
+      toast.add({
+        title: "Error",
+        description: "Failed to update student.",
+        color: "error",
+      });
+      openEditModal.value = false;
+    },
+  }
+);
 </script>
 
 <template>
@@ -55,14 +93,71 @@ const { execute: deleteStudent, pending: deletePending } = useFetch(
         </template>
 
         <template #right>
-          <UButton
-            color="primary"
-            variant="outline"
-            icon="i-lucide-edit"
-            label="Edit Student"
-          />
+          <UModal
+            v-model:open="openEditModal"
+            title="Edit Student"
+            portal="body"
+          >
+            <UButton
+              color="primary"
+              variant="outline"
+              icon="i-lucide-edit"
+              label="Edit Student"
+              :loading="updatePending"
+              @click="openEditModal = true"
+            />
 
-          <UModal :close="false" v-model:open="openDeleteModal">
+            <template #body>
+              <UForm @submit.prevent="updateStudent" :state="formState" class="space-y-4">
+                <UFormField name="fullName" label="Full Name" :state="formState.fullName">
+                  <UInput
+                    :state="formState.fullName"
+                    size="lg"
+                    class="w-full"
+                    v-model="formState.fullName"
+                    placeholder="Enter full name"
+                  />
+                </UFormField>
+
+                <UFormField name="email" label="Email" :state="formState.email">
+                  <UInput
+                    :state="formState.email"
+                    size="lg"
+                    class="w-full"
+                    v-model="formState.email"
+                    placeholder="Enter email"
+                  />
+                </UFormField>
+
+                <UFormField name="login" label="Login" :state="formState.login">
+                  <UInput
+                    :state="formState.login"
+                    size="lg"
+                    class="w-full"
+                    v-model="formState.login"
+                    placeholder="Enter login"
+                  />
+                </UFormField>
+
+                <div class="flex justify-between gap-2">
+                  <UButton
+                    type="submit"
+                    label="Update Student"
+                    :loading="updatePending"
+                  />
+
+                  <UButton
+                    type="button"
+                    label="Cancel"
+                    variant="outline"
+                    @click="openEditModal = false"
+                  />
+                </div>
+              </UForm>
+            </template>
+          </UModal>
+
+          <UModal :close="false" value:open="openDeleteModal" portal="body">
             <UButton
               color="error"
               variant="outline"
@@ -73,7 +168,9 @@ const { execute: deleteStudent, pending: deletePending } = useFetch(
             />
 
             <template #body>
-              <h4 class="text-lg font-bold text-center mb-2">Are you sure you want to delete this student?</h4>
+              <h4 class="text-lg font-bold text-center mb-2">
+                Are you sure you want to delete this student?
+              </h4>
 
               <div class="flex justify-center items-center gap-2">
                 <UButton

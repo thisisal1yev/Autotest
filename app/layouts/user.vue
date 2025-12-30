@@ -75,6 +75,7 @@ const groups = computed(() => [
   <UDashboardGroup unit="rem">
     <UDashboardSidebar
       id="default"
+      portal="body"
       v-model:open="open"
       collapsible
       resizable

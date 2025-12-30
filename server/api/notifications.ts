@@ -2,7 +2,14 @@ import { sub } from "date-fns";
 
 interface RecentAction {
   id: number;
-  type: "school_created" | "school_updated" | "school_deleted" | "admin_created" | "admin_updated" | "admin_deleted" | "user_registered";
+  type:
+    | "school_created"
+    | "school_updated"
+    | "school_deleted"
+    | "admin_created"
+    | "admin_updated"
+    | "admin_deleted"
+    | "user_registered";
   title: string;
   description: string;
   icon: string;
@@ -82,7 +89,8 @@ const recentActions: RecentAction[] = [
     id: 9,
     type: "admin_created",
     title: "New admin created",
-    description: "Admin 'Sarah Connor' was created and assigned to 'Elite Driving'",
+    description:
+      "Admin 'Sarah Connor' was created and assigned to 'Elite Driving'",
     icon: "i-lucide-user-cog",
     date: sub(new Date(), { hours: 10 }).toISOString(),
   },
@@ -137,5 +145,10 @@ const recentActions: RecentAction[] = [
 ];
 
 export default defineEventHandler(async () => {
-  return recentActions;
+  try {
+    return recentActions;
+  } catch (error) {
+    console.error(error);
+    throw createError({ statusCode: 500, message: "Internal server error" });
+  }
 });

@@ -36,21 +36,21 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center"
-  >
+  <div class="min-h-screen flex items-center justify-center">
     <div class="max-w-md w-full space-y-8 p-8">
       <div>
         <h2
           class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white"
         >
-          EDU Avtotest
+          EDU Autotest
         </h2>
+
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
           Sign in to your account
         </p>
       </div>
-      <form class="mt-6 space-y-6" @submit.prevent="handleLogin">
+
+      <form class="mt-4 space-y-4" @submit.prevent="handleLogin">
         <div class="space-y-4">
           <UInput
             v-model="login"
@@ -87,7 +87,6 @@ const handleLogin = async () => {
           block
           size="lg"
           :loading="isLoading"
-          class="mt-6"
         >
           Sign in
         </UButton>

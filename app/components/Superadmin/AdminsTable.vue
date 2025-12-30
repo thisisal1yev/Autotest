@@ -42,16 +42,12 @@ const columnFilters = ref([
 const columnVisibility = ref();
 const rowSelection = ref({});
 
-const { data, status, refresh } = useFetch<Admin[]>(
+const { data, status } = useFetch<Admin[]>(
   "/api/superadmin/admins",
   {
     lazy: true,
   }
 );
-
-onMounted(async () => {
-  await refresh();
-});
 
 function getRowItems(row: Row<Admin>) {
   return [

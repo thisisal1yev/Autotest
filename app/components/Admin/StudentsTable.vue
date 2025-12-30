@@ -15,16 +15,14 @@
     
     const columnFilters = ref([
       {
-        id: "name",
+    id: "fullName",
         value: "",
       },
     ]);
     const columnVisibility = ref();
     const rowSelection = ref({});
     
-    const { data, status } = useFetch<User[]>(
-        "/api/admin/students"
-    );
+const { data, status } = useFetch<User[]>("/api/admin/students");
     
     function getRowItems(row: Row<User>) {
       return [
@@ -33,10 +31,10 @@
           label: "Actions",
         },
         {
-          label: "Copy student ID",
+      label: "Copy student name",
           icon: "i-lucide-copy",
           onSelect() {
-            navigator.clipboard.writeText(row.original.id.toString());
+        navigator.clipboard.writeText(row.original.fullName.toString());
             toast.add({
               title: "Copied to clipboard",
               description: "Student ID copied to clipboard",
@@ -44,18 +42,8 @@
           },
         },
         {
-          type: "separator",
-        },
-        {
           label: "View student details",
           icon: "i-lucide-eye",
-          onSelect() {
-            router.push(`/admin/students/${row.original.id}`);
-          },
-        },
-        {
-          label: "Edit student",
-          icon: "i-lucide-edit",
           onSelect() {
             router.push(`/admin/students/${row.original.id}`);
           },
@@ -75,14 +63,6 @@
           },
         },
       ];
-    }
-    
-    function formatDate(date: Date | string) {
-      return new Date(date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
     }
     
     const columns: TableColumn<User>[] = [
@@ -107,32 +87,33 @@
       },
       {
         accessorKey: "id",
-        header: ({ column }) => {
-          const isSorted = column.getIsSorted();
-    
-          return h(UButton, {
-            color: "neutral",
-            variant: "ghost",
-            label: "ID",
-            icon: isSorted
-              ? isSorted === "asc"
-                ? "i-lucide-arrow-up-narrow-wide"
-                : "i-lucide-arrow-down-wide-narrow"
-              : "i-lucide-arrow-up-down",
-            class: "-mx-2.5",
-            onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
-          });
-        },
-        cell: ({ row }) => row.original.id || "-",
-      },
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "ID",
+        icon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : "i-lucide-arrow-up-down",
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
+    cell: ({ row }) => row.original.id || "-",
+  },
       {
-        accessorKey: "fullName",
-        header: "Full Name",
-        filterFn: (row, _, filterValue) => {
+    accessorKey: "fullName",
+    header: "Full Name",
+    filterFn: (row, _, filterValue) => {
           const searchValue = filterValue?.toLowerCase() || "";
           if (!searchValue) return true;
           const fullName = (row.original.fullName as string)?.toLowerCase() || "";
-          return fullName.includes(searchValue);
+      const login = (row.original.login as string)?.toLowerCase() || "";
+      return fullName.includes(searchValue) || login.includes(searchValue);
         },
         cell: ({ row }) => {
           return h("div", { class: "flex items-center gap-3" }, [
@@ -151,20 +132,24 @@
               ]
             ),
             h("div", undefined, [
-              h("p", { class: "font-medium text-highlighted" }, row.original.fullName),
+          h(
+            "p",
+            { class: "font-medium text-highlighted" },
+            row.original.fullName
+          ),
             ]),
           ]);
         },
       },
       {
-        accessorKey: "login",
+    accessorKey: "login",
         header: ({ column }) => {
           const isSorted = column.getIsSorted();
     
           return h(UButton, {
             color: "neutral",
             variant: "ghost",
-            label: "Login",
+        label: "Login",
             icon: isSorted
               ? isSorted === "asc"
                 ? "i-lucide-arrow-up-narrow-wide"
@@ -206,13 +191,14 @@
     const searchQuery = computed({
       get: (): string => {
         return (
-          (table.value?.tableApi?.getColumn("name")?.getFilterValue() as string) ||
-          ""
+      (table.value?.tableApi
+        ?.getColumn("fullName")
+        ?.getFilterValue() as string) || ""
         );
       },
       set: (value: string) => {
         table.value?.tableApi
-          ?.getColumn("name")
+      ?.getColumn("fullName")
           ?.setFilterValue(value || undefined);
       },
     });
@@ -230,7 +216,7 @@
             v-model="searchQuery"
             class="w-sm"
             icon="i-lucide-search"
-            placeholder="Search by name or email..."
+        placeholder="Search by name or login..."
           />
         </div>
     

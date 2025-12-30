@@ -1,5 +1,9 @@
-
 export default defineEventHandler(async (event) => {
-  await clearUserSession(event);
-  return { message: "Logged out successfully" };
+  try {
+    await clearUserSession(event);
+    return { message: "Logged out successfully" };
+  } catch (error) {
+    console.error(error);
+    throw createError({ statusCode: 500, message: "Internal server error" });
+  }
 });
