@@ -1,81 +1,81 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from "@nuxt/ui";
-import { useAuthStore } from "~/stores/auth";
+import type { DropdownMenuItem } from '@nuxt/ui'
+import { useAuthStore } from '~/stores/auth'
 
 defineProps<{
-  collapsed?: boolean;
-}>();
+  collapsed?: boolean
+}>()
 
-const colorMode = useColorMode();
-const authStore = useAuthStore();
-const router = useRouter();
+const colorMode = useColorMode()
+const authStore = useAuthStore()
+const router = useRouter()
 
 const user = computed(() => ({
-  name: authStore.user?.fullName || "User",
+  name: authStore.user?.fullName || 'User',
   avatar: {
     src: undefined,
-    alt: authStore.user?.fullName || "User",
-  },
-}));
+    alt: authStore.user?.fullName || 'User'
+  }
+}))
 
 const handleLogout = async () => {
-  await authStore.logout();
-  await router.push("/login");
-};
+  await authStore.logout()
+  await router.push('/login')
+}
 
 const getSettingsRoute = () => {
-  if (authStore.isSuperadmin) return "/superadmin/profile";
-  if (authStore.isAdmin) return "/admin/profile";
-  return "/user/settings";
-};
+  if (authStore.isSuperadmin) return '/superadmin/profile'
+  if (authStore.isAdmin) return '/admin/profile'
+  return '/user/settings'
+}
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
     {
-      label: "Profile",
-      icon: "i-lucide-user",
-      to: getSettingsRoute(),
+      label: 'Profile',
+      icon: 'i-lucide-user',
+      to: getSettingsRoute()
     },
     {
-      label: "Appearance",
-      icon: "i-lucide-sun-moon",
+      label: 'Appearance',
+      icon: 'i-lucide-sun-moon',
       children: [
         {
-          label: "Light",
-          icon: "i-lucide-sun",
-          type: "checkbox",
-          checked: colorMode.value === "light",
+          label: 'Light',
+          icon: 'i-lucide-sun',
+          type: 'checkbox',
+          checked: colorMode.value === 'light',
           onSelect(e: Event) {
-            e.preventDefault();
-            colorMode.preference = "light";
-          },
+            e.preventDefault()
+            colorMode.preference = 'light'
+          }
         },
         {
-          label: "Dark",
-          icon: "i-lucide-moon",
-          type: "checkbox",
-          checked: colorMode.value === "dark",
+          label: 'Dark',
+          icon: 'i-lucide-moon',
+          type: 'checkbox',
+          checked: colorMode.value === 'dark',
           onUpdateChecked(checked: boolean) {
             if (checked) {
-              colorMode.preference = "dark";
+              colorMode.preference = 'dark'
             }
           },
           onSelect(e: Event) {
-            e.preventDefault();
-          },
-        },
-      ],
-    },
+            e.preventDefault()
+          }
+        }
+      ]
+    }
   ],
   [
     {
-      label: "Log out",
-      icon: "i-lucide-log-out",
-      color: "error",
-      onSelect: handleLogout,
-    },
-  ],
-]);
+      label: 'Log out',
+      icon: 'i-lucide-log-out',
+      color: 'error',
+      onSelect: handleLogout
+    }
+  ]
+])
 </script>
 
 <template>
@@ -83,7 +83,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
     :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{
-      content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)',
+      content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)'
     }"
   >
     <UButton
@@ -95,7 +95,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
       :square="collapsed"
       class="data-[state=open]:bg-elevated"
       :ui="{
-        trailingIcon: 'text-dimmed',
+        trailingIcon: 'text-dimmed'
       }"
     />
 

@@ -1,104 +1,104 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
+import type { NavigationMenuItem } from '@nuxt/ui'
 
-const toast = useToast();
-const open = ref(false);
+const toast = useToast()
+const open = ref(false)
 
 const links = [
   [
     {
-      label: "Dashboard",
-      icon: "i-lucide-layout-dashboard",
-      to: "/superadmin",
+      label: 'Dashboard',
+      icon: 'i-lucide-layout-dashboard',
+      to: '/superadmin',
       onSelect: () => {
-        open.value = false;
-      },
+        open.value = false
+      }
     },
     {
-      label: "Driving Schools",
-      icon: "i-lucide-school",
-      to: "/superadmin/driving-schools",
+      label: 'Driving Schools',
+      icon: 'i-lucide-school',
+      to: '/superadmin/driving-schools',
       onSelect: () => {
-        open.value = false;
-      },
+        open.value = false
+      }
     },
     {
-      label: "Admins",
-      icon: "i-lucide-user-cog",
-      to: "/superadmin/admins",
+      label: 'Admins',
+      icon: 'i-lucide-user-cog',
+      to: '/superadmin/admins',
       onSelect: () => {
-        open.value = false;
-      },
+        open.value = false
+      }
     },
     {
-      label: "Analytics",
-      icon: "i-lucide-bar-chart",
-      to: "/superadmin/analytics",
+      label: 'Analytics',
+      icon: 'i-lucide-bar-chart',
+      to: '/superadmin/analytics',
       onSelect: () => {
-        open.value = false;
-      },
-    },
+        open.value = false
+      }
+    }
   ],
   [
     {
-      label: "Feedback",
-      icon: "i-lucide-message-circle",
-      to: "mailto:polonchihonkok@gmail.com",
-      target: "_blank",
+      label: 'Feedback',
+      icon: 'i-lucide-message-circle',
+      to: 'mailto:polonchihonkok@gmail.com',
+      target: '_blank'
     },
     {
-      label: "Help & Support",
-      icon: "i-lucide-info",
-      to: "mailto:polonchihonkok@gmail.com",
-      target: "_blank",
-    },
-  ],
-] satisfies NavigationMenuItem[][];
+      label: 'Help & Support',
+      icon: 'i-lucide-info',
+      to: 'mailto:polonchihonkok@gmail.com',
+      target: '_blank'
+    }
+  ]
+] satisfies NavigationMenuItem[][]
 
 const groups = computed(() => [
   {
-    id: "links",
-    label: "Go to",
-    items: links.flat(),
-  },
-]);
+    id: 'links',
+    label: 'Go to',
+    items: links.flat()
+  }
+])
 
 onMounted(async () => {
-  const cookie = useCookie("cookie-consent");
-  if (cookie.value === "accepted") {
-    return;
+  const cookie = useCookie('cookie-consent')
+  if (cookie.value === 'accepted') {
+    return
   }
 
   toast.add({
     title:
-      "We use first-party cookies to enhance your experience on our website.",
+      'We use first-party cookies to enhance your experience on our website.',
     duration: 0,
     close: false,
     actions: [
       {
-        label: "Accept",
-        color: "neutral",
-        variant: "outline",
+        label: 'Accept',
+        color: 'neutral',
+        variant: 'outline',
         onClick: () => {
-          cookie.value = "accepted";
-        },
+          cookie.value = 'accepted'
+        }
       },
       {
-        label: "Opt out",
-        color: "neutral",
-        variant: "ghost",
-      },
-    ],
-  });
-});
+        label: 'Opt out',
+        color: 'neutral',
+        variant: 'ghost'
+      }
+    ]
+  })
+})
 </script>
 
 <template>
   <UDashboardGroup unit="rem">
     <UDashboardSidebar
       id="default"
-      portal="body"
       v-model:open="open"
+      portal="body"
       collapsible
       resizable
       class="bg-elevated/25"

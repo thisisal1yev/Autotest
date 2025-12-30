@@ -1,38 +1,43 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth";
+import { useAuthStore } from '~/stores/auth'
 
 definePageMeta({
-  layout: "default",
-  middleware: [],
-});
+  layout: 'default',
+  middleware: []
+})
 
-const authStore = useAuthStore();
-const router = useRouter();
+const authStore = useAuthStore()
+const router = useRouter()
 
-const login = ref("");
-const password = ref("");
-const isLoading = ref(false);
-const error = ref<string | null>(null);
+const login = ref('')
+const password = ref('')
+const isLoading = ref(false)
+const error = ref<string | null>(null)
 
 const handleLogin = async () => {
   if (!login.value || !password.value) {
-    error.value = "Please enter login and password";
-    return;
+    error.value = 'Please enter login and password'
+    return
   }
 
-  isLoading.value = true;
-  error.value = null;
+  isLoading.value = true
+  error.value = null
 
   try {
-    await authStore.login(login.value, password.value);
-    const route = getRoleRoute(authStore.user!.role);
-    await router.push(route);
-  } catch (err: any) {
-    error.value = err.data?.message || "Invalid credentials";
+    await authStore.login(login.value, password.value)
+    const route = getRoleRoute(authStore.user!.role)
+    await router.push(route)
+  } catch (err: unknown) {
+    error.value
+      = (err && typeof err === 'object' && 'data' in err
+        && err.data && typeof err.data === 'object' && 'message' in err.data
+        && typeof err.data.message === 'string')
+        ? err.data.message
+        : 'Invalid credentials'
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
 </script>
 
 <template>
@@ -50,7 +55,10 @@ const handleLogin = async () => {
         </p>
       </div>
 
-      <form class="mt-4 space-y-4" @submit.prevent="handleLogin">
+      <form
+        class="mt-4 space-y-4"
+        @submit.prevent="handleLogin"
+      >
         <div class="space-y-4">
           <UInput
             v-model="login"

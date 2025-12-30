@@ -1,13 +1,14 @@
-import type { H3Event } from "h3";
-import { prisma } from "~~/prisma/db";
+import type { H3Event } from 'h3'
+import type { User } from '~~/generated/prisma/client'
+import { prisma } from '~~/prisma/db'
 
 export interface SessionUser {
-  id: number;
-  email: string;
-  login: string;
-  fullName: string;
-  role: "USER" | "ADMIN" | "SUPERADMIN";
-  drivingSchoolId?: number | null;
+  id: number
+  email: string
+  login: string
+  fullName: string
+  role: 'USER' | 'ADMIN' | 'SUPERADMIN'
+  drivingSchoolId?: number | null
 }
 
 /**
@@ -15,36 +16,36 @@ export interface SessionUser {
  * Throws an error if user is not authenticated
  */
 export async function getCurrentUser(event: H3Event): Promise<SessionUser> {
-  const session = await getUserSession(event);
-  
+  const session = await getUserSession(event)
+
   if (!session?.user) {
     throw createError({
       statusCode: 401,
-      message: "Unauthorized",
-    });
+      message: 'Unauthorized'
+    })
   }
 
-  const userId = (session.user as any).id;
+  const userId = (session.user as User).id
   if (!userId) {
     throw createError({
       statusCode: 401,
-      message: "Unauthorized",
-    });
+      message: 'Unauthorized'
+    })
   }
 
   // Optionally fetch fresh user data from database
   const user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
-      drivingSchool: true,
-    },
-  });
+      drivingSchool: true
+    }
+  })
 
   if (!user || !user.isActive) {
     throw createError({
       statusCode: 401,
-      message: "User not found or inactive",
-    });
+      message: 'User not found or inactive'
+    })
   }
 
   return {
@@ -53,8 +54,8 @@ export async function getCurrentUser(event: H3Event): Promise<SessionUser> {
     login: user.login,
     fullName: user.fullName,
     role: user.role,
-    drivingSchoolId: user.drivingSchoolId,
-  };
+    drivingSchoolId: user.drivingSchoolId
+  }
 }
 
 /**
@@ -62,17 +63,17 @@ export async function getCurrentUser(event: H3Event): Promise<SessionUser> {
  * Returns null if not authenticated
  */
 export async function getCurrentUserFromSession(
-  event: H3Event,
+  event: H3Event
 ): Promise<SessionUser | null> {
-  const session = await getUserSession(event);
-  
+  const session = await getUserSession(event)
+
   if (!session?.user) {
-    return null;
+    return null
   }
 
-  const user = session.user as any;
+  const user = session.user as User
   if (!user?.id) {
-    return null;
+    return null
   }
 
   return {
@@ -81,7 +82,6 @@ export async function getCurrentUserFromSession(
     login: user.login,
     fullName: user.fullName,
     role: user.role,
-    drivingSchoolId: user.drivingSchoolId,
-  };
+    drivingSchoolId: user.drivingSchoolId
+  }
 }
-

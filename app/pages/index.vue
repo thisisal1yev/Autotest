@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth";
-import { getRoleRoute } from "~/utils/constants";
+import { useAuthStore } from '~/stores/auth'
+import { getRoleRoute } from '~/utils/constants'
 
 definePageMeta({
-  layout: "default",
-  middleware: [],
-});
+  layout: 'default',
+  middleware: []
+})
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 
 onMounted(async () => {
   if (!authStore.isAuthenticated) {
     try {
-      await authStore.fetchUser();
+      await authStore.fetchUser()
     } catch {
-      return;
+      return
     }
   }
 
   if (authStore.isAuthenticated && authStore.user) {
-    const route = getRoleRoute(authStore.user.role);
-    await navigateTo(route);
+    const route = getRoleRoute(authStore.user.role)
+    await navigateTo(route)
   }
-});
+})
 </script>
 
 <template>
@@ -31,13 +31,17 @@ onMounted(async () => {
       <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">
         EDU Autotest
       </h1>
-      
+
       <p class="text-xl text-gray-600 dark:text-gray-400">
         Multi-tenant platform for driving schools
       </p>
 
       <div class="mt-8">
-        <UButton to="/login" size="xl" class="px-8">
+        <UButton
+          to="/login"
+          size="xl"
+          class="px-8"
+        >
           Sign In
         </UButton>
       </div>

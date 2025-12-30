@@ -1,33 +1,42 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth";
-
 definePageMeta({
-  layout: "user",
-  middleware: ["auth", "role"],
-});
+  layout: 'user',
+  middleware: ['auth', 'role']
+})
 
-const authStore = useAuthStore();
-const { isNotificationsSlideoverOpen } = useDashboard();
+const { isNotificationsSlideoverOpen } = useDashboard()
 </script>
 
 <template>
   <UDashboardPanel id="student-home">
     <template #header>
-      <UDashboardNavbar title="Main" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar
+        title="Main"
+        :ui="{ right: 'gap-3' }"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
 
         <template #right>
-          <UTooltip text="Notifications" :shortcuts="['N']">
+          <UTooltip
+            text="Notifications"
+            :shortcuts="['N']"
+          >
             <UButton
-              @click="isNotificationsSlideoverOpen = true"
               color="neutral"
               variant="ghost"
               square
+              @click="isNotificationsSlideoverOpen = true"
             >
-              <UChip color="error" inset>
-                <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
+              <UChip
+                color="error"
+                inset
+              >
+                <UIcon
+                  name="i-lucide-bell"
+                  class="size-5 shrink-0"
+                />
               </UChip>
             </UButton>
           </UTooltip>

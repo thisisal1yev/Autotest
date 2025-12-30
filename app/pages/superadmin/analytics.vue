@@ -1,14 +1,17 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "superadmin",
-  middleware: ["auth", "role"],
-});
+  layout: 'superadmin',
+  middleware: ['auth', 'role']
+})
 </script>
 
 <template>
   <UDashboardPanel id="analytics">
     <template #header>
-      <UDashboardNavbar title="Analytics" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar
+        title="Analytics"
+        :ui="{ right: 'gap-3' }"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>

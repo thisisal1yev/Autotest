@@ -1,14 +1,17 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "admin",
-  middleware: ["auth", "role"],
-});
+  layout: 'admin',
+  middleware: ['auth', 'role']
+})
 </script>
 
 <template>
   <UDashboardPanel id="create-tutorial">
     <template #header>
-      <UDashboardNavbar title="Create Tutorial" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar
+        title="Create Tutorial"
+        :ui="{ right: 'gap-3' }"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -22,4 +25,3 @@ definePageMeta({
     </div>
   </UDashboardPanel>
 </template>
-

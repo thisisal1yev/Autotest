@@ -1,43 +1,43 @@
-import { compareSync } from "bcrypt";
-import { prisma } from "~~/prisma/db";
+import { compareSync } from 'bcrypt'
+import { prisma } from '~~/prisma/db'
 
 interface IBody {
-  login: string;
-  password: string;
+  login: string
+  password: string
 }
 
 export default defineEventHandler(async (event) => {
   try {
-    const body = await readBody(event);
-    const { login, password }: IBody = body;
+    const body = await readBody(event)
+    const { login, password }: IBody = body
 
     if (!login || !password) {
       throw createError({
         statusCode: 400,
-        message: "Login and password are required",
-      });
+        message: 'Login and password are required'
+      })
     }
 
     const user = await prisma.user.findUnique({
       where: { login: login.trim() },
       include: {
-        drivingSchool: true,
-      },
-    });
+        drivingSchool: true
+      }
+    })
 
     if (!user || !user.isActive) {
       throw createError({
         statusCode: 401,
-        message: "Invalid credentials",
-      });
+        message: 'Invalid credentials'
+      })
     }
 
-    const isValidPassword = compareSync(password, user.password);
+    const isValidPassword = compareSync(password, user.password)
     if (!isValidPassword) {
       throw createError({
         statusCode: 401,
-        message: "Invalid credentials",
-      });
+        message: 'Invalid credentials'
+      })
     }
 
     await setUserSession(event, {
@@ -48,9 +48,9 @@ export default defineEventHandler(async (event) => {
         fullName: user.fullName,
         role: user.role,
         drivingSchoolId: user.drivingSchoolId,
-        drivingSchool: user.drivingSchool,
-      },
-    });
+        drivingSchool: user.drivingSchool
+      }
+    })
 
     return {
       user: {
@@ -60,11 +60,11 @@ export default defineEventHandler(async (event) => {
         fullName: user.fullName,
         role: user.role,
         drivingSchoolId: user.drivingSchoolId,
-        drivingSchool: user.drivingSchool,
-      },
-    };
+        drivingSchool: user.drivingSchool
+      }
+    }
   } catch (error) {
-    console.error(error);
-    throw createError({ statusCode: 500, message: "Internal server error" });
+    console.error(error)
+    throw createError({ statusCode: 500, message: 'Internal server error' })
   }
-});
+})

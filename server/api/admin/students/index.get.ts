@@ -1,31 +1,31 @@
-import { prisma } from "~~/prisma/db";
-import { getCurrentUser } from "~~/server/utils/session";
+import { prisma } from '~~/prisma/db'
+import { getCurrentUser } from '~~/server/utils/session'
 
 export default defineEventHandler(async (event) => {
   try {
-    const user = await getCurrentUser(event);
+    const user = await getCurrentUser(event)
 
-    if (user.role !== "ADMIN") {
-      throw createError({ statusCode: 403, message: "Forbidden" });
+    if (user.role !== 'ADMIN') {
+      throw createError({ statusCode: 403, message: 'Forbidden' })
     }
 
     const students = await prisma.user.findMany({
-      where: { role: "USER" },
+      where: { role: 'USER' },
       include: {
-        drivingSchool: true,
+        drivingSchool: true
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc'
       },
       omit: {
         password: true,
-        role: true,
-      },
-    });
+        role: true
+      }
+    })
 
-    return students;
+    return students
   } catch (error) {
-    console.error(error);
-    throw createError({ statusCode: 500, message: "Internal server error" });
+    console.error(error)
+    throw createError({ statusCode: 500, message: 'Internal server error' })
   }
-});
+})
