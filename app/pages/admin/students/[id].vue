@@ -1,96 +1,93 @@
 <script setup lang="ts">
-import type { User } from '~~/generated/prisma/client'
+import type { User } from "~~/generated/prisma/client";
 
 definePageMeta({
-  layout: 'admin',
-  middleware: ['auth', 'role']
-})
+  layout: "admin",
+  middleware: ["auth", "role"],
+});
 
-const route = useRoute()
-const openDeleteModal = ref(false)
-const openEditModal = ref(false)
-const studentId = parseInt(route.params.id as string)
+const route = useRoute();
+const openDeleteModal = ref(false);
+const openEditModal = ref(false);
+const studentId = parseInt(route.params.id as string);
 
 const { data: student, status } = useFetch<User>(
   `/api/admin/students/${studentId}`,
   {
-    method: 'GET',
-    lazy: true
+    method: "GET",
+    lazy: true,
   }
-)
+);
 
-const router = useRouter()
-const toast = useToast()
+const router = useRouter();
+const toast = useToast();
 const formState = reactive({
-  fullName: student?.value?.fullName || '',
-  email: student?.value?.email || '',
-  login: student?.value?.login || ''
-})
+  fullName: "",
+  email: "",
+  login: "",
+});
+
+watchEffect(() => {
+  if (student.value) {
+    formState.fullName = student.value?.fullName || "";
+    formState.email = student.value?.email || "";
+    formState.login = student.value?.login || "";
+  }
+});
 
 const { execute: deleteStudent, pending: deletePending } = useFetch(
   `/api/admin/students/${studentId}`,
   {
-    method: 'DELETE',
+    method: "DELETE",
     immediate: false,
     onResponse({ response }) {
       if (response.status === 200 || response.status === 204) {
         toast.add({
-          title: 'Student deleted',
-          description: 'The student has been successfully deleted.'
-        })
-        router.push('/admin/students')
+          title: "Student deleted",
+          description: "The student has been successfully deleted.",
+        });
+        router.push("/admin/students");
       }
     },
     onResponseError() {
       toast.add({
-        title: 'Error',
-        description: 'Failed to delete student.',
-        color: 'error'
-      })
-    }
+        title: "Error",
+        description: "Failed to delete student.",
+        color: "error",
+      });
+    },
   }
-)
+);
 
-const { execute: updateStudent, pending: updatePending } = useFetch(
-  `/api/admin/students/${studentId}`,
-  {
-    method: 'PATCH',
-    immediate: false,
+const updateStudent = async () => {
+  await $fetch(`/api/admin/students/${studentId}`, {
+    method: "PATCH",
     body: {
       data: {
         fullName: formState.fullName,
         email: formState.email,
-        login: formState.login
-      }
+        login: formState.login,
+      },
     },
-    onResponse({ response }) {
-      if (response.status === 200 || response.status === 204) {
-        toast.add({
-          title: 'Student updated',
-          description: 'The student has been successfully updated.'
-        })
-        openEditModal.value = false
-      }
-    },
-    onResponseError() {
-      toast.add({
-        title: 'Error',
-        description: 'Failed to update student.',
-        color: 'error'
-      })
-      openEditModal.value = false
-    }
-  }
-)
+  });
+
+  toast.add({
+    title: "Student updated",
+    description: "The student has been successfully updated.",
+  });
+
+  openEditModal.value = false;
+};
+
+watchEffect(() => {
+  console.log(formState);
+});
 </script>
 
 <template>
   <UDashboardPanel id="student-detail">
     <template #header>
-      <UDashboardNavbar
-        title="Edit Student"
-        :ui="{ right: 'gap-3' }"
-      >
+      <UDashboardNavbar title="Edit Student" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -106,7 +103,6 @@ const { execute: updateStudent, pending: updatePending } = useFetch(
               variant="outline"
               icon="i-lucide-edit"
               label="Edit Student"
-              :loading="updatePending"
               @click="openEditModal = true"
             />
 
@@ -116,42 +112,27 @@ const { execute: updateStudent, pending: updatePending } = useFetch(
                 class="space-y-4"
                 @submit.prevent="updateStudent"
               >
-                <UFormField
-                  name="fullName"
-                  label="Full Name"
-                  :state="formState.fullName"
-                >
+                <UFormField name="fullName" label="Full Name">
                   <UInput
                     v-model="formState.fullName"
-                    :state="formState.fullName"
                     size="lg"
                     class="w-full"
                     placeholder="Enter full name"
                   />
                 </UFormField>
 
-                <UFormField
-                  name="email"
-                  label="Email"
-                  :state="formState.email"
-                >
+                <UFormField name="email" label="Email">
                   <UInput
                     v-model="formState.email"
-                    :state="formState.email"
                     size="lg"
                     class="w-full"
                     placeholder="Enter email"
                   />
                 </UFormField>
 
-                <UFormField
-                  name="login"
-                  label="Login"
-                  :state="formState.login"
-                >
+                <UFormField name="login" label="Login">
                   <UInput
                     v-model="formState.login"
-                    :state="formState.login"
                     size="lg"
                     class="w-full"
                     placeholder="Enter login"
@@ -162,7 +143,6 @@ const { execute: updateStudent, pending: updatePending } = useFetch(
                   <UButton
                     type="submit"
                     label="Update Student"
-                    :loading="updatePending"
                   />
 
                   <UButton
@@ -176,11 +156,7 @@ const { execute: updateStudent, pending: updatePending } = useFetch(
             </template>
           </UModal>
 
-          <UModal
-            :close="false"
-            value:open="openDeleteModal"
-            portal="body"
-          >
+          <UModal :close="false" value:open="openDeleteModal" portal="body">
             <UButton
               color="error"
               variant="outline"
@@ -222,14 +198,9 @@ const { execute: updateStudent, pending: updatePending } = useFetch(
     </template>
 
     <template #body>
-      <h3 class="text-2xl font-bold">
-        Student ID: {{ studentId }}
-      </h3>
+      <h3 class="text-2xl font-bold">Student ID: {{ studentId }}</h3>
 
-      <div
-        v-if="status === 'pending'"
-        class="space-y-3"
-      >
+      <div v-if="status === 'pending'" class="space-y-3">
         <USkeleton class="w-40 h-4" />
         <USkeleton class="w-80 h-4" />
         <USkeleton class="w-60 h-4" />
@@ -240,10 +211,7 @@ const { execute: updateStudent, pending: updatePending } = useFetch(
         <p>Error loading student</p>
       </div>
 
-      <div
-        v-else
-        class="text-gray-600 dark:text-gray-400"
-      >
+      <div v-else class="text-gray-600 dark:text-gray-400">
         <p>Student Full Name: {{ student?.fullName }}</p>
         <p>Student Email: {{ student?.email }}</p>
         <p>Student Login: {{ student?.login }}</p>

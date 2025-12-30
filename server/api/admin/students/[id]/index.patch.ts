@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
     const user = await getCurrentUser(event)
     const { data } = await readBody(event)
     const { id } = getRouterParams(event) as { id: string }
-    console.log(data)
 
     if (user.role !== 'ADMIN') {
       throw createError({ statusCode: 403, message: 'Forbidden' })
@@ -13,11 +12,7 @@ export default defineEventHandler(async (event) => {
 
     const student = await prisma.user.update({
       where: { id: parseInt(id) },
-      data: {
-        fullName: data.fullName,
-        email: data.email,
-        login: data.login
-      },
+      data,
       include: {
         drivingSchool: true
       },
