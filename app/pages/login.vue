@@ -62,6 +62,7 @@ const handleLogin = async () => {
         <div class="space-y-4">
           <UInput
             v-model="login"
+            type="text"
             label="Login"
             class="w-full"
             placeholder="Enter your login"

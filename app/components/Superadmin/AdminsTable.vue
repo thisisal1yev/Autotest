@@ -264,6 +264,7 @@ const pagination = ref({
         class="w-sm"
         size="md"
         icon="i-lucide-search"
+        type="text"
         placeholder="Search by name or email..."
       />
     </div>

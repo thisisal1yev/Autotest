@@ -78,10 +78,6 @@ const updateStudent = async () => {
 
   openEditModal.value = false;
 };
-
-watchEffect(() => {
-  console.log(formState);
-});
 </script>
 
 <template>
@@ -117,6 +113,7 @@ watchEffect(() => {
                     v-model="formState.fullName"
                     size="lg"
                     class="w-full"
+                    type="text"
                     placeholder="Enter full name"
                   />
                 </UFormField>
@@ -126,6 +123,7 @@ watchEffect(() => {
                     v-model="formState.email"
                     size="lg"
                     class="w-full"
+                    type="email"
                     placeholder="Enter email"
                   />
                 </UFormField>
@@ -135,6 +133,7 @@ watchEffect(() => {
                     v-model="formState.login"
                     size="lg"
                     class="w-full"
+                    type="text"
                     placeholder="Enter login"
                   />
                 </UFormField>

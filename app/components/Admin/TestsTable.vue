@@ -233,6 +233,7 @@ const pagination = ref({
         v-model="searchQuery"
         class="w-sm"
         icon="i-lucide-search"
+        type="text"
         placeholder="Search by title or description..."
       />
     </div>
