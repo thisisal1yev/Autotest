@@ -36,6 +36,8 @@ const period = ref<Period>("daily");
 const { isNotificationsSlideoverOpen } = useDashboard();
 
 const { data } = useFetch("/api/auth/me", { method: "GET" });
+const { data: stats } = useFetch("/api/admin/dashboard/stats", { method: "GET" });
+const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET" });
 </script>
 
 <template>
@@ -76,10 +78,295 @@ const { data } = useFetch("/api/auth/me", { method: "GET" });
     </template>
 
     <template #body>
-      <h3 class="text-2xl">
-        Hello <strong>{{ data?.user.fullName }}</strong>! Welcome to
-        <strong>{{ data?.user.drivingSchool?.name }}</strong> dashboard.
-      </h3>
+      <section class="space-y-1">
+        <h3 class="text-2xl">
+          Hello
+          <strong>{{ data?.user.fullName ?? "Admin" }}!</strong>
+          Welcome to
+          <strong>
+            {{ data?.user.drivingSchool?.name ?? "Your driving school" }}
+          </strong>
+          dashboard.
+        </h3>
+
+        <p class="text-gray-400 text-sm">
+          Welcome to driving school dashboard. Below are your statistics and
+          available opportunities.
+        </p>
+      </section>
+
+      <section class="space-y-6">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <UCard
+            class="cursor-pointer hover:shadow-lg transition-shadow"
+            @click="navigateTo('/admin/students')"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-muted">Total Students</p>
+                <p class="text-2xl font-bold text-highlighted">
+                  {{ stats?.students ?? 0 }}
+                </p>
+              </div>
+              <div class="p-3 rounded-lg bg-primary/10">
+                <UIcon name="i-lucide-users" class="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </UCard>
+
+          <UCard
+            class="cursor-pointer hover:shadow-lg transition-shadow"
+            @click="navigateTo('/admin/tests')"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-muted">Total Tests</p>
+                <p class="text-2xl font-bold text-highlighted">
+                  {{ stats?.tests ?? 0 }}
+                </p>
+              </div>
+              <div class="p-3 rounded-lg bg-info/10">
+                <UIcon name="i-lucide-file-text" class="w-6 h-6 text-info" />
+              </div>
+            </div>
+          </UCard>
+
+          <UCard
+            class="cursor-pointer hover:shadow-lg transition-shadow"
+            @click="navigateTo('/admin/tutorials')"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-muted">Tutorials</p>
+                <p class="text-2xl font-bold text-highlighted">
+                  {{ stats?.tutorials ?? 0 }}
+                </p>
+              </div>
+              <div class="p-3 rounded-lg bg-success/10">
+                <UIcon name="i-lucide-list-video" class="w-6 h-6 text-success" />
+              </div>
+            </div>
+          </UCard>
+
+          <UCard>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-muted">Test Results</p>
+                <p class="text-2xl font-bold text-highlighted">
+                  {{ stats?.testResults ?? 0 }}
+                </p>
+              </div>
+              <div class="p-3 rounded-lg bg-warning/10">
+                <UIcon name="i-lucide-clipboard-check" class="w-6 h-6 text-warning" />
+              </div>
+            </div>
+          </UCard>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <UCard>
+            <template #header>
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-trending-up" class="w-5 h-5 text-success" />
+                <h4 class="font-semibold">Average Score</h4>
+              </div>
+            </template>
+            <div class="text-3xl font-bold text-highlighted">
+              {{ stats?.averageScore ?? 0 }}%
+            </div>
+            <p class="text-sm text-muted mt-1">Across all tests</p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-check-circle" class="w-5 h-5 text-primary" />
+                <h4 class="font-semibold">Pass Rate</h4>
+              </div>
+            </template>
+            <div class="text-3xl font-bold text-highlighted">
+              {{ stats?.passRate ?? 0 }}%
+            </div>
+            <p class="text-sm text-muted mt-1">
+              {{ stats?.passedTests ?? 0 }} of {{ stats?.testResults ?? 0 }} passed
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-bar-chart" class="w-5 h-5 text-info" />
+                <h4 class="font-semibold">Completed Tests</h4>
+              </div>
+            </template>
+            <div class="text-3xl font-bold text-highlighted">
+              {{ stats?.testResults ?? 0 }}
+            </div>
+            <p class="text-sm text-muted mt-1">Total test completions</p>
+          </UCard>
+        </div>
+
+        <!-- Quick Actions -->
+        <UCard>
+          <template #header>
+            <h4 class="font-semibold">Quick Actions</h4>
+          </template>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <UButton
+              to="/admin/students"
+              color="primary"
+              variant="soft"
+              block
+              icon="i-lucide-user-plus"
+            >
+              Manage Students
+            </UButton>
+
+            <UButton
+              to="/admin/tests"
+              color="info"
+              variant="soft"
+              block
+              icon="i-lucide-file-text"
+            >
+              Manage Tests
+            </UButton>
+
+            <UButton
+              to="/admin/tutorials"
+              color="success"
+              variant="soft"
+              block
+              icon="i-lucide-list-video"
+            >
+              Manage Tutorials
+            </UButton>
+          </div>
+        </UCard>
+
+        <!-- Recent Activity -->
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <!-- Recent Test Results -->
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold">Recent Test Results</h4>
+                <UButton
+                  to="/admin/analytics"
+                  variant="ghost"
+                  size="xs"
+                  icon="i-lucide-arrow-right"
+                >
+                  View All
+                </UButton>
+              </div>
+            </template>
+            <div v-if="!recent?.recentTestResults || recent.recentTestResults.length === 0" class="text-center py-8">
+              <UIcon name="i-lucide-clipboard-x" class="w-12 h-12 text-muted mx-auto mb-2" />
+              <p class="text-sm text-muted">No test results yet</p>
+            </div>
+            <div v-else class="space-y-3">
+              <div
+                v-for="result in recent.recentTestResults"
+                :key="result.id"
+                class="flex items-center justify-between p-3 rounded-lg hover:bg-elevated/50 transition-colors"
+              >
+                <div class="flex items-center gap-3 flex-1 min-w-0">
+                  <div
+                    :class="[
+                      'flex h-10 w-10 items-center justify-center rounded-full',
+                      result.passed ? 'bg-success/10' : 'bg-error/10'
+                    ]"
+                  >
+                    <UIcon
+                      :name="result.passed ? 'i-lucide-check-circle' : 'i-lucide-x-circle'"
+                      :class="[
+                        'w-5 h-5',
+                        result.passed ? 'text-success' : 'text-error'
+                      ]"
+                    />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-highlighted truncate">
+                      {{ result.user.fullName }}
+                    </p>
+                    <p class="text-sm text-muted truncate">
+                      {{ result.test.title }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 ml-4">
+                  <div class="text-right">
+                    <p
+                      :class="[
+                        'font-semibold',
+                        result.passed ? 'text-success' : 'text-error'
+                      ]"
+                    >
+                      {{ result.score }}%
+                    </p>
+                    <p class="text-xs text-muted">
+                      {{ formatDateTime(result.completedAt) }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </UCard>
+
+          <!-- Recent Students -->
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold">Recent Students</h4>
+                <UButton
+                  to="/admin/students"
+                  variant="ghost"
+                  size="xs"
+                  icon="i-lucide-arrow-right"
+                >
+                  View All
+                </UButton>
+              </div>
+            </template>
+            <div v-if="!recent?.recentStudents || recent.recentStudents.length === 0" class="text-center py-8">
+              <UIcon name="i-lucide-users-x" class="w-12 h-12 text-muted mx-auto mb-2" />
+              <p class="text-sm text-muted">No students yet</p>
+            </div>
+            <div v-else class="space-y-3">
+              <div
+                v-for="student in recent.recentStudents"
+                :key="student.id"
+                class="flex items-center justify-between p-3 rounded-lg hover:bg-elevated/50 transition-colors cursor-pointer"
+                @click="navigateTo(`/admin/students/${student.id}`)"
+              >
+                <div class="flex items-center gap-3 flex-1 min-w-0">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                    <span class="text-primary font-semibold">
+                      {{ student.fullName.charAt(0).toUpperCase() }}
+                    </span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-highlighted truncate">
+                      {{ student.fullName }}
+                    </p>
+                    <p class="text-sm text-muted truncate">
+                      {{ student.email }}
+                    </p>
+                  </div>
+                </div>
+                <div class="text-right ml-4">
+                  <p class="text-xs text-muted">
+                    {{ formatDateTime(student.createdAt) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </UCard>
+        </div>
+      </section>
     </template>
   </UDashboardPanel>
 </template>

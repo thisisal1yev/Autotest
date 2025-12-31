@@ -47,9 +47,12 @@ const { data } = useFetch("/api/auth/me", {
 
     <template #body>
       <h3 class="text-2xl">
-        Hello <strong>{{ data?.user.fullName }}</strong
-        >! Welcome to
-        <strong>{{ data?.user.drivingSchool?.name }}</strong>.
+        Hello
+        <strong> {{ data?.user.fullName ?? "Student" }}! </strong>
+        Welcome to
+        <strong>
+          {{ data?.user.drivingSchool?.name ?? "Your driving school" }}.
+        </strong>
       </h3>
     </template>
   </UDashboardPanel>
