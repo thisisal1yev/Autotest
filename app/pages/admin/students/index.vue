@@ -112,7 +112,7 @@ const createStudent = async () => {
     </template>
 
     <template #body>
-      <AdminStudentsTable />
+      <StudentsTable />
     </template>
   </UDashboardPanel>
 </template>

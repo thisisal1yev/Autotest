@@ -27,7 +27,7 @@ definePageMeta({
     </template>
 
     <template #body>
-      <AdminTestsTable />
+      <TestsTable />
     </template>
   </UDashboardPanel>
 </template>

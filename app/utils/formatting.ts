@@ -32,3 +32,11 @@ export function formatDuration(seconds: number): string {
 export function formatScore(score: number): string {
   return `${score}%`
 }
+
+export function formatCurrency(value: number): string {
+  return value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  })
+}

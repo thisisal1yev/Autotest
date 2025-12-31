@@ -54,6 +54,11 @@ const { data } = useFetch("/api/auth/me", {
           {{ data?.user.drivingSchool?.name ?? "Your driving school" }}.
         </strong>
       </h3>
+
+      <p class="text-gray-600 dark:text-gray-400 text-sm">
+        Welcome to driving school dashboard. Below are your statistics and
+        available opportunities.
+      </p>
     </template>
   </UDashboardPanel>
 </template>

@@ -36,8 +36,40 @@ const period = ref<Period>("daily");
 const { isNotificationsSlideoverOpen } = useDashboard();
 
 const { data } = useFetch("/api/auth/me", { method: "GET" });
-const { data: stats } = useFetch("/api/admin/dashboard/stats", { method: "GET" });
-const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET" });
+const { data: stats } = useFetch("/api/admin/dashboard/stats", {
+  method: "GET",
+});
+const { data: recent } = useFetch("/api/admin/dashboard/recent", {
+  method: "GET",
+});
+
+const statsMock = [
+  {
+    title: "Customers",
+    icon: "i-lucide-users",
+    value: 820,
+    variation: 12,
+    to: "/customers",
+  },
+  {
+    title: "Conversions",
+    icon: "i-lucide-chart-pie",
+    value: 1540,
+    variation: -5,
+  },
+  {
+    title: "Revenue",
+    icon: "i-lucide-circle-dollar-sign",
+    value: formatCurrency(320000),
+    variation: 18,
+  },
+  {
+    title: "Orders",
+    icon: "i-lucide-shopping-cart",
+    value: 210,
+    variation: 4,
+  },
+];
 </script>
 
 <template>
@@ -70,9 +102,9 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
 
       <UDashboardToolbar>
         <template #left>
-          <HomeDateRangePicker v-model="range" class="-ms-1" />
+          <DateRangePicker v-model="range" class="-ms-1" />
 
-          <HomePeriodSelect v-model="period" :range="range" />
+          <PeriodSelect v-model="period" :range="range" />
         </template>
       </UDashboardToolbar>
     </template>
@@ -89,87 +121,24 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
           dashboard.
         </h3>
 
-        <p class="text-gray-400 text-sm">
+        <p class="text-gray-600 dark:text-gray-400 text-sm">
           Welcome to driving school dashboard. Below are your statistics and
           available opportunities.
         </p>
       </section>
 
       <section class="space-y-6">
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <UCard
-            class="cursor-pointer hover:shadow-lg transition-shadow"
-            @click="navigateTo('/admin/students')"
-          >
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-muted">Total Students</p>
-                <p class="text-2xl font-bold text-highlighted">
-                  {{ stats?.students ?? 0 }}
-                </p>
-              </div>
-              <div class="p-3 rounded-lg bg-primary/10">
-                <UIcon name="i-lucide-users" class="w-6 h-6 text-primary" />
-              </div>
-            </div>
-          </UCard>
-
-          <UCard
-            class="cursor-pointer hover:shadow-lg transition-shadow"
-            @click="navigateTo('/admin/tests')"
-          >
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-muted">Total Tests</p>
-                <p class="text-2xl font-bold text-highlighted">
-                  {{ stats?.tests ?? 0 }}
-                </p>
-              </div>
-              <div class="p-3 rounded-lg bg-info/10">
-                <UIcon name="i-lucide-file-text" class="w-6 h-6 text-info" />
-              </div>
-            </div>
-          </UCard>
-
-          <UCard
-            class="cursor-pointer hover:shadow-lg transition-shadow"
-            @click="navigateTo('/admin/tutorials')"
-          >
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-muted">Tutorials</p>
-                <p class="text-2xl font-bold text-highlighted">
-                  {{ stats?.tutorials ?? 0 }}
-                </p>
-              </div>
-              <div class="p-3 rounded-lg bg-success/10">
-                <UIcon name="i-lucide-list-video" class="w-6 h-6 text-success" />
-              </div>
-            </div>
-          </UCard>
-
-          <UCard>
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-muted">Test Results</p>
-                <p class="text-2xl font-bold text-highlighted">
-                  {{ stats?.testResults ?? 0 }}
-                </p>
-              </div>
-              <div class="p-3 rounded-lg bg-warning/10">
-                <UIcon name="i-lucide-clipboard-check" class="w-6 h-6 text-warning" />
-              </div>
-            </div>
-          </UCard>
-        </div>
+        <Stats :stats="statsMock" />
 
         <!-- Performance Metrics -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <UCard>
             <template #header>
               <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-trending-up" class="w-5 h-5 text-success" />
+                <UIcon
+                  name="i-lucide-trending-up"
+                  class="w-5 h-5 text-success"
+                />
                 <h4 class="font-semibold">Average Score</h4>
               </div>
             </template>
@@ -182,7 +151,10 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
           <UCard>
             <template #header>
               <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-check-circle" class="w-5 h-5 text-primary" />
+                <UIcon
+                  name="i-lucide-check-circle"
+                  class="w-5 h-5 text-primary"
+                />
                 <h4 class="font-semibold">Pass Rate</h4>
               </div>
             </template>
@@ -190,7 +162,8 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
               {{ stats?.passRate ?? 0 }}%
             </div>
             <p class="text-sm text-muted mt-1">
-              {{ stats?.passedTests ?? 0 }} of {{ stats?.testResults ?? 0 }} passed
+              {{ stats?.passedTests ?? 0 }} of
+              {{ stats?.testResults ?? 0 }} passed
             </p>
           </UCard>
 
@@ -263,8 +236,17 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
                 </UButton>
               </div>
             </template>
-            <div v-if="!recent?.recentTestResults || recent.recentTestResults.length === 0" class="text-center py-8">
-              <UIcon name="i-lucide-clipboard-x" class="w-12 h-12 text-muted mx-auto mb-2" />
+            <div
+              v-if="
+                !recent?.recentTestResults ||
+                recent.recentTestResults.length === 0
+              "
+              class="text-center py-8"
+            >
+              <UIcon
+                name="i-lucide-clipboard-x"
+                class="w-12 h-12 text-muted mx-auto mb-2"
+              />
               <p class="text-sm text-muted">No test results yet</p>
             </div>
             <div v-else class="space-y-3">
@@ -277,14 +259,18 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
                   <div
                     :class="[
                       'flex h-10 w-10 items-center justify-center rounded-full',
-                      result.passed ? 'bg-success/10' : 'bg-error/10'
+                      result.passed ? 'bg-success/10' : 'bg-error/10',
                     ]"
                   >
                     <UIcon
-                      :name="result.passed ? 'i-lucide-check-circle' : 'i-lucide-x-circle'"
+                      :name="
+                        result.passed
+                          ? 'i-lucide-check-circle'
+                          : 'i-lucide-x-circle'
+                      "
                       :class="[
                         'w-5 h-5',
-                        result.passed ? 'text-success' : 'text-error'
+                        result.passed ? 'text-success' : 'text-error',
                       ]"
                     />
                   </div>
@@ -302,7 +288,7 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
                     <p
                       :class="[
                         'font-semibold',
-                        result.passed ? 'text-success' : 'text-error'
+                        result.passed ? 'text-success' : 'text-error',
                       ]"
                     >
                       {{ result.score }}%
@@ -331,8 +317,16 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
                 </UButton>
               </div>
             </template>
-            <div v-if="!recent?.recentStudents || recent.recentStudents.length === 0" class="text-center py-8">
-              <UIcon name="i-lucide-users-x" class="w-12 h-12 text-muted mx-auto mb-2" />
+            <div
+              v-if="
+                !recent?.recentStudents || recent.recentStudents.length === 0
+              "
+              class="text-center py-8"
+            >
+              <UIcon
+                name="i-lucide-users-x"
+                class="w-12 h-12 text-muted mx-auto mb-2"
+              />
               <p class="text-sm text-muted">No students yet</p>
             </div>
             <div v-else class="space-y-3">
@@ -343,7 +337,9 @@ const { data: recent } = useFetch("/api/admin/dashboard/recent", { method: "GET"
                 @click="navigateTo(`/admin/students/${student.id}`)"
               >
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <div
+                    class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10"
+                  >
                     <span class="text-primary font-semibold">
                       {{ student.fullName.charAt(0).toUpperCase() }}
                     </span>
