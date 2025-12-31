@@ -1,42 +1,34 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'user',
-  middleware: ['auth', 'role']
-})
+  layout: "user",
+  middleware: ["auth", "role"],
+});
 
-const { isNotificationsSlideoverOpen } = useDashboard()
+const { isNotificationsSlideoverOpen } = useDashboard();
+
+const { data } = useFetch("/api/auth/me", {
+  method: "GET",
+});
 </script>
 
 <template>
   <UDashboardPanel id="student-home">
     <template #header>
-      <UDashboardNavbar
-        title="Main"
-        :ui="{ right: 'gap-3' }"
-      >
+      <UDashboardNavbar title="Main" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
 
         <template #right>
-          <UTooltip
-            text="Notifications"
-            :shortcuts="['N']"
-          >
+          <UTooltip text="Notifications" :shortcuts="['N']">
             <UButton
               color="neutral"
               variant="ghost"
               square
               @click="isNotificationsSlideoverOpen = true"
             >
-              <UChip
-                color="error"
-                inset
-              >
-                <UIcon
-                  name="i-lucide-bell"
-                  class="size-5 shrink-0"
-                />
+              <UChip color="error" inset>
+                <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
               </UChip>
             </UButton>
           </UTooltip>
@@ -54,9 +46,11 @@ const { isNotificationsSlideoverOpen } = useDashboard()
     </template>
 
     <template #body>
-      <p class="text-gray-600 dark:text-gray-400">
-        School analytics and statistics will be displayed here.
-      </p>
+      <h3 class="text-2xl">
+        Hello <strong>{{ data?.user.fullName }}</strong
+        >! Welcome to
+        <strong>{{ data?.user.drivingSchool?.name }}</strong>.
+      </h3>
     </template>
   </UDashboardPanel>
 </template>
