@@ -1,39 +1,42 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "admin",
-  middleware: ["auth", "role"],
-});
+  layout: 'admin',
+  middleware: ['auth', 'role']
+})
 
-const openCreateModal = ref(false);
-const toast = useToast();
+const openCreateModal = ref(false)
+const toast = useToast()
 const formState = reactive({
-  email: "",
-  login: "",
-  fullName: "",
-  password: "",
-});
+  email: '',
+  login: '',
+  fullName: '',
+  password: ''
+})
 
 const createStudent = async () => {
-  await $fetch("/api/admin/students", {
-    method: "POST",
+  await $fetch('/api/admin/students', {
+    method: 'POST',
     body: {
-      data: formState,
-    },
-  });
+      data: formState
+    }
+  })
 
   toast.add({
-    title: "Student created",
-    description: "The student has been successfully created.",
-  });
+    title: 'Student created',
+    description: 'The student has been successfully created.'
+  })
 
-  openCreateModal.value = false;
-};
+  openCreateModal.value = false
+}
 </script>
 
 <template>
   <UDashboardPanel id="students">
     <template #header>
-      <UDashboardNavbar title="Students" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar
+        title="Students"
+        :ui="{ right: 'gap-3' }"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -44,7 +47,10 @@ const createStudent = async () => {
             title="Create student"
             portal="body"
           >
-            <UButton icon="i-lucide-plus" @click="openCreateModal = true">
+            <UButton
+              icon="i-lucide-plus"
+              @click="openCreateModal = true"
+            >
               Create student
             </UButton>
 
@@ -54,7 +60,10 @@ const createStudent = async () => {
                 class="space-y-4"
                 @submit.prevent="createStudent"
               >
-                <UFormField name="fullName" label="Full Name">
+                <UFormField
+                  name="fullName"
+                  label="Full Name"
+                >
                   <UInput
                     v-model="formState.fullName"
                     size="lg"
@@ -64,7 +73,10 @@ const createStudent = async () => {
                   />
                 </UFormField>
 
-                <UFormField name="email" label="Email">
+                <UFormField
+                  name="email"
+                  label="Email"
+                >
                   <UInput
                     v-model="formState.email"
                     size="lg"
@@ -74,7 +86,10 @@ const createStudent = async () => {
                   />
                 </UFormField>
 
-                <UFormField name="login" label="Login">
+                <UFormField
+                  name="login"
+                  label="Login"
+                >
                   <UInput
                     v-model="formState.login"
                     size="lg"
@@ -84,7 +99,10 @@ const createStudent = async () => {
                   />
                 </UFormField>
 
-                <UFormField name="password" label="Password">
+                <UFormField
+                  name="password"
+                  label="Password"
+                >
                   <UInput
                     v-model="formState.password"
                     size="lg"
@@ -95,7 +113,10 @@ const createStudent = async () => {
                 </UFormField>
 
                 <div class="flex justify-between gap-2">
-                  <UButton type="submit" label="Create Student" />
+                  <UButton
+                    type="submit"
+                    label="Create Student"
+                  />
 
                   <UButton
                     type="button"

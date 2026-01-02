@@ -139,10 +139,7 @@ const updateStudent = async () => {
                 </UFormField>
 
                 <div class="flex justify-between gap-2">
-                  <UButton
-                    type="submit"
-                    label="Update Student"
-                  />
+                  <UButton type="submit" label="Update Student" />
 
                   <UButton
                     type="button"
@@ -214,7 +211,6 @@ const updateStudent = async () => {
         <p>Student Full Name: {{ student?.fullName }}</p>
         <p>Student Email: {{ student?.email }}</p>
         <p>Student Login: {{ student?.login }}</p>
-        <p>Student Driving School ID: {{ student?.drivingSchoolId }}</p>
       </div>
     </template>
   </UDashboardPanel>

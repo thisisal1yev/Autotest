@@ -11,10 +11,6 @@ export interface SessionUser {
   drivingSchoolId?: number | null
 }
 
-/**
- * Get the current user from the session
- * Throws an error if user is not authenticated
- */
 export async function getCurrentUser(event: H3Event): Promise<SessionUser> {
   const session = await getUserSession(event)
 
@@ -33,11 +29,13 @@ export async function getCurrentUser(event: H3Event): Promise<SessionUser> {
     })
   }
 
-  // Optionally fetch fresh user data from database
   const user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
       drivingSchool: true
+    },
+    omit:{
+      password: true,
     }
   })
 
@@ -58,10 +56,6 @@ export async function getCurrentUser(event: H3Event): Promise<SessionUser> {
   }
 }
 
-/**
- * Get the current user from session without database lookup
- * Returns null if not authenticated
- */
 export async function getCurrentUserFromSession(
   event: H3Event
 ): Promise<SessionUser | null> {

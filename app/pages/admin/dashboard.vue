@@ -1,110 +1,135 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from "@nuxt/ui";
-import { sub } from "date-fns";
-import type { Period, Range } from "~/types";
+import type { DropdownMenuItem } from '@nuxt/ui'
+import { sub } from 'date-fns'
+import type { Period, Range } from '~/types'
 
 definePageMeta({
-  layout: "admin",
-  middleware: ["auth", "role"],
-});
+  layout: 'admin',
+  middleware: ['auth', 'role']
+})
 
 const items = [
   [
     {
-      label: "Add student",
-      icon: "i-lucide-user-plus",
-      to: "/admin/students",
+      label: 'Add student',
+      icon: 'i-lucide-user-plus',
+      to: '/admin/students'
     },
     {
-      label: "Add test",
-      icon: "i-lucide-file-text",
-      to: "/admin/tests",
+      label: 'Add test',
+      icon: 'i-lucide-file-text',
+      to: '/admin/tests'
     },
     {
-      label: "Add tutorial",
-      icon: "i-lucide-list-video",
-      to: "/admin/tutorials",
-    },
-  ],
-] satisfies DropdownMenuItem[][];
+      label: 'Add tutorial',
+      icon: 'i-lucide-list-video',
+      to: '/admin/tutorials'
+    }
+  ]
+] satisfies DropdownMenuItem[][]
 
 const range = shallowRef<Range>({
   start: sub(new Date(), { days: 14 }),
-  end: new Date(),
-});
-const period = ref<Period>("daily");
-const { isNotificationsSlideoverOpen } = useDashboard();
+  end: new Date()
+})
+const period = ref<Period>('daily')
+const { isNotificationsSlideoverOpen } = useDashboard()
 
-const { data } = useFetch("/api/auth/me", { method: "GET" });
-const { data: stats } = useFetch("/api/admin/dashboard/stats", {
-  method: "GET",
-});
-const { data: recent } = useFetch("/api/admin/dashboard/recent", {
-  method: "GET",
-});
+const { data } = useFetch('/api/auth/me', { method: 'GET' })
+const { data: stats } = useFetch('/api/admin/dashboard/stats', {
+  method: 'GET'
+})
+const { data: recent } = useFetch('/api/admin/dashboard/recent', {
+  method: 'GET'
+})
 
 const statsMock = [
   {
-    title: "Customers",
-    icon: "i-lucide-users",
+    title: 'Customers',
+    icon: 'i-lucide-users',
     value: 820,
     variation: 12,
-    to: "/customers",
+    to: '/admin/students'
   },
   {
-    title: "Conversions",
-    icon: "i-lucide-chart-pie",
+    title: 'Conversions',
+    icon: 'i-lucide-chart-pie',
     value: 1540,
     variation: -5,
+    to: '/admin/tests'
   },
   {
-    title: "Revenue",
-    icon: "i-lucide-circle-dollar-sign",
+    title: 'Revenue',
+    icon: 'i-lucide-circle-dollar-sign',
     value: formatCurrency(320000),
     variation: 18,
+    to: '/admin/tutorials'
   },
   {
-    title: "Orders",
-    icon: "i-lucide-shopping-cart",
+    title: 'Orders',
+    icon: 'i-lucide-shopping-cart',
     value: 210,
     variation: 4,
-  },
-];
+    to: '/admin/analytics'
+  }
+]
 </script>
 
 <template>
   <UDashboardPanel id="dashboard">
     <template #header>
-      <UDashboardNavbar title="EDU Autotest" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar
+        title="EDU Autotest"
+        :ui="{ right: 'gap-3' }"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
 
         <template #right>
-          <UTooltip text="Notifications" :shortcuts="['N']">
+          <UTooltip
+            text="Notifications"
+            :shortcuts="['N']"
+          >
             <UButton
               color="neutral"
               variant="ghost"
               square
               @click="isNotificationsSlideoverOpen = true"
             >
-              <UChip color="error" inset>
-                <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
+              <UChip
+                color="error"
+                inset
+              >
+                <UIcon
+                  name="i-lucide-bell"
+                  class="size-5 shrink-0"
+                />
               </UChip>
             </UButton>
           </UTooltip>
 
           <UDropdownMenu :items="items">
-            <UButton icon="i-lucide-plus" size="md" class="rounded-full" />
+            <UButton
+              icon="i-lucide-plus"
+              size="md"
+              class="rounded-full"
+            />
           </UDropdownMenu>
         </template>
       </UDashboardNavbar>
 
       <UDashboardToolbar>
         <template #left>
-          <DateRangePicker v-model="range" class="-ms-1" />
+          <DateRangePicker
+            v-model="range"
+            class="-ms-1"
+          />
 
-          <PeriodSelect v-model="period" :range="range" />
+          <PeriodSelect
+            v-model="period"
+            :range="range"
+          />
         </template>
       </UDashboardToolbar>
     </template>
@@ -139,13 +164,17 @@ const statsMock = [
                   name="i-lucide-trending-up"
                   class="w-5 h-5 text-success"
                 />
-                <h4 class="font-semibold">Average Score</h4>
+                <h4 class="font-semibold">
+                  Average Score
+                </h4>
               </div>
             </template>
             <div class="text-3xl font-bold text-highlighted">
               {{ stats?.averageScore ?? 0 }}%
             </div>
-            <p class="text-sm text-muted mt-1">Across all tests</p>
+            <p class="text-sm text-muted mt-1">
+              Across all tests
+            </p>
           </UCard>
 
           <UCard>
@@ -155,7 +184,9 @@ const statsMock = [
                   name="i-lucide-check-circle"
                   class="w-5 h-5 text-primary"
                 />
-                <h4 class="font-semibold">Pass Rate</h4>
+                <h4 class="font-semibold">
+                  Pass Rate
+                </h4>
               </div>
             </template>
             <div class="text-3xl font-bold text-highlighted">
@@ -170,21 +201,30 @@ const statsMock = [
           <UCard>
             <template #header>
               <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-bar-chart" class="w-5 h-5 text-info" />
-                <h4 class="font-semibold">Completed Tests</h4>
+                <UIcon
+                  name="i-lucide-bar-chart"
+                  class="w-5 h-5 text-info"
+                />
+                <h4 class="font-semibold">
+                  Completed Tests
+                </h4>
               </div>
             </template>
             <div class="text-3xl font-bold text-highlighted">
               {{ stats?.testResults ?? 0 }}
             </div>
-            <p class="text-sm text-muted mt-1">Total test completions</p>
+            <p class="text-sm text-muted mt-1">
+              Total test completions
+            </p>
           </UCard>
         </div>
 
         <!-- Quick Actions -->
         <UCard>
           <template #header>
-            <h4 class="font-semibold">Quick Actions</h4>
+            <h4 class="font-semibold">
+              Quick Actions
+            </h4>
           </template>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <UButton
@@ -225,7 +265,9 @@ const statsMock = [
           <UCard>
             <template #header>
               <div class="flex items-center justify-between">
-                <h4 class="font-semibold">Recent Test Results</h4>
+                <h4 class="font-semibold">
+                  Recent Test Results
+                </h4>
                 <UButton
                   to="/admin/analytics"
                   variant="ghost"
@@ -238,8 +280,8 @@ const statsMock = [
             </template>
             <div
               v-if="
-                !recent?.recentTestResults ||
-                recent.recentTestResults.length === 0
+                !recent?.recentTestResults
+                  || recent.recentTestResults.length === 0
               "
               class="text-center py-8"
             >
@@ -247,9 +289,14 @@ const statsMock = [
                 name="i-lucide-clipboard-x"
                 class="w-12 h-12 text-muted mx-auto mb-2"
               />
-              <p class="text-sm text-muted">No test results yet</p>
+              <p class="text-sm text-muted">
+                No test results yet
+              </p>
             </div>
-            <div v-else class="space-y-3">
+            <div
+              v-else
+              class="space-y-3"
+            >
               <div
                 v-for="result in recent.recentTestResults"
                 :key="result.id"
@@ -259,7 +306,7 @@ const statsMock = [
                   <div
                     :class="[
                       'flex h-10 w-10 items-center justify-center rounded-full',
-                      result.passed ? 'bg-success/10' : 'bg-error/10',
+                      result.passed ? 'bg-success/10' : 'bg-error/10'
                     ]"
                   >
                     <UIcon
@@ -270,7 +317,7 @@ const statsMock = [
                       "
                       :class="[
                         'w-5 h-5',
-                        result.passed ? 'text-success' : 'text-error',
+                        result.passed ? 'text-success' : 'text-error'
                       ]"
                     />
                   </div>
@@ -288,7 +335,7 @@ const statsMock = [
                     <p
                       :class="[
                         'font-semibold',
-                        result.passed ? 'text-success' : 'text-error',
+                        result.passed ? 'text-success' : 'text-error'
                       ]"
                     >
                       {{ result.score }}%
@@ -306,7 +353,9 @@ const statsMock = [
           <UCard>
             <template #header>
               <div class="flex items-center justify-between">
-                <h4 class="font-semibold">Recent Students</h4>
+                <h4 class="font-semibold">
+                  Recent Students
+                </h4>
                 <UButton
                   to="/admin/students"
                   variant="ghost"
@@ -327,9 +376,14 @@ const statsMock = [
                 name="i-lucide-users-x"
                 class="w-12 h-12 text-muted mx-auto mb-2"
               />
-              <p class="text-sm text-muted">No students yet</p>
+              <p class="text-sm text-muted">
+                No students yet
+              </p>
             </div>
-            <div v-else class="space-y-3">
+            <div
+              v-else
+              class="space-y-3"
+            >
               <div
                 v-for="student in recent.recentStudents"
                 :key="student.id"

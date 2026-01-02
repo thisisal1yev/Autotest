@@ -1,17 +1,17 @@
-import { prisma } from "~~/prisma/db";
-import { getCurrentUser } from "~~/server/utils/session";
-import { hashSync } from "bcrypt";
+import { prisma } from '~~/prisma/db'
+import { getCurrentUser } from '~~/server/utils/session'
+import { hashSync } from 'bcrypt'
 
 export default defineEventHandler(async (event) => {
   try {
-    const user = await getCurrentUser(event);
+    const user = await getCurrentUser(event)
 
-    if (user.role !== "ADMIN") {
-      throw createError({ statusCode: 403, message: "Forbidden" });
+    if (user.role !== 'ADMIN') {
+      throw createError({ statusCode: 403, message: 'Forbidden' })
     }
 
-    const body = await readBody(event);
-    const { data } = body;
+    const body = await readBody(event)
+    const { data } = body
 
     const newStudent = await prisma.user.create({
       data: {
@@ -19,25 +19,25 @@ export default defineEventHandler(async (event) => {
         login: data.login,
         fullName: data.fullName,
         password: hashSync(data.password, 10),
-        role: "USER",
-        drivingSchoolId: user.drivingSchoolId,
+        role: 'USER',
+        drivingSchoolId: user.drivingSchoolId
       },
       include: {
-        drivingSchool: true,
+        drivingSchool: true
       },
       omit: {
         password: true,
-        role: true,
-      },
-    });
+        role: true
+      }
+    })
 
     if (!newStudent) {
-      throw createError({ statusCode: 400, message: "Student not created" });
+      throw createError({ statusCode: 400, message: 'Student not created' })
     }
 
-    return newStudent;
+    return newStudent
   } catch (error) {
-    console.error(error);
-    throw createError({ statusCode: 500, message: "Internal server error" });
+    console.error(error)
+    throw createError({ statusCode: 500, message: 'Internal server error' })
   }
-});
+})

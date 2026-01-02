@@ -1,46 +1,46 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    "@nuxt/eslint",
-    "@nuxt/ui",
-    "@pinia/nuxt",
-    "nuxt-auth-utils",
-    "@vueuse/nuxt",
+    '@nuxt/eslint',
+    '@nuxt/ui',
+    '@pinia/nuxt',
+    'nuxt-auth-utils',
+    '@vueuse/nuxt'
+  ],
+
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false
+    }
   ],
 
   devtools: {
-    enabled: true,
+    enabled: true
   },
 
-  css: ["~/assets/css/main.css"],
+  css: ['~/assets/css/main.css'],
 
-  compatibilityDate: "2025-01-15",
+  compatibilityDate: '2025-01-15',
 
   eslint: {
     config: {
       stylistic: {
-        commaDangle: "never",
-        braceStyle: "1tbs",
-      },
-    },
+        commaDangle: 'never',
+        braceStyle: '1tbs'
+      }
+    }
   },
 
-  components: [
-    {
-      path: "~/components",
-      pathPrefix: false,
-    },
-  ],
-
   fonts: {
-    families: [{ name: "Montserrat", provider: "google" }],
+    families: [{ name: 'Montserrat', provider: 'google' }],
     defaults: {
-      weights: [400, 500, 600, 700, 800],
+      weights: [400, 500, 600, 700, 800]
     },
-    processCSSVariables: true,
+    processCSSVariables: true
   },
 
   pinia: {
-    storesDirs: ["./app/stores"],
-  },
-});
+    storesDirs: ['./app/stores']
+  }
+})

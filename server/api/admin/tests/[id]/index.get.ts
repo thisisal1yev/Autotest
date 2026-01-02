@@ -4,30 +4,24 @@ import { getCurrentUser } from '~~/server/utils/session'
 export default defineEventHandler(async (event) => {
   try {
     const user = await getCurrentUser(event)
+    const { id } = getRouterParams(event) as { id: string }
 
     if (user.role !== 'ADMIN') {
       throw createError({ statusCode: 403, message: 'Forbidden' })
     }
 
-    const query = getQuery(event)
-    const schoolId = query.schoolId
-      ? parseInt(query.schoolId as string)
-      : user.drivingSchoolId
-
-    const where = schoolId ? { drivingSchoolId: schoolId } : {}
-
-    const tests = await prisma.test.findMany({
-      where,
-      omit: {
+    const test = await prisma.test.findUnique({
+      where: { id: parseInt(id) },
+      omit:{
         drivingSchoolId: true,
-        questions: true,
-      },
-      orderBy: {
-        createdAt: 'desc'
       }
     })
 
-    return tests
+    if (!test) {
+      throw createError({ statusCode: 404, message: 'Test not found' })
+    }
+
+    return test
   } catch (error) {
     console.error(error)
     throw createError({ statusCode: 500, message: 'Internal server error' })
