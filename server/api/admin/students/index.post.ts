@@ -1,5 +1,4 @@
 import { prisma } from '~~/prisma/db'
-import { getCurrentUser } from '~~/server/utils/session'
 import { hashSync } from 'bcrypt'
 
 export default defineEventHandler(async (event) => {

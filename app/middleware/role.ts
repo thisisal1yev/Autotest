@@ -1,24 +1,24 @@
-import { useAuthStore } from '~/stores/auth'
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const path = to.path
-  const authStore = useAuthStore()
+  const session = useUserSession()
 
-  if (!authStore.isAuthenticated) {
+  if (!session.loggedIn.value) {
     return navigateTo('/login')
   }
 
-  const user = authStore.user
+  const user = session.user.value as { role?: 'USER' | 'ADMIN' | 'SUPERADMIN' } | null
 
   if (!user) {
     return navigateTo('/login')
   }
 
-  if (authStore.isSuperadmin) {
+  const role = user.role
+
+  if (role === 'SUPERADMIN') {
     return
   }
 
-  if (authStore.isAdmin) {
+  if (role === 'ADMIN') {
     if (path.startsWith('/superadmin')) {
       return navigateTo('/admin/dashboard')
     }
@@ -28,7 +28,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  if (authStore.isUser) {
+  if (role === 'USER') {
     if (path.startsWith('/superadmin') || path.startsWith('/admin')) {
       return navigateTo('/user')
     }

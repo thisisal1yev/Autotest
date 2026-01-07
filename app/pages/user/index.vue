@@ -58,19 +58,21 @@ const { data } = useFetch('/api/auth/me', {
     </template>
 
     <template #body>
-      <h3 class="text-2xl">
-        Hello
-        <strong> {{ data?.user.fullName ?? "Student" }}! </strong>
-        Welcome to
-        <strong>
-          {{ data?.user.drivingSchool?.name ?? "Your driving school" }}.
-        </strong>
-      </h3>
+      <div class="space-y-1">
+        <h3 class="text-2xl">
+          Hello
+          <strong> {{ data?.user.fullName ?? "Student" }}! </strong>
+          Welcome to
+          <strong>
+            {{ data?.user.drivingSchool?.name ?? "Your driving school" }}.
+          </strong>
+        </h3>
 
-      <p class="text-gray-600 dark:text-gray-400 text-sm">
-        Welcome to driving school dashboard. Below are your statistics and
-        available opportunities.
-      </p>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">
+          Welcome to driving school dashboard. Below are your statistics and
+          available opportunities.
+        </p>
+      </div>
     </template>
   </UDashboardPanel>
 </template>

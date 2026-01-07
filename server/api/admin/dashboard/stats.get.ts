@@ -1,5 +1,4 @@
 import { prisma } from '~~/prisma/db'
-import { getCurrentUser } from '~~/server/utils/session'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -69,3 +68,4 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, message: 'Internal server error' })
   }
 })
+

@@ -10,7 +10,11 @@ const openDeleteTestModal = ref(false);
 const openEditTestModal = ref(false);
 const testId = parseInt(route.params.id as string);
 
-const { data: test, status } = useFetch(`/api/admin/tests/${testId}`, {
+const {
+  data: test,
+  status,
+  error,
+} = useFetch(`/api/admin/tests/${testId}`, {
   method: "GET",
   lazy: true,
 });
@@ -52,6 +56,38 @@ watchEffect(() => {
     formState.timeLimit = test.value?.timeLimit?.toString() || "";
   }
 });
+
+const title = reactive({
+  title: "Test title:",
+  value: test.value?.title,
+});
+
+const options = ref([
+  {
+    title: "Test description",
+    value: test.value?.description,
+  },
+  {
+    title: "Test time limit",
+    value: test.value?.timeLimit,
+  },
+  {
+    title: "Test passing score",
+    value: test.value?.passingScore,
+  },
+  {
+    title: "Test questions",
+    value: test.value?.questions?.length,
+  },
+  {
+    title: "Created at",
+    value: formatDate(test.value?.createdAt ?? new Date()),
+  },
+  {
+    title: "Last update",
+    value: formatDate(test.value?.updatedAt ?? new Date()),
+  },
+]);
 </script>
 
 <template>
@@ -126,7 +162,11 @@ watchEffect(() => {
             </template>
           </UModal>
 
-          <UModal :close="false" v-model:open="openDeleteTestModal" portal="body">
+          <UModal
+            :close="false"
+            v-model:open="openDeleteTestModal"
+            portal="body"
+          >
             <UButton
               color="error"
               variant="outline"
@@ -168,25 +208,49 @@ watchEffect(() => {
     </template>
 
     <template #body>
-      <h3 class="text-2xl font-bold">Test ID: {{ testId }}</h3>
+      <Description
+        :loading="status === 'pending'"
+        :error="!!error?.message"
+        :title="title"
+        :options="options"
+      />
 
-      <div v-if="status === 'pending'" class="space-y-3">
-        <USkeleton class="w-40 h-4" />
-        <USkeleton class="w-80 h-4" />
-        <USkeleton class="w-60 h-4" />
-        <USkeleton class="w-40 h-4" />
-      </div>
+      <UForm :state="formState" class="space-y-6">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-lg font-semibold">Questions</h4>
+            <UButton color="primary" variant="soft" icon="i-lucide-plus">
+              Add Question
+            </UButton>
+          </div>
 
-      <div v-else-if="status === 'error'">
-        <p>Error loading test</p>
-      </div>
+            <div
+              class="text-center py-8 border border-dashed border-default rounded-lg"
+            >
+              <UIcon
+                name="i-lucide-help-circle"
+                class="w-12 h-12 text-muted mx-auto mb-2"
+              />
+              <p class="text-muted">No questions added yet</p>
+              <p class="text-sm text-muted mt-1">
+                Click "Add Question" to get started
+              </p>
+            </div>
 
-      <div v-else class="text-gray-600 dark:text-gray-400">
-        <p>Test Title: {{ test?.title }}</p>
-        <p>Test Description: {{ test?.description }}</p>
-        <p>Test Time Limit: {{ test?.timeLimit }}</p>
-        <p>Test Passing Score: {{ test?.passingScore }}</p>
-      </div>
+            <QuestionForm
+              v-for="(question, index) in test?.questions"
+              :question="question"
+              :index="index"
+            />
+        </div>
+
+        <!-- Кнопка создания теста -->
+        <div class="flex justify-end gap-3 pt-4 border-t border-default">
+          <UButton color="neutral" variant="outline" label="Cancel" />
+
+          <UButton type="submit" color="primary" label="Create Test" />
+        </div>
+      </UForm>
     </template>
   </UDashboardPanel>
 </template>
