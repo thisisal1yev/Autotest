@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/auth";
-import { getRoleRoute } from "~/utils/constants";
 
 definePageMeta({
   layout: "default",
@@ -98,6 +97,80 @@ const stats = [
   },
 ];
 
+const benefits = [
+  {
+    title: "Zero Configuration",
+    description:
+      "Start managing your driving school immediately — no complex setup required.",
+    icon: "⚡",
+  },
+  {
+    title: "Real-time Analytics",
+    description:
+      "Monitor student performance, test results, and school metrics in real time.",
+    icon: "📊",
+  },
+  {
+    title: "Secure & Reliable",
+    description:
+      "Built with security in mind. Your data is protected with enterprise-grade encryption.",
+    icon: "🔒",
+  },
+  {
+    title: "Mobile Friendly",
+    description:
+      "Students can practice and take tests from any device, anywhere, anytime.",
+    icon: "📱",
+  },
+];
+
+const testimonials = [
+  {
+    name: "Alexandra Petrov",
+    role: "School Owner",
+    school: "City Driving Academy",
+    content:
+      "EDU Autotest transformed how we manage exams. Our students love the practice mode, and we've seen a 40% improvement in pass rates.",
+  },
+  {
+    name: "Michael Chen",
+    role: "Instructor",
+    school: "Highway Driving School",
+    content:
+      "The analytics dashboard helps me identify which topics students struggle with most. I can now tailor my lessons more effectively.",
+  },
+  {
+    name: "Sarah Johnson",
+    role: "Student",
+    school: "Metro Driving School",
+    content:
+      "Practicing on EDU Autotest helped me pass my theory exam on the first try. The instant feedback and explanations are incredibly helpful.",
+  },
+];
+
+const faqs = [
+  {
+    question: "How quickly can we get started?",
+    answer:
+      "You can set up your driving school workspace in minutes. Simply sign up, create your first test, and invite students. No technical knowledge required.",
+  },
+  {
+    question: "Can we customize tests for our curriculum?",
+    answer:
+      "Absolutely! You have full control over your question bank, test structure, time limits, and passing scores. Create tests that match your local requirements.",
+  },
+  {
+    question: "Is our data secure?",
+    answer:
+      "Yes. We use industry-standard encryption and follow strict data protection protocols. Each driving school's data is completely isolated in our multi-tenant architecture.",
+  },
+  {
+    question: "What support do you provide?",
+    answer:
+      "We offer comprehensive documentation, email support, and for Enterprise plans, priority support with dedicated account management.",
+  },
+];
+
 onMounted(async () => {
   if (!authStore.isAuthenticated) {
     try {
@@ -106,101 +179,106 @@ onMounted(async () => {
       return;
     }
   }
-
-  if (authStore.isAuthenticated && authStore.user) {
-    const route = getRoleRoute(authStore.user.role);
-    await navigateTo(route);
-  }
 });
 </script>
 
 <template>
-  <div class="min-h-screen text-gray-900 dark:text-gray-100">
-    <!-- Landing header -->
-    <header
-      class="border-b sticky z-50 top-0 border-gray-200/80 dark:border-gray-800/80 bg-white/80 dark:bg-gray-900/80 backdrop-blur"
+  <div class="min-h-screen relative">
+    <svg
+      viewBox="0 0 1440 181"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="pointer-events-none absolute w-full -top-px transition-all text-primary shrink-0 -z-10 duration-400ms"
+    >
+      <mask id="path-1-inside-1_414_5526" fill="white">
+        <path d="M0 0H1440V181H0V0Z"></path>
+      </mask>
+      <path
+        d="M0 0H1440V181H0V0Z"
+        fill="url(#paint0_linear_414_5526)"
+        fill-opacity="0.22"
+      ></path>
+      <path
+        d="M0 2H1440V-2H0V2Z"
+        fill="url(#paint1_linear_414_5526)"
+        mask="url(#path-1-inside-1_414_5526)"
+      ></path>
+      <defs>
+        <linearGradient
+          id="paint0_linear_414_5526"
+          x1="720"
+          y1="0"
+          x2="720"
+          y2="181"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="currentColor"></stop>
+          <stop offset="1" stop-color="currentColor" stop-opacity="0"></stop>
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear_414_5526"
+          x1="0"
+          y1="90.5"
+          x2="1440"
+          y2="90.5"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="currentColor" stop-opacity="0"></stop>
+          <stop offset="0.395" stop-color="currentColor"></stop>
+          <stop offset="1" stop-color="currentColor" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- Gradient background -->
+    <div
+      class="fixed inset-0 -z-10 overflow-hidden pointer-events-none"
+      aria-hidden="true"
     >
       <div
-        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6"
-      >
-        <NuxtLink to="/" class="flex items-center gap-2">
-          <div
-            class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-600 text-xs font-semibold text-white"
-          >
-            EDU
-          </div>
-          <div class="flex flex-col">
-            <span class="text-sm font-semibold"> EDU Autotest </span>
-            <span class="text-xs text-gray-500 dark:text-gray-400">
-              Driving school testing platform
-            </span>
-          </div>
-        </NuxtLink>
-
-        <nav
-          class="hidden md:flex items-center gap-6 text-sm text-gray-600 dark:text-gray-300"
-        >
-          <NuxtLink
-            to="#how-it-works"
-            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-          >
-            How it works
-          </NuxtLink>
-          <NuxtLink
-            to="#features"
-            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-          >
-            Features
-          </NuxtLink>
-          <NuxtLink
-            to="#personas"
-            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-          >
-            For schools
-          </NuxtLink>
-          <NuxtLink
-            to="#get-started"
-            class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-          >
-            Get started
-          </NuxtLink>
-        </nav>
-
-        <div class="flex items-center gap-3">
-          <UButton to="/login" size="sm" variant="ghost"> Pricing </UButton>
-          <UButton to="/login" size="sm"> Sign in </UButton>
-        </div>
-      </div>
-    </header>
+        class="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-primary-500/20 blur-3xl"
+      />
+      <div
+        class="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-emerald-500/20 blur-3xl"
+      />
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-primary-400/10 blur-3xl"
+      />
+    </div>
 
     <!-- Hero -->
-    <section class="w-full max-w-7xl mx-auto px-4 my-24">
+    <section
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32"
+    >
       <div class="grid gap-12 lg:grid-cols-2 items-center">
-        <div class="space-y-6">
-          <p
-            class="inline-flex items-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-3 py-1 text-xs font-medium text-primary-700 dark:text-primary-200 ring-1 ring-primary-100 dark:ring-primary-900/60"
-          >
-            EDU Autotest · Multi-tenant driving school platform
-          </p>
+        <div class="space-y-8">
+          <div class="space-y-6">
+            <p
+              class="inline-flex items-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-3 py-1 text-xs font-medium text-primary-700 dark:text-primary-200 ring-1 ring-primary-100 dark:ring-primary-900/60"
+            >
+              EDU Autotest · Multi-tenant driving school platform
+            </p>
 
-          <h1
-            class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight"
-          >
-            Modern testing platform
-            <span class="block text-primary-600 dark:text-primary-400">
-              for driving schools
-            </span>
-          </h1>
+            <h1
+              class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight"
+            >
+              The Full-Stack
+              <span class="block text-primary-600 dark:text-primary-400">
+                Testing Platform
+              </span>
+            </h1>
 
-          <p
-            class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-xl"
-          >
-            Centralize theory exams, practice tests, and learning content for
-            all of your driving schools in one powerful platform.
-          </p>
+            <p
+              class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-xl"
+            >
+              Build fast, production-ready testing systems for driving schools.
+              Question banks, exams, analytics, and tutorials — all configured
+              out of the box.
+            </p>
+          </div>
 
           <div class="flex flex-wrap items-center gap-4">
-            <UButton to="/login" size="lg"> Sign in to your school </UButton>
+            <UButton to="/login" size="lg"> Get started </UButton>
 
             <UButton
               variant="ghost"
@@ -210,6 +288,23 @@ onMounted(async () => {
             >
               Learn how it works
             </UButton>
+          </div>
+
+          <div
+            class="flex items-center gap-8 pt-4 text-sm text-gray-500 dark:text-gray-400"
+          >
+            <div class="flex items-center gap-2">
+              <span class="text-primary-600 dark:text-primary-400">✓</span>
+              <span>File-based routing</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-primary-600 dark:text-primary-400">✓</span>
+              <span>Auto-imports</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-primary-600 dark:text-primary-400">✓</span>
+              <span>Server-side rendering</span>
+            </div>
           </div>
         </div>
 
@@ -262,10 +357,53 @@ onMounted(async () => {
       </div>
     </section>
 
+    <!-- Benefits -->
+    <section
+      id="benefits"
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
+      <div class="space-y-12">
+        <div class="text-center space-y-4">
+          <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
+            Everything you need, nothing you don't
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            EDU Autotest handles the complexity so you can focus on teaching.
+          </p>
+        </div>
+
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div
+            v-for="benefit in benefits"
+            :key="benefit.title"
+            class="relative group"
+          >
+            <div
+              class="absolute -inset-0.5 bg-linear-to-r from-primary-500 to-emerald-500 rounded-2xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-300"
+            />
+            <div
+              class="relative rounded-2xl bg-white dark:bg-gray-900/60 p-6 border border-gray-200 dark:border-gray-800 h-full"
+            >
+              <div class="text-3xl mb-4">{{ benefit.icon }}</div>
+              <h3 class="text-lg font-semibold mb-2">
+                {{ benefit.title }}
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                {{ benefit.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <USeparator />
 
     <!-- How it works -->
-    <section id="how-it-works" class="w-full max-w-7xl mx-auto px-4 my-24">
+    <section
+      id="how-it-works"
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
       <div class="space-y-6">
         <div class="space-y-3">
           <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">
@@ -304,7 +442,10 @@ onMounted(async () => {
     <USeparator />
 
     <!-- Features / benefits -->
-    <section id="features" class="w-full max-w-7xl mx-auto px-4 my-24">
+    <section
+      id="features"
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
       <div class="space-y-6">
         <div class="space-y-3">
           <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">
@@ -338,7 +479,10 @@ onMounted(async () => {
     <USeparator />
 
     <!-- Personas -->
-    <section id="personas" class="w-full max-w-7xl mx-auto px-4 my-24">
+    <section
+      id="personas"
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
       <div class="space-y-6">
         <div class="space-y-3">
           <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">
@@ -371,8 +515,60 @@ onMounted(async () => {
 
     <USeparator />
 
+    <!-- Testimonials -->
+    <section
+      id="testimonials"
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
+      <div class="space-y-12">
+        <div class="text-center space-y-4">
+          <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
+            Trusted by driving schools worldwide
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            See what school owners, instructors, and students are saying about
+            EDU Autotest.
+          </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-3">
+          <UCard
+            v-for="testimonial in testimonials"
+            :key="testimonial.name"
+            class="h-full"
+          >
+            <template #header>
+              <div class="flex items-start gap-4">
+                <div
+                  class="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-semibold"
+                >
+                  {{ testimonial.name.charAt(0) }}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-semibold">{{ testimonial.name }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ testimonial.role }}
+                  </p>
+                  <p class="text-xs text-gray-400 dark:text-gray-500">
+                    {{ testimonial.school }}
+                  </p>
+                </div>
+              </div>
+            </template>
+            <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+              "{{ testimonial.content }}"
+            </p>
+          </UCard>
+        </div>
+      </div>
+    </section>
+
+    <USeparator />
+
     <!-- Stats strip -->
-    <section class="w-full max-w-7xl mx-auto px-4 my-24">
+    <section
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
       <div
         class="rounded-2xl bg-primary-600 text-white px-6 py-8 sm:px-8 sm:py-10"
       >
@@ -408,8 +604,45 @@ onMounted(async () => {
 
     <USeparator />
 
+    <!-- FAQ -->
+    <section
+      id="faq"
+      class="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
+      <div class="space-y-12">
+        <div class="text-center space-y-4">
+          <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
+            Frequently asked questions
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Everything you need to know about EDU Autotest.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <UCard
+            v-for="(faq, index) in faqs"
+            :key="index"
+            class="hover:shadow-lg transition-shadow"
+          >
+            <template #header>
+              <h3 class="text-lg font-semibold">{{ faq.question }}</h3>
+            </template>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {{ faq.answer }}
+            </p>
+          </UCard>
+        </div>
+      </div>
+    </section>
+
+    <USeparator />
+
     <!-- Bottom CTA -->
-    <section id="get-started" class="w-full max-w-7xl mx-auto px-4 my-24">
+    <section
+      id="get-started"
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+    >
       <div>
         <div
           class="flex flex-col items-start justify-between gap-6 sm:items-center sm:flex-row"
@@ -431,7 +664,9 @@ onMounted(async () => {
     <USeparator />
 
     <!-- Footer -->
-    <footer class="w-full max-w-7xl mx-auto px-4 my-8">
+    <footer
+      class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+    >
       <div
         class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between text-sm text-gray-500 dark:text-gray-400"
       >

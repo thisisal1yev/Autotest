@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-@theme static{
+@theme static {
   --font-sans: "Montserrat", sans-serif;
 
   --color-green-50: #effdf5;
@@ -17,16 +17,24 @@
   --color-green-950: #052e16;
 }
 
-.answer-button {
-  @apply bg-blue-500 font-medium py-1.5 px-2 rounded w-full text-left;
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
 }
 
-.correct {
-  @apply bg-green-600;
-}
+@layer utilities {
+  .answer-button {
+    @apply bg-blue-500 font-medium py-1.5 px-2 rounded w-full text-left;
+  }
 
-.incorrect {
-  @apply bg-red-600;
+  .correct {
+    @apply bg-green-600;
+  }
+
+  .incorrect {
+    @apply bg-red-600;
+  }
 }
 
 .floating-button {
