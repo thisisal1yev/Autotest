@@ -130,7 +130,7 @@ const columns: TableColumn<Tutorial>[] = [
             h(
               'span',
               { class: 'text-primary font-semibold' },
-              row.original.title.charAt(0).toUpperCase()
+              firstLetter(row.original.title).toUpperCase()
             )
           ]
         ),

@@ -344,7 +344,7 @@ const statsMock = [
                     class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10"
                   >
                     <span class="text-primary font-semibold">
-                      {{ student.fullName.charAt(0).toUpperCase() }}
+                      {{ firstLetter(student.fullName).toUpperCase() }}
                     </span>
                   </div>
                   <div class="flex-1 min-w-0">

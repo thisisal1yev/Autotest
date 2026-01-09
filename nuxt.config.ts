@@ -5,7 +5,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
     'nuxt-auth-utils',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxt/image'
   ],
 
   components: [

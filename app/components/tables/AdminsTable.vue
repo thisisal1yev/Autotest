@@ -153,7 +153,7 @@ const columns: TableColumn<Admin>[] = [
             h(
               'span',
               { class: 'text-primary font-semibold' },
-              row.original.fullName.charAt(0).toUpperCase()
+              firstLetter(row.original.fullName).toUpperCase()
             )
           ]
         ),

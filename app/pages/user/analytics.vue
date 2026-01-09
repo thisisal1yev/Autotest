@@ -5,7 +5,7 @@ import type { AnalyticsQueryParams } from '~/types/analytics'
 import { formatDateTime } from '~/utils/formatting'
 
 definePageMeta({
-  layout: 'admin',
+  layout: 'user',
   middleware: ['auth', 'role']
 })
 
@@ -21,41 +21,19 @@ const queryParams = computed<AnalyticsQueryParams>(() => ({
   period: period.value
 }))
 
-const { data, pending, error } = useAdminAnalytics(queryParams)
+const { data, pending, error } = useStudentAnalytics(queryParams)
 
 const statsCards = computed(() => {
   if (!data.value) return []
   const overview = data.value.overview
   return [
-  {
-      title: 'Total Students',
-      icon: 'i-lucide-users',
-      value: overview.students.total,
-      color: 'primary',
-      to: '/admin/students'
+    {
+      title: 'Tests Completed',
+      icon: 'i-lucide-clipboard-check',
+      value: overview.totalTestsCompleted,
+      color: 'primary'
     },
     {
-      title: 'Active Students',
-      icon: 'i-lucide-user-check',
-      value: overview.students.active,
-      color: 'success',
-      to: '/admin/students'
-  },
-  {
-      title: 'Total Tests',
-      icon: 'i-lucide-file-text',
-      value: overview.tests,
-      color: 'info',
-      to: '/admin/tests'
-  },
-  {
-      title: 'Test Completions',
-      icon: 'i-lucide-clipboard-check',
-      value: overview.metrics.total,
-      color: 'warning',
-      to: '/admin/tests'
-  },
-  {
       title: 'Pass Rate',
       icon: 'i-lucide-check-circle',
       value: `${overview.metrics.passRate}%`,
@@ -66,6 +44,18 @@ const statsCards = computed(() => {
       icon: 'i-lucide-trending-up',
       value: `${overview.metrics.averageScore}%`,
       color: 'primary'
+    },
+    {
+      title: 'Passed Tests',
+      icon: 'i-lucide-check-circle-2',
+      value: overview.metrics.passed,
+      color: 'success'
+    },
+    {
+      title: 'Failed Tests',
+      icon: 'i-lucide-x-circle',
+      value: overview.metrics.failed,
+      color: 'error'
     }
   ]
 })
@@ -75,7 +65,7 @@ const statsCards = computed(() => {
   <UDashboardPanel id="analytics">
     <template #header>
       <UDashboardNavbar
-        title="Analytics"
+        title="My Analytics"
         :ui="{ right: 'gap-3' }"
       >
         <template #leading>
@@ -116,8 +106,8 @@ const statsCards = computed(() => {
         />
         <p class="text-error">
           Failed to load analytics data
-                </p>
-              </div>
+        </p>
+      </div>
 
       <div
         v-else-if="data"
@@ -128,11 +118,7 @@ const statsCards = computed(() => {
           <UCard
             v-for="stat in statsCards"
             :key="stat.title"
-            :class="[
-              'cursor-pointer hover:shadow-lg transition-shadow',
-              stat.to ? '' : ''
-            ]"
-            @click="stat.to ? navigateTo(stat.to) : null"
+            class="cursor-pointer hover:shadow-lg transition-shadow"
           >
             <div class="flex items-center justify-between">
               <div>
@@ -162,18 +148,12 @@ const statsCards = computed(() => {
         </div>
 
         <!-- Charts -->
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="grid grid-cols-1 gap-6">
           <TimeSeriesChart
             :data="[...data.testCompletionsOverTime]"
-            title="Test Completions"
+            title="Test Completions Over Time"
             value-label="tests"
             color="var(--ui-primary)"
-          />
-          <TimeSeriesChart
-            :data="[...data.passRateOverTime]"
-            title="Pass Rate Over Time"
-            value-label="%"
-            color="var(--ui-success)"
           />
         </div>
 
@@ -182,10 +162,10 @@ const statsCards = computed(() => {
           <template #header>
             <div class="flex items-center justify-between">
               <h4 class="font-semibold">
-                Recent Test Results
+                My Recent Test Results
               </h4>
               <UButton
-                to="/admin/students"
+                to="/user/tests"
                 variant="ghost"
                 size="xs"
                 icon="i-lucide-arrow-right"
@@ -205,6 +185,13 @@ const statsCards = computed(() => {
             <p class="text-sm text-muted">
               No test results yet
             </p>
+            <UButton
+              to="/user/tests"
+              class="mt-4"
+              color="primary"
+            >
+              Start Your First Test
+            </UButton>
           </div>
           <div
             v-else
@@ -213,7 +200,8 @@ const statsCards = computed(() => {
             <div
               v-for="result in data.recentTestResults"
               :key="result.id"
-              class="flex items-center justify-between p-3 rounded-lg hover:bg-elevated/50 transition-colors"
+              class="flex items-center justify-between p-3 rounded-lg hover:bg-elevated/50 transition-colors cursor-pointer"
+              @click="navigateTo(`/user/tests/${result.testId}`)"
             >
               <div class="flex items-center gap-3 flex-1 min-w-0">
                 <div
@@ -236,32 +224,38 @@ const statsCards = computed(() => {
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="font-medium text-highlighted truncate">
-                    {{ result.userFullName }}
-                  </p>
-                  <p class="text-sm text-muted truncate">
                     {{ result.testTitle }}
-                </p>
+                  </p>
+                  <p class="text-sm text-muted">
+                    {{ formatDateTime(result.completedAt) }}
+                  </p>
                 </div>
               </div>
               <div class="flex items-center gap-3 ml-4">
                 <div class="text-right">
                   <p
                     :class="[
-                      'font-semibold',
+                      'font-semibold text-lg',
                       result.passed ? 'text-success' : 'text-error'
                     ]"
                   >
                     {{ result.score }}%
                   </p>
-                  <p class="text-xs text-muted">
-                    {{ formatDateTime(result.completedAt) }}
+                  <p
+                    :class="[
+                      'text-xs',
+                      result.passed ? 'text-success' : 'text-error'
+                    ]"
+                  >
+                    {{ result.passed ? 'Passed' : 'Failed' }}
                   </p>
                 </div>
               </div>
-              </div>
             </div>
-          </UCard>
-        </div>
+          </div>
+        </UCard>
+      </div>
     </template>
   </UDashboardPanel>
 </template>
+

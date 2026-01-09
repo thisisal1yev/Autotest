@@ -131,7 +131,7 @@ const columns: TableColumn<DrivingSchool>[] = [
             h(
               'span',
               { class: 'text-primary font-semibold' },
-              row.original.name.charAt(0).toUpperCase()
+              firstLetter(row.original.name).toUpperCase()
             )
           ]
         ),

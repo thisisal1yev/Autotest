@@ -2,6 +2,7 @@
 interface Props {
   isAuthenticated: boolean;
   to: string;
+  userName: string;
 }
 
 defineProps<Props>();
@@ -38,11 +39,13 @@ const headerLinks = ref([
       class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6"
     >
       <NuxtLink to="/" class="flex items-center gap-2">
-        <div
-          class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-600 text-xs font-semibold text-white"
-        >
-          EDU
-        </div>
+        <NuxtImg
+          alt="logo"
+          src="/logo.jpg"
+          width="32"
+          height="32"
+          class="rounded-xl"
+        />
 
         <div class="flex flex-col">
           <span class="text-sm font-semibold"> EDU Autotest </span>
@@ -71,7 +74,11 @@ const headerLinks = ref([
 
         <template v-if="isAuthenticated">
           <NuxtLink :to="to">
-            <UAvatar alt="Avatar" src="https://github.com/benjamincanac.png" />
+            <div
+              class="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-semibold"
+            >
+              {{ userName }}
+            </div>
           </NuxtLink>
         </template>
 
