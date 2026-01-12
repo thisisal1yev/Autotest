@@ -5,7 +5,7 @@ import type { AnalyticsQueryParams } from '~/types/analytics'
 import { formatDateTime } from '~/utils/formatting'
 
 definePageMeta({
-  layout: 'user',
+  layout: 'student',
   middleware: ['auth', 'role']
 })
 
@@ -165,7 +165,7 @@ const statsCards = computed(() => {
                 My Recent Test Results
               </h4>
               <UButton
-                to="/user/tests"
+                to="/student/tests"
                 variant="ghost"
                 size="xs"
                 icon="i-lucide-arrow-right"
@@ -186,7 +186,7 @@ const statsCards = computed(() => {
               No test results yet
             </p>
             <UButton
-              to="/user/tests"
+              to="/student/tests"
               class="mt-4"
               color="primary"
             >
@@ -201,7 +201,7 @@ const statsCards = computed(() => {
               v-for="result in data.recentTestResults"
               :key="result.id"
               class="flex items-center justify-between p-3 rounded-lg hover:bg-elevated/50 transition-colors cursor-pointer"
-              @click="navigateTo(`/user/tests/${result.testId}`)"
+              @click="navigateTo(`/student/tests/${result.testId}`)"
             >
               <div class="flex items-center gap-3 flex-1 min-w-0">
                 <div

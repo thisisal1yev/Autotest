@@ -26,7 +26,7 @@ const handleLogout = async () => {
 const getSettingsRoute = () => {
   if (authStore.isSuperadmin) return '/superadmin/profile'
   if (authStore.isAdmin) return '/admin/profile'
-  return '/user/settings'
+  return '/student/settings'
 }
 
 const items = computed<DropdownMenuItem[][]>(() => [

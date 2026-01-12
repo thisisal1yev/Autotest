@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'user',
+  layout: 'student',
   middleware: ['auth', 'role']
 })
 
@@ -49,7 +49,7 @@ const { data } = useFetch('/api/auth/me', {
             icon="i-lucide-play"
             color="primary"
             variant="soft"
-            to="/user/tests"
+            to="/student/tests"
           >
             Start Test
           </UButton>

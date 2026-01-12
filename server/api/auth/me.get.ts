@@ -1,39 +1,31 @@
-import type { User } from '~~/generated/prisma/client'
-import { prisma } from '~~/prisma/db'
+import type { User } from "~~/generated/prisma/client";
+import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
   try {
-    const session = await getUserSession(event)
+    const session = await getUserSession(event);
 
     if (!session?.user) {
-      throw createError({
-        statusCode: 401,
-        message: 'Unauthorized'
-      })
+      throw createError({ statusCode: 401, message: "Unauthorized" });
     }
 
-    const userId = (session.user as User).id
+    const userId = (session.user as User).id;
+
     if (!userId) {
-      throw createError({
-        statusCode: 401,
-        message: 'Unauthorized'
-      })
+      throw createError({ statusCode: 401, message: "Unauthorized" });
     }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        drivingSchool: true
-      }
-    })
+      include: { drivingSchool: true },
+    });
 
     if (!user || !user.isActive) {
       throw createError({
         statusCode: 401,
-        message: 'User not found or inactive'
-      })
+        message: "User not found or inactive",
+      });
     }
-
     return {
       user: {
         id: user.id,
@@ -42,11 +34,11 @@ export default defineEventHandler(async (event) => {
         fullName: user.fullName,
         role: user.role,
         drivingSchoolId: user.drivingSchoolId,
-        drivingSchool: user.drivingSchool
-      }
-    }
+        drivingSchool: user.drivingSchool,
+      },
+    };
   } catch (error) {
-    console.error(error)
-    throw createError({ statusCode: 500, message: 'Internal server error' })
+    console.error(error);
+    throw createError({ statusCode: 500, message: "Internal server error" });
   }
-})
+});

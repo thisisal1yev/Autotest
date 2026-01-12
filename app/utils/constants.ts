@@ -1,5 +1,6 @@
 export const ROLES = {
-  USER: "USER",
+  GUEST: "GUEST",
+  STUDENT: "STUDENT",
   ADMIN: "ADMIN",
   SUPERADMIN: "SUPERADMIN",
 } as const;
@@ -7,7 +8,8 @@ export const ROLES = {
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
 export const ROLE_ROUTES: Record<Role, string> = {
-  USER: "/user",
+  GUEST: "/login",
+  STUDENT: "/student",
   ADMIN: "/admin/dashboard",
   SUPERADMIN: "/superadmin",
 };
@@ -17,5 +19,9 @@ export function getRoleRoute(role: Role): string {
 }
 
 export function firstLetter(text: string): string {
-  return text.charAt(0)
+  const arr = text.trim().split(" ");
+  const first = arr[0]?.charAt(0) ?? "";
+  const second = arr[1]?.charAt(0) ?? "";
+
+  return first + second;
 }

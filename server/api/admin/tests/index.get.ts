@@ -19,7 +19,6 @@ export default defineEventHandler(async (event) => {
       where,
       omit: {
         drivingSchoolId: true,
-        questions: true,
       },
       orderBy: {
         createdAt: 'desc'

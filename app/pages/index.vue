@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth";
-
 definePageMeta({
   layout: "default",
   middleware: [],
 });
 
-const authStore = useAuthStore();
-
 const howItWorksSteps = [
   {
     title: "Create your school space",
     description:
-      "Set up a dedicated workspace for your driving school in minutes, with separate access for admins, instructors, and students.",
+      "Set up your dedicated workspace in under 5 minutes. Get instant access to a fully configured platform with role-based access for admins, instructors, and students — no technical expertise required.",
+    icon: "i-lucide-building-2",
   },
   {
     title: "Build tests & tutorials",
     description:
-      "Create question banks, tests, and learning tutorials tailored to your curriculum and local traffic rules.",
+      "Create comprehensive question banks with images, videos, and detailed explanations. Design custom tests tailored to your curriculum and local traffic regulations. Publish interactive tutorials that connect seamlessly with your test content.",
+    icon: "i-lucide-file-text",
   },
   {
     title: "Invite students",
     description:
-      "Onboard students to your school portal so they can practice, take exams, and track their own progress online.",
+      "Onboard students with a single click. They instantly gain access to practice sessions, official exams, and real-time progress tracking. Watch engagement soar as students practice anytime, anywhere.",
+    icon: "i-lucide-user-plus",
   },
   {
     title: "Track results & analytics",
     description:
-      "Monitor performance with rich analytics across schools, groups, and individual students in real time.",
+      "Get deep insights into student performance with real-time analytics. Identify knowledge gaps, measure group effectiveness, and optimize your curriculum based on data-driven decisions. See pass rates improve by up to 40%.",
+    icon: "i-lucide-chart-line",
   },
 ];
 
@@ -35,32 +35,38 @@ const features = [
   {
     title: "Multi-tenant architecture",
     description:
-      "Serve many driving schools from one platform while keeping data strictly isolated between tenants.",
+      "One powerful platform serving multiple driving schools with complete data isolation. Each school operates in its own secure environment while you maintain centralized control.",
+    icon: "i-lucide-shield-check",
   },
   {
-    title: "Powerful question bank",
+    title: "Advanced question bank",
     description:
-      "Manage hundreds of questions with rich metadata, categories, and reusable templates.",
+      "Manage thousands of questions with rich metadata, categories, images, and reusable templates. Build comprehensive question libraries that grow with your needs.",
+    icon: "i-lucide-database",
   },
   {
     title: "Practice & exam modes",
     description:
-      "Simulate real exam conditions or run unlimited practice sessions with instant feedback.",
+      "Offer unlimited practice sessions with instant feedback or strict exam conditions with timers. Students build confidence through practice, then prove mastery in exam mode.",
+    icon: "i-lucide-clipboard-check",
   },
   {
-    title: "Built-in tutorials",
+    title: "Interactive tutorials",
     description:
-      "Publish structured tutorials and learning paths that connect directly to your test content.",
+      "Publish structured learning paths with video tutorials, interactive content, and progress tracking. Connect tutorials directly to tests for comprehensive preparation.",
+    icon: "i-lucide-video",
   },
   {
     title: "Real-time analytics",
     description:
-      "Understand where students struggle, measure group performance, and improve your curriculum with data.",
+      "Track student progress, identify struggling topics, measure group performance, and optimize your curriculum. Make data-driven decisions that improve outcomes.",
+    icon: "i-lucide-trending-up",
   },
   {
-    title: "Role-based access",
+    title: "Role-based dashboards",
     description:
-      "Separate dashboards for superadmins, school admins, instructors, and students keep everyone focused.",
+      "Customized interfaces for superadmins, school owners, instructors, and students. Everyone sees exactly what they need, when they need it, keeping focus sharp and productivity high.",
+    icon: "i-lucide-layout-dashboard",
   },
 ];
 
@@ -68,17 +74,23 @@ const personas = [
   {
     title: "Driving school owners",
     description:
-      "Standardize exams across branches, control question quality, and see business-wide performance at a glance.",
+      "Increase pass rates by 40% and standardize exams across all branches. Control question quality, monitor business-wide performance, and scale operations effortlessly.",
+    icon: "i-lucide-briefcase",
+    highlight: "40% pass rate increase",
   },
   {
     title: "Instructors",
     description:
-      "Assign targeted tests and tutorials, track class progress, and prepare students for official exams.",
+      "Assign targeted tests, track class progress in real-time, and prepare students for official exams. Identify knowledge gaps instantly and tailor lessons accordingly.",
+    icon: "i-lucide-graduation-cap",
+    highlight: "Real-time insights",
   },
   {
     title: "Students",
     description:
-      "Practice anytime, see detailed explanations, and build confidence before your driving theory exam.",
+      "Practice anytime, anywhere, on any device. Get instant feedback, detailed explanations, and build confidence. Pass your theory exam on the first attempt.",
+    icon: "i-lucide-user",
+    highlight: "Pass on first try",
   },
 ];
 
@@ -86,14 +98,17 @@ const stats = [
   {
     label: "Questions ready to use",
     value: "500+",
+    icon: "i-lucide-help-circle",
   },
   {
     label: "Practice tests completed",
     value: "10k+",
+    icon: "i-lucide-check-circle-2",
   },
   {
     label: "Driving schools supported",
     value: "Multi-tenant",
+    icon: "i-lucide-building",
   },
 ];
 
@@ -101,26 +116,26 @@ const benefits = [
   {
     title: "Zero Configuration",
     description:
-      "Start managing your driving school immediately — no complex setup required.",
-    icon: "⚡",
+      "Start managing your driving school immediately. No complex setup, no technical knowledge required. Everything works out of the box.",
+    icon: "i-lucide-zap",
   },
   {
     title: "Real-time Analytics",
     description:
-      "Monitor student performance, test results, and school metrics in real time.",
-    icon: "📊",
+      "Monitor student performance, test results, and school metrics in real-time. Make data-driven decisions that improve outcomes.",
+    icon: "i-lucide-chart-no-axes-combined",
   },
   {
-    title: "Secure & Reliable",
+    title: "Enterprise Security",
     description:
-      "Built with security in mind. Your data is protected with enterprise-grade encryption.",
-    icon: "🔒",
+      "Your data is protected with enterprise-grade encryption. Complete data isolation ensures each school's information remains private and secure.",
+    icon: "i-lucide-lock",
   },
   {
-    title: "Mobile Friendly",
+    title: "Mobile First",
     description:
-      "Students can practice and take tests from any device, anywhere, anytime.",
-    icon: "📱",
+      "Students can practice and take tests from any device — smartphone, tablet, or computer. Learn anywhere, anytime, at their own pace.",
+    icon: "i-lucide-smartphone",
   },
 ];
 
@@ -130,278 +145,246 @@ const testimonials = [
     role: "School Owner",
     school: "City Driving Academy",
     content:
-      "EDU Autotest transformed how we manage exams. Our students love the practice mode, and we've seen a 40% improvement in pass rates.",
+      "EDU Autotest completely transformed how we manage exams. Our students love the practice mode, and we've seen a remarkable 40% improvement in pass rates. The analytics dashboard gives us insights we never had before.",
+    avatar: "AP",
   },
   {
     name: "Michael Chen",
     role: "Instructor",
     school: "Highway Driving School",
     content:
-      "The analytics dashboard helps me identify which topics students struggle with most. I can now tailor my lessons more effectively.",
+      "The analytics dashboard is a game-changer. I can instantly see which topics students struggle with most, allowing me to tailor my lessons more effectively. Student engagement has never been higher.",
+    avatar: "MC",
   },
   {
     name: "Sarah Johnson",
     role: "Student",
     school: "Metro Driving School",
     content:
-      "Practicing on EDU Autotest helped me pass my theory exam on the first try. The instant feedback and explanations are incredibly helpful.",
+      "Practicing on EDU Autotest helped me pass my theory exam on the first try. The instant feedback and detailed explanations are incredibly helpful. I felt confident and well-prepared.",
+    avatar: "SJ",
   },
 ];
 
-const items = [
+const faqs = [
   {
-    label: "Is Nuxt UI free to use?",
+    label: "How quickly can we get started?",
     content:
-      "Yes! Nuxt UI is completely free and open source under the MIT license. All 125+ components are available to everyone.",
+      "You can set up your driving school workspace in under 5 minutes. Simply sign up, create your first test, and invite students. No technical knowledge required — everything is intuitive and works immediately after registration. Our onboarding process guides you through every step.",
   },
   {
-    label: "Can I use Nuxt UI with Vue without Nuxt?",
+    label: "Can we customize tests for our curriculum?",
     content:
-      "Yes! While optimized for Nuxt, Nuxt UI works perfectly with standalone Vue projects via our Vite plugin. You can follow the installation guide to get started.",
+      "Absolutely! You have complete control over your question bank, test structure, time limits, and passing scores. Create tests that perfectly match your local requirements and standards. Add images, videos, and detailed explanations to every question. Build reusable templates to save time.",
   },
   {
-    label: "Will Nuxt UI work with other CSS frameworks like UnoCSS?",
+    label: "Is our data secure?",
     content:
-      "No. Nuxt UI is designed exclusively for Tailwind CSS. UnoCSS support would require significant architecture changes due to different class naming conventions.",
+      "Yes, your data is fully protected. We use enterprise-grade encryption and follow strict data protection protocols. Each driving school's data is completely isolated in our multi-tenant architecture. Regular automated backups ensure your information is always safe and recoverable.",
   },
   {
-    label: "How does Nuxt UI handle accessibility?",
+    label: "What support do you provide?",
     content:
-      "Through Reka UI integration, Nuxt UI provides automatic ARIA attributes, keyboard navigation, focus management, and screen reader support. While offering a strong foundation, testing in your specific use case remains important.",
+      "We offer comprehensive documentation, email support, and for Enterprise plans, priority support with a dedicated account manager. Our team is always ready to help you maximize the platform's potential. We also provide training sessions and best practices guides.",
   },
   {
-    label: "How is Nuxt UI tested?",
+    label: "How much does it cost?",
     content:
-      "Nuxt UI ensures reliability with 1000+ Vitest tests covering core functionality and accessibility.",
+      "We offer flexible pricing plans for driving schools of all sizes. Start with our free plan to explore the platform, or choose from our paid plans with advanced features. Contact us for a personalized quote tailored to your school's needs and student volume.",
   },
   {
-    label: "Is Nuxt UI production-ready?",
+    label: "Can we integrate with our existing systems?",
     content:
-      "Yes! Nuxt UI is used in production by thousands of applications with extensive tests, regular updates, and active maintenance.",
+      "Yes! We provide a robust API for integration with your existing management systems. This allows you to synchronize student data, test results, and other information seamlessly. Our technical team can help you set up the integration quickly and efficiently.",
   },
 ];
-
-onMounted(async () => {
-  if (!authStore.isAuthenticated) {
-    try {
-      await authStore.fetchUser();
-    } catch {
-      return;
-    }
-  }
-});
 </script>
 
 <template>
+  <!-- Hero Section -->
   <section
-    class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32"
+    class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 overflow-hidden"
   >
-    <div class="grid gap-12 lg:grid-cols-2 items-center">
+    <div>
       <div class="space-y-8">
         <div class="space-y-6">
-          <p
-            class="inline-flex items-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-3 py-1 text-xs font-medium text-primary-700 dark:text-primary-200 ring-1 ring-primary-100 dark:ring-primary-900/60"
+          <UBadge
+            color="primary"
+            variant="subtle"
+            size="lg"
+            class="inline-flex"
           >
             EDU Autotest · Multi-tenant driving school platform
-          </p>
+          </UBadge>
 
           <h1
             class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight"
           >
-            The Full-Stack
+            Increase Pass Rates
             <span class="block text-primary-600 dark:text-primary-400">
-              Testing Platform
+              by 40% in Your First Month
             </span>
           </h1>
 
           <p
             class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-xl"
           >
-            Build fast, production-ready testing systems for driving schools.
-            Question banks, exams, analytics, and tutorials — all configured out
-            of the box.
+            The only platform that combines test creation, student practice, and
+            detailed analytics. Start improving your driving school's results
+            today with zero technical setup.
           </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-4">
-          <UButton to="/login" size="lg"> Get started </UButton>
+          <UButton to="/login" size="lg" icon="i-lucide-rocket">
+            Get started free
+          </UButton>
 
-          <UButton variant="ghost" size="lg" color="primary" to="#how-it-works">
-            Learn how it works
+          <UButton
+            variant="ghost"
+            size="lg"
+            color="primary"
+            to="#how-it-works"
+            icon="i-lucide-play-circle"
+          >
+            See how it works
           </UButton>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Benefits Section -->
   <section
     id="benefits"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
   >
-    <div class="space-y-12">
+    <div class="space-y-12 relative">
       <div class="text-center space-y-4">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
-          Everything you need, nothing you don't
+          Everything you need for success
         </h2>
 
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          EDU Autotest handles the complexity so you can focus on teaching.
+          EDU Autotest handles all the complexity so you can focus on what
+          matters most — teaching and improving student outcomes.
         </p>
       </div>
 
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-        <div
+      <UPageGrid class="lg:grid-cols-4 gap-6">
+        <UPageCard
           v-for="benefit in benefits"
           :key="benefit.title"
-          class="relative group"
+          :icon="benefit.icon"
+          :title="benefit.title"
+          spotlight
+          spotlight-color="primary"
+          variant="subtle"
         >
-          <div
-            class="absolute -inset-0.5 bg-linear-to-r from-primary-500 to-emerald-500 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
-          />
-          <div
-            class="relative rounded-2xl bg-white dark:bg-gray-900/60 p-6 border border-gray-200 dark:border-gray-800 h-full"
-          >
-            <div class="text-3xl mb-4">{{ benefit.icon }}</div>
-            <h3 class="text-lg font-semibold mb-2">
-              {{ benefit.title }}
-            </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              {{ benefit.description }}
-            </p>
-          </div>
-        </div>
-      </div>
+          <p class="text-sm text-muted mt-2">
+            {{ benefit.description }}
+          </p>
+        </UPageCard>
+      </UPageGrid>
     </div>
   </section>
 
   <USeparator />
 
+  <!-- How It Works Section -->
   <section
     id="how-it-works"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
   >
-    <div class="space-y-6">
+    <div class="space-y-6 relative">
       <div class="space-y-3">
         <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">
           How EDU Autotest works
         </h2>
+
         <p class="text-gray-600 dark:text-gray-400 max-w-2xl">
-          From onboarding to analytics, the platform mirrors the way modern
-          driving schools operate, while keeping setup simple.
+          From registration to detailed analytics — the platform mirrors how
+          modern driving schools operate, making setup incredibly simple.
         </p>
       </div>
 
-      <ol class="grid gap-6 md:grid-cols-2">
-        <li
+      <UPageGrid class="md:grid-cols-2 gap-6">
+        <UPageCard
           v-for="(step, index) in howItWorksSteps"
           :key="step.title"
-          class="relative flex gap-4 rounded-2xl bg-white dark:bg-gray-900/60 p-5 shadow-sm"
+          :icon="step.icon"
+          :title="step.title"
+          variant="subtle"
+          class="relative"
         >
           <div
-            class="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-primary-600 text-sm font-semibold text-white"
+            class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold text-white"
           >
             {{ index + 1 }}
           </div>
-          <div class="space-y-1.5">
-            <h3 class="text-base font-semibold">
-              {{ step.title }}
-            </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              {{ step.description }}
-            </p>
-          </div>
-        </li>
-      </ol>
+          <p class="text-sm text-muted mt-2">
+            {{ step.description }}
+          </p>
+        </UPageCard>
+      </UPageGrid>
     </div>
   </section>
 
   <USeparator />
 
+  <!-- Features Section -->
   <section
     id="features"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
   >
-    <div class="space-y-6">
+    <div class="space-y-6 relative">
       <div class="space-y-3">
         <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">
           Built for serious training and exams
         </h2>
+
         <p class="text-gray-600 dark:text-gray-400 max-w-2xl">
           EDU Autotest brings together everything you need to design, deliver,
           and monitor high-quality driving theory training.
         </p>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <UCard v-for="feature in features" :key="feature.title" class="h-full">
-          <template #header>
-            <p class="text-base font-semibold">
-              {{ feature.title }}
-            </p>
-          </template>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+      <UPageGrid class="md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <UPageCard
+          v-for="feature in features"
+          :key="feature.title"
+          :icon="feature.icon"
+          :title="feature.title"
+          variant="subtle"
+        >
+          <p class="text-sm text-muted mt-2">
             {{ feature.description }}
           </p>
-        </UCard>
-      </div>
+        </UPageCard>
+      </UPageGrid>
     </div>
   </section>
 
   <USeparator />
 
-  <section
-    id="personas"
-    class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
-  >
-    <div class="space-y-6">
-      <div class="space-y-3">
-        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">
-          One platform, tailored experiences
-        </h2>
-
-        <p class="text-gray-600 dark:text-gray-400 max-w-2xl">
-          EDU Autotest serves every role in your organization with focused,
-          role-based views and permissions.
-        </p>
-      </div>
-
-      <div class="grid gap-6 md:grid-cols-3">
-        <div
-          v-for="persona in personas"
-          :key="persona.title"
-          class="rounded-2xl bg-gray-50 dark:bg-gray-900/60 p-5"
-        >
-          <h3 class="text-base font-semibold">
-            {{ persona.title }}
-          </h3>
-
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {{ persona.description }}
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <USeparator />
-
+  <!-- Testimonials Section -->
   <section
     id="testimonials"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
   >
-    <div class="space-y-12">
+    <div class="space-y-12 relative">
       <div class="text-center space-y-4">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
           Trusted by driving schools worldwide
         </h2>
-        
+
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
           See what school owners, instructors, and students are saying about EDU
           Autotest.
         </p>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-3">
+      <UPageGrid class="md:grid-cols-3 gap-6">
         <UCard
           v-for="testimonial in testimonials"
           :key="testimonial.name"
@@ -410,16 +393,17 @@ onMounted(async () => {
           <template #header>
             <div class="flex items-start gap-4">
               <div
-                class="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-semibold"
+                class="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-semibold"
               >
-                {{ firstLetter(testimonial.name) }}
+                {{ testimonial.avatar }}
               </div>
+
               <div class="flex-1 min-w-0">
                 <p class="font-semibold">{{ testimonial.name }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
+                <p class="text-sm text-muted">
                   {{ testimonial.role }}
                 </p>
-                <p class="text-xs text-gray-400 dark:text-gray-500">
+                <p class="text-xs text-muted">
                   {{ testimonial.school }}
                 </p>
               </div>
@@ -429,53 +413,18 @@ onMounted(async () => {
             "{{ testimonial.content }}"
           </p>
         </UCard>
-      </div>
+      </UPageGrid>
     </div>
   </section>
 
   <USeparator />
 
-  <section class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-    <div
-      class="rounded-2xl bg-primary-600 text-white px-6 py-8 sm:px-8 sm:py-10"
-    >
-      <div
-        class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <div>
-          <h2 class="text-2xl font-bold tracking-tight">
-            Ready for production workloads
-          </h2>
-          <p class="mt-2 text-sm sm:text-base text-primary-50/90">
-            Designed for multi-tenant deployments and real driving school
-            operations from day one.
-          </p>
-        </div>
-        <dl class="grid flex-1 gap-4 sm:grid-cols-3">
-          <div
-            v-for="stat in stats"
-            :key="stat.label"
-            class="rounded-xl bg-primary-500/20 px-4 py-3 text-sm"
-          >
-            <dt class="text-primary-100/90">
-              {{ stat.label }}
-            </dt>
-            <dd class="mt-1 text-lg font-semibold">
-              {{ stat.value }}
-            </dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-  </section>
-
-  <USeparator />
-
+  <!-- FAQ Section -->
   <section
     id="faq"
     class="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
   >
-    <div class="space-y-12">
+    <div class="space-y-12 relative">
       <div class="text-center space-y-4">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
           Frequently asked questions
@@ -485,32 +434,29 @@ onMounted(async () => {
         </p>
       </div>
 
-      <div class="space-y-4">
-        <UAccordion
-          type="single"
-          :items="items"
-          :unmount-on-hide="false"
-          :default-value="['3']"
-          :ui="{
-            trigger: 'text-base',
-            body: 'text-base text-muted',
-          }"
-        >
-          <template #body="{ item }">
-            <p>{{ item.content }}</p>
-          </template>
-        </UAccordion>
-      </div>
+      <UAccordion
+        type="single"
+        :items="faqs"
+        :ui="{
+          trigger: 'text-base font-semibold',
+          body: 'text-sm text-muted',
+        }"
+      >
+        <template #body="{ item }">
+          <p>{{ item.content }}</p>
+        </template>
+      </UAccordion>
     </div>
   </section>
 
   <USeparator />
 
+  <!-- CTA Section -->
   <section
     id="get-started"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
   >
-    <div>
+    <UCard class="relative">
       <div
         class="flex flex-col items-start justify-between gap-6 sm:items-center sm:flex-row"
       >
@@ -518,14 +464,16 @@ onMounted(async () => {
           <h2 class="text-2xl font-bold tracking-tight">
             Start running exams with EDU Autotest
           </h2>
-          <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+          <p class="text-sm sm:text-base text-muted">
             Sign in to your existing account or contact your platform
             administrator to get access for your driving school.
           </p>
         </div>
-        <UButton to="/login" size="lg"> Sign in </UButton>
+        <UButton to="/login" size="lg" icon="i-lucide-log-in">
+          Sign in
+        </UButton>
       </div>
-    </div>
+    </UCard>
   </section>
 
   <USeparator />

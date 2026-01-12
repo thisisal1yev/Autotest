@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo('/login')
   }
 
-  const user = session.user.value as { role?: 'USER' | 'ADMIN' | 'SUPERADMIN' } | null
+  const user = session.user.value as { role?: 'STUDENT' | 'ADMIN' | 'SUPERADMIN' } | null
 
   if (!user) {
     return navigateTo('/login')
@@ -22,15 +22,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (path.startsWith('/superadmin')) {
       return navigateTo('/admin/dashboard')
     }
-    if (path.startsWith('/user')) {
+    if (path.startsWith('/student')) {
       return navigateTo('/admin/dashboard')
     }
     return
   }
 
-  if (role === 'USER') {
+  if (role === 'STUDENT') {
     if (path.startsWith('/superadmin') || path.startsWith('/admin')) {
-      return navigateTo('/user')
+      return navigateTo('/student')
     }
     return
   }

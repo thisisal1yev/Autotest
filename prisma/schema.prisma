@@ -8,9 +8,25 @@ datasource db {
 }
 
 enum Role {
-  USER
+  GUEST
+  STUDENT
   ADMIN
   SUPERADMIN
+}
+
+enum SubscriptionPlan {
+  FREE
+  STANDARD
+  PREMIUM
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIAL
+  EXPIRED
+  CANCELLED
+  SUSPENDED
 }
 
 model User {
@@ -19,11 +35,12 @@ model User {
   login           String         @unique
   password        String
   fullName        String
-  role            Role           @default(USER)
+  role            Role           @default(GUEST)
   drivingSchoolId Int?
   drivingSchool   DrivingSchool? @relation(fields: [drivingSchoolId], references: [id])
   isActive        Boolean        @default(true)
   testResults     TestResult[]
+  groups          Group[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -32,14 +49,16 @@ model User {
 }
 
 model DrivingSchool {
-  id        Int        @id @default(autoincrement())
-  name      String
-  email     String?
-  phone     String?
-  address   String?
-  users     User[]
-  tests     Test[]
-  tutorials Tutorial[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String?
+  phone        String?
+  address      String?
+  users        User[]
+  tests        Test[]
+  tutorials    Tutorial[]
+  subscriptions Subscription[]
+  groups       Group[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -126,4 +145,40 @@ model TestResult {
 
   @@index([userId])
   @@index([testId])
+}
+
+model Subscription {
+  id            Int                @id @default(autoincrement())
+  drivingSchoolId Int
+  drivingSchool   DrivingSchool    @relation(fields: [drivingSchoolId], references: [id])
+  plan          SubscriptionPlan
+  status        SubscriptionStatus
+  startDate     DateTime
+  endDate       DateTime?
+  trialEndDate  DateTime?
+  price         Decimal            @db.Decimal(10, 2)
+  currency      String             @default("USD")
+  autoRenewal   Boolean            @default(true)
+  cancelledAt   DateTime?
+  paymentMethod String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([drivingSchoolId])
+  @@index([status])
+}
+
+model Group {
+  id              Int            @id @default(autoincrement())
+  name            String
+  description     String?
+  drivingSchoolId Int
+  drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
+  students        User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([drivingSchoolId])
 }

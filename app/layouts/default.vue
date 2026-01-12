@@ -9,7 +9,7 @@ const toDashboard = computed(() => {
   } else if (authStore.user?.role === "ADMIN") {
     return "/admin/dashboard";
   } else {
-    return "/user/";
+    return "/student/";
   }
 });
 

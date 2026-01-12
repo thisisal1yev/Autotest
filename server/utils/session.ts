@@ -7,7 +7,7 @@ export interface SessionUser {
   email: string
   login: string
   fullName: string
-  role: 'USER' | 'ADMIN' | 'SUPERADMIN'
+  role: 'STUDENT' | 'ADMIN' | 'SUPERADMIN' | 'GUEST'
   drivingSchoolId?: number | null
 }
 

@@ -8,7 +8,7 @@ const links = [
     {
       label: 'Main',
       icon: 'i-lucide-home',
-      to: '/user',
+      to: '/student',
       onSelect: () => {
         open.value = false
       }
@@ -16,7 +16,7 @@ const links = [
     {
       label: 'Tests',
       icon: 'i-lucide-file-text',
-      to: '/user/tests',
+      to: '/student/tests',
       onSelect: () => {
         open.value = false
       }
@@ -24,7 +24,7 @@ const links = [
     {
       label: 'Tutorials',
       icon: 'i-lucide-list-video',
-      to: '/user/tutorials',
+      to: '/student/tutorials',
       onSelect: () => {
         open.value = false
       }
@@ -32,7 +32,7 @@ const links = [
     {
       label: 'Rating',
       icon: 'i-lucide-trophy',
-      to: '/user/rating',
+      to: '/student/rating',
       onSelect: () => {
         open.value = false
       }
@@ -40,7 +40,7 @@ const links = [
     {
       label: 'Settings',
       icon: 'i-lucide-settings',
-      to: '/user/settings',
+      to: '/student/settings',
       onSelect: () => {
         open.value = false
       }
