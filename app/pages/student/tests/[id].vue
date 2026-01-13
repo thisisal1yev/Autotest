@@ -6,10 +6,12 @@ definePageMeta({
   middleware: ["auth", "role"],
 });
 
-const isCancelModal = ref<boolean>(false);
-const isCorrect = ref<boolean | null>(null);
-const selectedOptionId = ref<number | null>(null);
-const answered = computed(() => selectedOptionId.value !== null);
+const isCancelModal = ref(false);
+
+const currentAnswer = computed(() =>
+  store.getAnswer(store.currentQuestion?.id ?? 0)
+);
+const answered = computed(() => !!currentAnswer.value);
 
 const route = useRoute();
 const store = useStudentTestStore();
@@ -24,19 +26,36 @@ if (data.value) {
   store.startTimer();
 }
 
-watch(
-  () => store.currentQuestionIndex,
-  () => {
-    selectedOptionId.value = null;
-    isCorrect.value = null;
+const onKeydown = (e: KeyboardEvent) => {
+  if (answered.value) return;
+  if (e.key.includes("Escape")) isCancelModal.value = false;
+  if (!e.key.startsWith("F")) return;
+
+  const index = Number(e.key.slice(1)) - 1;
+  const options = store.currentQuestion?.options ?? [];
+
+  if (index < 0 || index >= options.length) return;
+
+  e.preventDefault();
+
+  const option = options[index];
+  const q = store.currentQuestion;
+  if (option && q) {
+    store.selectAnswer(q.id, option.id);
   }
-);
+};
+
+onMounted(() => {
+  window.addEventListener("keydown", onKeydown);
+  window.addEventListener("keydown", onKeydown);
+});
 
 onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onKeydown);
+  window.removeEventListener("keydown", onKeydown);
   store.stopTimer();
 });
 </script>
-
 <template>
   <div
     v-if="pending && !error"
@@ -80,7 +99,7 @@ onBeforeUnmount(() => {
             :variant="
               store.currentQuestionIndex === index ? 'solid' : 'outline'
             "
-            color="info"
+            :color="'info'"
             @click="store.goToQuestion(index)"
             class="size-10 rounded-lg font-semibold transition-all"
           >
@@ -112,39 +131,39 @@ onBeforeUnmount(() => {
                 </p>
               </div>
 
-              <div class="text-muted-foreground text-sm space-y-4">
+              <div class="text-muted-foreground text-sm">
                 <div class="grid grid-cols-3 gap-3 py-4">
                   <div
-                    class="text-center p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800"
+                    class="text-center p-3 bg-success-50 dark:bg-success-950/30 rounded-lg border border-success-200 dark:border-success-800"
                   >
                     <p
-                      class="text-2xl font-bold text-green-600 dark:text-green-400"
+                      class="text-2xl font-bold text-success-600 dark:text-success-400"
                     >
-                      0
+                      {{ store.correctCount }}
                     </p>
 
                     <p class="text-xs text-muted-foreground mt-1">Correct</p>
                   </div>
 
                   <div
-                    class="text-center p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800"
+                    class="text-center p-3 bg-error-50 dark:bg-error-950/30 rounded-lg border border-error-200 dark:border-error-800"
                   >
                     <p
-                      class="text-2xl font-bold text-red-600 dark:text-red-400"
+                      class="text-2xl font-bold text-error-600 dark:text-error-400"
                     >
-                      0
+                      {{ store.incorrectCount }}
                     </p>
 
                     <p class="text-xs text-muted-foreground mt-1">Incorrect</p>
                   </div>
 
                   <div
-                    class="text-center p-3 rounded-lg border bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800"
+                    class="text-center p-3 rounded-lg border bg-warning-50 dark:bg-warning-950/30 border-warning-200 dark:border-warning-800"
                   >
                     <p
-                      class="text-2xl font-bold text-yellow-600 dark:text-yellow-400"
+                      class="text-2xl font-bold text-warning-600 dark:text-warning-400"
                     >
-                      20
+                      {{ store.unansweredCount }}
                     </p>
 
                     <p class="text-xs text-muted-foreground mt-1">
@@ -153,10 +172,10 @@ onBeforeUnmount(() => {
                   </div>
                 </div>
 
-                <p class="text-sm">
+                <p class="text-sm font-medium">
                   {{
-                    store.timeRemaining
-                      ? `You have 20 unanswered questions. They may be marked as
+                    store.timeRemaining && store.unansweredCount !== 0
+                      ? `You have ${store.unansweredCount} unanswered questions. They may be marked as
                   incorrect. Do you want to finish anyway?`
                       : "The exam time has expired and the results have been automatically saved."
                   }}
@@ -167,6 +186,7 @@ onBeforeUnmount(() => {
                 class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
               >
                 <UButton
+                  v-if="store.timeRemaining && store.unansweredCount"
                   variant="subtle"
                   color="secondary"
                   @click="isCancelModal = false"
@@ -224,21 +244,20 @@ onBeforeUnmount(() => {
             :key="option.id"
             :disabled="answered"
             :aria-keyshortcuts="`F${index + 1}`"
-            @click="
-              () => {
-                if (answered) return;
-                selectedOptionId = option.id;
-                isCorrect = option.isCorrect;
-              }
-            "
-            variant="subtle"
             :color="
-              selectedOptionId === option.id
+              currentAnswer?.optionId === option.id
                 ? option.isCorrect
                   ? 'success'
                   : 'error'
                 : 'info'
             "
+            @click="
+              () => {
+                if (answered) return;
+                store.answerQuestion(store.currentQuestion?.id ?? 0, option);
+              }
+            "
+            variant="subtle"
             class="w-full p-2 rounded-xl text-white transition-all text-left"
           >
             <div class="flex items-center gap-4">
