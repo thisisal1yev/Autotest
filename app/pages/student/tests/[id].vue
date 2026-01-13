@@ -1,123 +1,40 @@
 <script setup lang="ts">
+import { useStudentTestStore } from "~/stores/studentTest";
+
 definePageMeta({
   layout: "login",
   middleware: ["auth", "role"],
 });
 
+const isCancelModal = ref<boolean>(false);
+const isCorrect = ref<boolean | null>(null);
+const selectedOptionId = ref<number | null>(null);
+const answered = computed(() => selectedOptionId.value !== null);
+
 const route = useRoute();
-const testId = computed(() => route.params.id as string);
+const store = useStudentTestStore();
 
-const {
-  data: testData,
-  pending,
-  error,
-} = await useFetch(`/api/student/tests/${testId.value}`);
+const { data, error, pending } = await useAsyncData(
+  `student-test-${route.params.id}`,
+  () => $fetch(`/api/student/tests/${route.params.id}`)
+);
 
-const test = computed(() => testData.value?.test);
-const questions = computed(() => testData.value?.questions ?? []);
+if (data.value) {
+  store.initTest(data.value);
+  store.startTimer();
+}
 
-const currentQuestionIndex = ref(0);
-const selectedAnswers = ref<Record<number, number>>({});
-const timeRemaining = ref(0); // in seconds
-const isTestFinished = ref(false);
-
-watchEffect(() => {
-  if (test.value?.timeLimit) {
-    timeRemaining.value = test.value.timeLimit * 60; // Convert minutes to seconds
+watch(
+  () => store.currentQuestionIndex,
+  () => {
+    selectedOptionId.value = null;
+    isCorrect.value = null;
   }
+);
+
+onBeforeUnmount(() => {
+  store.stopTimer();
 });
-
-const timerInterval = ref<NodeJS.Timeout | null>(null);
-
-onMounted(() => {
-  if (test.value?.timeLimit) {
-    timerInterval.value = setInterval(() => {
-      if (timeRemaining.value > 0) {
-        timeRemaining.value--;
-      } else {
-        finishTest();
-      }
-    }, 1000);
-  }
-});
-
-onUnmounted(() => {
-  if (timerInterval.value) {
-    clearInterval(timerInterval.value);
-  }
-});
-
-const currentQuestion = computed(() => {
-  if (!questions.value || questions.value.length === 0) return null;
-  return questions.value[currentQuestionIndex.value];
-});
-
-const totalQuestions = computed(() => questions.value?.length ?? 0);
-
-const isFirstQuestion = computed(() => currentQuestionIndex.value === 0);
-const isLastQuestion = computed(() => {
-  if (!questions.value) return false;
-  return currentQuestionIndex.value === questions.value.length - 1;
-});
-
-const formattedTime = computed(() => {
-  const minutes = Math.floor(timeRemaining.value / 60);
-  const seconds = timeRemaining.value % 60;
-  return `${minutes.toString().padStart(2, "0")}:${seconds
-    .toString()
-    .padStart(2, "0")}`;
-});
-
-function nextQuestion() {
-  if (!isLastQuestion.value && questions.value) {
-    currentQuestionIndex.value++;
-  }
-}
-
-function previousQuestion() {
-  if (!isFirstQuestion.value) {
-    currentQuestionIndex.value--;
-  }
-}
-
-function goToQuestion(index: number) {
-  if (index >= 0 && index < totalQuestions.value) {
-    currentQuestionIndex.value = index;
-  }
-}
-
-function selectAnswer(optionId: number) {
-  if (!currentQuestion.value) return;
-
-  const questionId = currentQuestion.value.id;
-  selectedAnswers.value[questionId] = optionId;
-}
-
-function isQuestionAnswered(questionIndex: number): boolean {
-  if (!questions.value) return false;
-  const question = questions.value[questionIndex];
-  if (!question) return false;
-  return question.id in selectedAnswers.value;
-}
-
-function finishTest() {
-  if (timerInterval.value) {
-    clearInterval(timerInterval.value);
-  }
-  isTestFinished.value = true;
-  console.log("Test finished", selectedAnswers.value);
-  navigateTo("/student/");
-}
-
-function getQuestionStatusClass(questionIndex: number): string {
-  if (questionIndex === currentQuestionIndex.value) {
-    return "bg-error-500 text-white";
-  }
-  if (isQuestionAnswered(questionIndex)) {
-    return "bg-success-500 text-white";
-  }
-  return "bg-gray-700 text-gray-300 hover:bg-gray-600";
-}
 </script>
 
 <template>
@@ -127,6 +44,7 @@ function getQuestionStatusClass(questionIndex: number): string {
   >
     <div class="text-center">
       <UIcon name="i-lucide-loader-2" class="animate-spin size-8" />
+
       <p class="mt-4 text-gray-600 dark:text-gray-400">Loading test...</p>
     </div>
   </div>
@@ -137,27 +55,33 @@ function getQuestionStatusClass(questionIndex: number): string {
   >
     <div class="text-center text-error">
       <UIcon name="i-lucide-alert-circle" size="64" />
+
       <p class="mt-4 text-lg font-medium">{{ error.statusMessage }}</p>
     </div>
   </div>
 
-  <div v-else-if="currentQuestion && test" class="w-full">
+  <div v-else-if="store.currentQuestion && store.test" class="w-full">
     <div
       class="fixed w-full top-0 left-0 z-50 border-b border-gray-800 px-6 py-4"
     >
       <div class="mx-auto flex items-center justify-between">
         <div class="flex items-center gap-2">
           <UIcon name="i-lucide-clock" class="size-5" />
-          <span class="text-lg font-semibold w-10">{{ formattedTime }}</span>
+
+          <span class="text-lg font-semibold w-10">
+            {{ formattedTime(store.timeRemaining) }}
+          </span>
         </div>
 
         <div class="flex items-center gap-2 justify-center">
           <UButton
-            v-for="(_, index) in totalQuestions"
+            v-for="(_, index) in store.totalQuestions"
             :key="index"
-            @click="goToQuestion(index)"
-            variant="outline"
+            :variant="
+              store.currentQuestionIndex === index ? 'solid' : 'outline'
+            "
             color="info"
+            @click="store.goToQuestion(index)"
             class="size-10 rounded-lg font-semibold transition-all"
           >
             <span class="mx-auto text-white">
@@ -166,16 +90,104 @@ function getQuestionStatusClass(questionIndex: number): string {
           </UButton>
         </div>
 
-        <UButton color="error" variant="solid" @click="finishTest">
-          Cancel
-        </UButton>
+        <UModal
+          v-model:open="isCancelModal"
+          :dismissible="false"
+          :close="false"
+          portal="body"
+        >
+          <UButton color="secondary" variant="subtle"> Cancel </UButton>
+
+          <template #body>
+            <div class="space-y-5">
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-info" class="text-warning" size="24" />
+
+                <p class="font-medium">
+                  {{
+                    store.timeRemaining
+                      ? "Do you want to finish the test?"
+                      : "Test Ended"
+                  }}
+                </p>
+              </div>
+
+              <div class="text-muted-foreground text-sm space-y-4">
+                <div class="grid grid-cols-3 gap-3 py-4">
+                  <div
+                    class="text-center p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800"
+                  >
+                    <p
+                      class="text-2xl font-bold text-green-600 dark:text-green-400"
+                    >
+                      0
+                    </p>
+
+                    <p class="text-xs text-muted-foreground mt-1">Correct</p>
+                  </div>
+
+                  <div
+                    class="text-center p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800"
+                  >
+                    <p
+                      class="text-2xl font-bold text-red-600 dark:text-red-400"
+                    >
+                      0
+                    </p>
+
+                    <p class="text-xs text-muted-foreground mt-1">Incorrect</p>
+                  </div>
+
+                  <div
+                    class="text-center p-3 rounded-lg border bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800"
+                  >
+                    <p
+                      class="text-2xl font-bold text-yellow-600 dark:text-yellow-400"
+                    >
+                      20
+                    </p>
+
+                    <p class="text-xs text-muted-foreground mt-1">
+                      No response
+                    </p>
+                  </div>
+                </div>
+
+                <p class="text-sm">
+                  {{
+                    store.timeRemaining
+                      ? `You have 20 unanswered questions. They may be marked as
+                  incorrect. Do you want to finish anyway?`
+                      : "The exam time has expired and the results have been automatically saved."
+                  }}
+                </p>
+              </div>
+
+              <div
+                class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
+              >
+                <UButton
+                  variant="subtle"
+                  color="secondary"
+                  @click="isCancelModal = false"
+                >
+                  Testni Davom Ettirish
+                </UButton>
+
+                <UButton color="error" @click="store.finishTest()">
+                  Tugatish va Yuborish
+                </UButton>
+              </div>
+            </div>
+          </template>
+        </UModal>
       </div>
     </div>
 
     <div class="max-w-7xl w-full mx-auto space-y-5">
       <h2 class="text-2xl font-semibold leading-relaxed">
-        {{ currentQuestion.id }}.
-        {{ currentQuestion.title }}
+        {{ store.currentQuestion.id }}.
+        {{ store.currentQuestion.title }}
       </h2>
 
       <USeparator />
@@ -186,13 +198,13 @@ function getQuestionStatusClass(questionIndex: number): string {
         >
           <div class="relative w-full h-60 md:h-80 cursor-pointer">
             <NuxtImg
-              v-if="currentQuestion.imgPath"
-              :alt="currentQuestion.title"
+              v-if="store.currentQuestion.imgPath"
+              :alt="store.currentQuestion.title"
               loading="lazy"
               decoding="async"
               data-nimg="fill"
               class="object-contain p-4 transition-all duration-500 text-transparent absolute h-full w-full inset-0"
-              :src="currentQuestion.imgPath"
+              :src="store.currentQuestion.imgPath"
             />
 
             <div
@@ -200,6 +212,7 @@ function getQuestionStatusClass(questionIndex: number): string {
               class="absolute text-muted h-full w-full inset-0 flex flex-col items-center justify-center"
             >
               <UIcon size="64" name="i-lucide-image-off" class="mb-1" />
+
               <p class="text-lg font-medium">No image</p>
             </div>
           </div>
@@ -207,16 +220,30 @@ function getQuestionStatusClass(questionIndex: number): string {
 
         <div class="space-y-3 sm:space-y-4 flex flex-col justify-start">
           <UButton
-            v-for="(option, index) in currentQuestion.options"
+            v-for="(option, index) in store.currentQuestion.options"
             :key="option.id"
-            @click="selectAnswer(option.id)"
+            :disabled="answered"
+            :aria-keyshortcuts="`F${index + 1}`"
+            @click="
+              () => {
+                if (answered) return;
+                selectedOptionId = option.id;
+                isCorrect = option.isCorrect;
+              }
+            "
             variant="subtle"
-            color="info"
+            :color="
+              selectedOptionId === option.id
+                ? option.isCorrect
+                  ? 'success'
+                  : 'error'
+                : 'info'
+            "
             class="w-full p-2 rounded-xl text-white transition-all text-left"
           >
             <div class="flex items-center gap-4">
               <div
-                class="size-8 rounded-full flex items-center justify-center font-bold',"
+                class="size-8 rounded-full flex items-center justify-center font-bold"
               >
                 F{{ index + 1 }}
               </div>
@@ -233,19 +260,23 @@ function getQuestionStatusClass(questionIndex: number): string {
         <UButton
           variant="outline"
           color="neutral"
-          :disabled="isFirstQuestion"
-          @click="previousQuestion"
+          :disabled="store.isFirstQuestion"
+          @click="store.previousQuestion"
         >
           <UIcon name="i-lucide-chevron-left" class="size-4" />
+
           Previous
         </UButton>
 
-        <UButton v-if="!isLastQuestion" color="primary" @click="nextQuestion">
+        <UButton
+          :disabled="store.isLastQuestion"
+          color="primary"
+          @click="store.nextQuestion"
+        >
           Next
+
           <UIcon name="i-lucide-chevron-right" class="size-4" />
         </UButton>
-
-        <UButton v-else color="primary" @click="finishTest"> Submit </UButton>
       </div>
     </div>
   </div>

@@ -117,6 +117,7 @@ onMounted(async () => {
         <UDashboardSearchButton
           :collapsed="collapsed"
           class="bg-transparent ring-default mt-2.5"
+          tooltip
         />
 
         <UNavigationMenu

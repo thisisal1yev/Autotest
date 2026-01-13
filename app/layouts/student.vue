@@ -1,74 +1,74 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import type { NavigationMenuItem } from "@nuxt/ui";
 
-const open = ref(false)
+const open = ref(false);
 
 const links = [
   [
     {
-      label: 'Main',
-      icon: 'i-lucide-home',
-      to: '/student',
+      label: "Main",
+      icon: "i-lucide-home",
+      to: "/student",
       onSelect: () => {
-        open.value = false
-      }
+        open.value = false;
+      },
     },
     {
-      label: 'Tests',
-      icon: 'i-lucide-file-text',
-      to: '/student/tests',
+      label: "Tests",
+      icon: "i-lucide-file-text",
+      to: "/student/tests",
       onSelect: () => {
-        open.value = false
-      }
+        open.value = false;
+      },
     },
     {
-      label: 'Tutorials',
-      icon: 'i-lucide-list-video',
-      to: '/student/tutorials',
+      label: "Tutorials",
+      icon: "i-lucide-list-video",
+      to: "/student/tutorials",
       onSelect: () => {
-        open.value = false
-      }
+        open.value = false;
+      },
     },
     {
-      label: 'Rating',
-      icon: 'i-lucide-trophy',
-      to: '/student/rating',
+      label: "Rating",
+      icon: "i-lucide-trophy",
+      to: "/student/rating",
       onSelect: () => {
-        open.value = false
-      }
+        open.value = false;
+      },
     },
     {
-      label: 'Settings',
-      icon: 'i-lucide-settings',
-      to: '/student/settings',
+      label: "Settings",
+      icon: "i-lucide-settings",
+      to: "/student/settings",
       onSelect: () => {
-        open.value = false
-      }
-    }
+        open.value = false;
+      },
+    },
   ],
   [
     {
-      label: 'Feedback',
-      icon: 'i-lucide-message-circle',
-      to: 'mailto:polonchihonkok@gmail.com',
-      target: '_blank'
+      label: "Feedback",
+      icon: "i-lucide-message-circle",
+      to: "mailto:polonchihonkok@gmail.com",
+      target: "_blank",
     },
     {
-      label: 'Help & Support',
-      icon: 'i-lucide-info',
-      to: 'mailto:polonchihonkok@gmail.com',
-      target: '_blank'
-    }
-  ]
-] satisfies NavigationMenuItem[][]
+      label: "Help & Support",
+      icon: "i-lucide-info",
+      to: "mailto:polonchihonkok@gmail.com",
+      target: "_blank",
+    },
+  ],
+] satisfies NavigationMenuItem[][];
 
 const groups = computed(() => [
   {
-    id: 'links',
-    label: 'Go to',
-    items: links.flat()
-  }
-])
+    id: "links",
+    label: "Go to",
+    items: links.flat(),
+  },
+]);
 </script>
 
 <template>
@@ -86,6 +86,7 @@ const groups = computed(() => [
         <UDashboardSearchButton
           :collapsed="collapsed"
           class="bg-transparent ring-default mt-2.5"
+          tooltip
         />
 
         <UNavigationMenu
