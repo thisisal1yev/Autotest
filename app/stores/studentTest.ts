@@ -124,6 +124,7 @@ export const useStudentTestStore = defineStore('studentTest', () => {
   function finishTest() {
     stopTimer()
     isTestFinished.value = true
+    navigateTo('/student/')
   }
 
   function selectAnswer(qId: number, oId: number) {

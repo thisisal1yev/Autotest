@@ -277,6 +277,7 @@ onBeforeUnmount(() => {
 
       <div class="flex items-center justify-between">
         <UButton
+          v-if="!store.isFirstQuestion"
           variant="outline"
           color="neutral"
           :disabled="store.isFirstQuestion"
@@ -288,13 +289,25 @@ onBeforeUnmount(() => {
         </UButton>
 
         <UButton
+          v-if="!store.isLastQuestion"
           :disabled="store.isLastQuestion"
           color="primary"
           @click="store.nextQuestion"
+          class="ml-auto"
         >
           Next
 
           <UIcon name="i-lucide-chevron-right" class="size-4" />
+        </UButton>
+
+        <UButton
+          v-else-if="store && store.unansweredCount === 0"
+          color="primary"
+          @click="store.finishTest()"
+        >
+          Submit test
+
+          <UIcon name="i-lucide-send" size="18" />
         </UButton>
       </div>
     </div>

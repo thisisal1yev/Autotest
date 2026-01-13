@@ -62,32 +62,40 @@ const title = reactive({
   value: test.value?.title,
 });
 
-const options = ref([
-  {
-    title: "Test description",
-    value: test.value?.description,
-  },
-  {
-    title: "Test time limit",
-    value: test.value?.timeLimit,
-  },
-  {
-    title: "Test passing score",
-    value: test.value?.passingScore,
-  },
-  {
-    title: "Test questions",
-    value: test.value?.questions?.length,
-  },
-  {
-    title: "Created at",
-    value: formatDate(test.value?.createdAt ?? new Date()),
-  },
-  {
-    title: "Last update",
-    value: formatDate(test.value?.updatedAt ?? new Date()),
-  },
-]);
+const options = computed(() => {
+  if (!test.value) return [];
+
+  const opts = [
+    {
+      title: "Test description",
+      value: test.value.description ?? undefined,
+    },
+    {
+      title: "Test time limit",
+      value: test.value.timeLimit?.toString() ?? undefined,
+    },
+    {
+      title: "Test passing score",
+      value: test.value.passingScore?.toString() ?? undefined,
+    },
+    {
+      title: "Test questions",
+      value: test.value.questions?.length?.toString() ?? undefined,
+    },
+    {
+      title: "Created at",
+      value: formatDate(test.value.createdAt ?? new Date()),
+    },
+    {
+      title: "Last update",
+      value: formatDate(test.value.updatedAt ?? new Date()),
+    },
+  ];
+
+  return opts.filter(
+    (opt): opt is { title: string; value: string } => opt.value !== undefined
+  );
+});
 </script>
 
 <template>
@@ -212,39 +220,41 @@ const options = ref([
         :loading="status === 'pending'"
         :error="!!error?.message"
         :title="title"
-        :options="options"
+        :options="options?.filter(option => option.value !== null) as { title: string; value: string | undefined }[]"
       />
 
       <UForm :state="formState" class="space-y-6">
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <h4 class="text-lg font-semibold">Questions</h4>
+
             <UButton color="primary" variant="soft" icon="i-lucide-plus">
               Add Question
             </UButton>
           </div>
 
-            <div
-              class="text-center py-8 border border-dashed border-default rounded-lg"
-            >
-              <UIcon
-                name="i-lucide-help-circle"
-                class="w-12 h-12 text-muted mx-auto mb-2"
-              />
-              <p class="text-muted">No questions added yet</p>
-              <p class="text-sm text-muted mt-1">
-                Click "Add Question" to get started
-              </p>
-            </div>
-
-            <QuestionForm
-              v-for="(question, index) in test?.questions"
-              :question="question"
-              :index="index"
+          <div
+            class="text-center py-8 border border-dashed border-default rounded-lg"
+          >
+            <UIcon
+              name="i-lucide-help-circle"
+              class="w-12 h-12 text-muted mx-auto mb-2"
             />
+
+            <p class="text-muted">No questions added yet</p>
+
+            <p class="text-sm text-muted mt-1">
+              Click "Add Question" to get started
+            </p>
+          </div>
+
+          <QuestionForm
+            v-for="(question, index) in test?.questions"
+            :question="question"
+            :index="index"
+          />
         </div>
 
-        <!-- Кнопка создания теста -->
         <div class="flex justify-end gap-3 pt-4 border-t border-default">
           <UButton color="neutral" variant="outline" label="Cancel" />
 
