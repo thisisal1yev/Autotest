@@ -6,12 +6,12 @@ definePageMeta({
   middleware: ["auth", "role"],
 });
 
-const isCancelModal = ref(false);
+const cancelModal = ref(false);
 
 const currentAnswer = computed(() =>
   store.getAnswer(store.currentQuestion?.id ?? 0)
 );
-const answered = computed(() => !!currentAnswer.value);
+const answered = computed(() => currentAnswer.value?.optionId !== null);
 
 const route = useRoute();
 const store = useStudentTestStore();
@@ -27,13 +27,17 @@ if (data.value) {
 }
 
 const onKeydown = (e: KeyboardEvent) => {
-  if (answered.value) return;
-  if (e.key.includes("Escape")) isCancelModal.value = false;
+  if (currentAnswer.value?.optionId !== null) return;
+
+  if (e.key === "Escape") {
+    cancelModal.value = false;
+    return;
+  }
+
   if (!e.key.startsWith("F")) return;
 
   const index = Number(e.key.slice(1)) - 1;
   const options = store.currentQuestion?.options ?? [];
-
   if (index < 0 || index >= options.length) return;
 
   e.preventDefault();
@@ -45,13 +49,38 @@ const onKeydown = (e: KeyboardEvent) => {
   }
 };
 
+const questionButtons = computed(() => {
+  return store.questions.map((q, index) => {
+    const answer = store.getAnswer(q.id);
+
+    const isCurrent = store.currentQuestionIndex === index;
+    const isAnswered = answer?.optionId !== null;
+
+    let color: "info" | "success" | "error" = "info";
+
+    if (isAnswered && answer?.isCorrect !== null) {
+      color = answer?.isCorrect ? "success" : "error";
+    }
+
+    return {
+      index,
+      label: String(index + 1),
+      color,
+      variant: isCurrent || isAnswered ? "solid" : "outline",
+    };
+  });
+});
+
+const handleFinishTest = () => {
+  store.finishTest();
+  cancelModal.value = false;
+};
+
 onMounted(() => {
-  window.addEventListener("keydown", onKeydown);
   window.addEventListener("keydown", onKeydown);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("keydown", onKeydown);
   window.removeEventListener("keydown", onKeydown);
   store.stopTimer();
 });
@@ -94,113 +123,32 @@ onBeforeUnmount(() => {
 
         <div class="flex items-center gap-2 justify-center">
           <UButton
-            v-for="(_, index) in store.totalQuestions"
-            :key="index"
-            :variant="
-              store.currentQuestionIndex === index ? 'solid' : 'outline'
-            "
-            :color="'info'"
-            @click="store.goToQuestion(index)"
-            class="size-10 rounded-lg font-semibold transition-all"
-          >
-            <span class="mx-auto text-white">
-              {{ index + 1 }}
-            </span>
-          </UButton>
+            v-for="btn in questionButtons"
+            :key="btn.index"
+            :variant="btn.variant as 'link' | 'solid' | 'outline' | 'soft' | 'subtle' | 'ghost' | undefined"
+            :color="btn.color"
+            @click="store.goToQuestion(btn.index)"
+            class="size-10 rounded-lg font-semibold transition-all flex items-center justify-center"
+            :label="btn.label"
+          />
         </div>
 
-        <UModal
-          v-model:open="isCancelModal"
-          :dismissible="false"
-          :close="false"
-          portal="body"
+        <TestFinishConfirmModal
+          v-model:open="cancelModal"
+          :timeRemaining="store.timeRemaining"
+          :correctCount="store.correctCount"
+          :incorrectCount="store.incorrectCount"
+          :unansweredCount="store.unansweredCount"
+          @finishTest="handleFinishTest()"
         >
-          <UButton color="secondary" variant="subtle"> Cancel </UButton>
-
-          <template #body>
-            <div class="space-y-5">
-              <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-info" class="text-warning" size="24" />
-
-                <p class="font-medium">
-                  {{
-                    store.timeRemaining
-                      ? "Do you want to finish the test?"
-                      : "Test Ended"
-                  }}
-                </p>
-              </div>
-
-              <div class="text-muted-foreground text-sm">
-                <div class="grid grid-cols-3 gap-3 py-4">
-                  <div
-                    class="text-center p-3 bg-success-50 dark:bg-success-950/30 rounded-lg border border-success-200 dark:border-success-800"
-                  >
-                    <p
-                      class="text-2xl font-bold text-success-600 dark:text-success-400"
-                    >
-                      {{ store.correctCount }}
-                    </p>
-
-                    <p class="text-xs text-muted-foreground mt-1">Correct</p>
-                  </div>
-
-                  <div
-                    class="text-center p-3 bg-error-50 dark:bg-error-950/30 rounded-lg border border-error-200 dark:border-error-800"
-                  >
-                    <p
-                      class="text-2xl font-bold text-error-600 dark:text-error-400"
-                    >
-                      {{ store.incorrectCount }}
-                    </p>
-
-                    <p class="text-xs text-muted-foreground mt-1">Incorrect</p>
-                  </div>
-
-                  <div
-                    class="text-center p-3 rounded-lg border bg-warning-50 dark:bg-warning-950/30 border-warning-200 dark:border-warning-800"
-                  >
-                    <p
-                      class="text-2xl font-bold text-warning-600 dark:text-warning-400"
-                    >
-                      {{ store.unansweredCount }}
-                    </p>
-
-                    <p class="text-xs text-muted-foreground mt-1">
-                      No response
-                    </p>
-                  </div>
-                </div>
-
-                <p class="text-sm font-medium">
-                  {{
-                    store.timeRemaining && store.unansweredCount !== 0
-                      ? `You have ${store.unansweredCount} unanswered questions. They may be marked as
-                  incorrect. Do you want to finish anyway?`
-                      : "The exam time has expired and the results have been automatically saved."
-                  }}
-                </p>
-              </div>
-
-              <div
-                class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
-              >
-                <UButton
-                  v-if="store.timeRemaining && store.unansweredCount"
-                  variant="subtle"
-                  color="secondary"
-                  @click="isCancelModal = false"
-                >
-                  Testni Davom Ettirish
-                </UButton>
-
-                <UButton color="error" @click="store.finishTest()">
-                  Tugatish va Yuborish
-                </UButton>
-              </div>
-            </div>
-          </template>
-        </UModal>
+          <UButton
+            color="secondary"
+            variant="subtle"
+            @click="cancelModal = true"
+          >
+            Cancel
+          </UButton>
+        </TestFinishConfirmModal>
       </div>
     </div>
 
@@ -300,15 +248,22 @@ onBeforeUnmount(() => {
           <UIcon name="i-lucide-chevron-right" class="size-4" />
         </UButton>
 
-        <UButton
-          v-else-if="store && store.unansweredCount === 0"
-          color="primary"
-          @click="store.finishTest()"
-        >
-          Submit test
+        <template v-else-if="store && store.unansweredCount === 0">
+          <TestFinishConfirmModal
+            v-model:open="cancelModal"
+            :timeRemaining="store.timeRemaining"
+            :correctCount="store.correctCount"
+            :incorrectCount="store.incorrectCount"
+            :unansweredCount="store.unansweredCount"
+            @finishTest="handleFinishTest()"
+          >
+            <UButton color="primary">
+              Submit test
 
-          <UIcon name="i-lucide-send" size="18" />
-        </UButton>
+              <UIcon name="i-lucide-send" size="18" />
+            </UButton>
+          </TestFinishConfirmModal>
+        </template>
       </div>
     </div>
   </div>

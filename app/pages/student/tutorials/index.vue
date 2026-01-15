@@ -14,7 +14,7 @@ const {
 <template>
   <UDashboardPanel id="user-tutorials">
     <template #header>
-      <UDashboardNavbar title="Tutorial" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar title="Tutorials" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>

@@ -35,7 +35,7 @@ const range = shallowRef<Range>({
 const period = ref<Period>("daily");
 const { isNotificationsSlideoverOpen } = useDashboard();
 
-const { data } = useFetch("/api/auth/me", { method: "GET" });
+const { data } = useFetch("/api/auth/me", { method: "GET", server: false });
 const { data: stats } = useFetch("/api/admin/dashboard/stats", {
   method: "GET",
 });
