@@ -10,7 +10,7 @@ const links = [
     {
       label: 'Dashboard',
       icon: 'i-lucide-layout-dashboard',
-      to: '/admin/dashboard',
+      to: '/admin/',
       onSelect: () => {
         open.value = false
       }

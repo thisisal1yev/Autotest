@@ -84,7 +84,7 @@ const handleLogin = async () => {
       </div>
 
       <UAlert
-        v-if="error"
+        v-if="error && !isLoading"
         color="error"
         variant="soft"
         :title="error"

@@ -10,7 +10,7 @@ export type Role = (typeof ROLES)[keyof typeof ROLES];
 export const ROLE_ROUTES: Record<Role, string> = {
   GUEST: "/login",
   STUDENT: "/student",
-  ADMIN: "/admin/dashboard",
+  ADMIN: "/admin",
   SUPERADMIN: "/superadmin",
 };
 

@@ -167,7 +167,7 @@ const createTest = async () => {
           <UButton
             color="info"
             label="Cancel"
-            @click="navigateTo('/admin/dashboard')"
+            @click="navigateTo('/admin')"
           />
         </template>
       </UDashboardNavbar>

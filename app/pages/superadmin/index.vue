@@ -66,7 +66,7 @@ const stats = [
   <UDashboardPanel id="dashboard">
     <template #header>
       <UDashboardNavbar
-        title="EDU Autotest - Dashboard"
+        title="Dashboard"
         :ui="{ right: 'gap-3' }"
       >
         <template #leading>

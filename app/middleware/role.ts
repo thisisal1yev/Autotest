@@ -20,10 +20,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (role === 'ADMIN') {
     if (path.startsWith('/superadmin')) {
-      return navigateTo('/admin/dashboard')
+      return navigateTo('/admin/')
     }
     if (path.startsWith('/student')) {
-      return navigateTo('/admin/dashboard')
+      return navigateTo('/admin/')
     }
     return
   }

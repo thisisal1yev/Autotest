@@ -82,12 +82,13 @@ model Test {
 }
 
 model Question {
-  id      Int    @id @default(autoincrement())
+  id      Int      @id @default(autoincrement())
   imgPath String
   title   String
   comment String
 
   options Option[]
+  answers Answers[] // Добавить эту строку
 
   testId Int
   test   Test @relation(fields: [testId], references: [id])
@@ -99,9 +100,11 @@ model Question {
 }
 
 model Option {
-  id           Int     @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   answerOption String
   isCorrect    Boolean
+  
+  answers      Answers[] // Добавить эту строку
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -129,19 +132,57 @@ model Tutorial {
   @@index([drivingSchoolId])
 }
 
-model TestResult {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id])
-  testId      Int
-  test        Test     @relation(fields: [testId], references: [id])
-  score       Int // Score percentage
-  answers     Json // User's answers
-  passed      Boolean
-  completedAt DateTime @default(now())
+model Answers {
+  id           Int        @id @default(autoincrement())
+  
+  // Связь с результатом теста
+  testResultId Int
+  testResult   TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+  
+  // Связь с вопросом
+  questionId   Int
+  question     Question   @relation(fields: [questionId], references: [id])
+  
+  // Выбранный вариант ответа (может быть null если не ответил)
+  optionId     Int?
+  option       Option?    @relation(fields: [optionId], references: [id])
+  
+  // Правильность ответа
+  isCorrect    Boolean?
+  
+  // Порядок ответа (для отслеживания последовательности)
+  order        Int        @default(0)
+  
+  // Время, потраченное на этот вопрос (в секундах)
+  timeSpent    Int?
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([testResultId])
+  @@index([questionId])
+  @@index([optionId])
+  
+  // Уникальность: один ответ на вопрос в рамках одного результата теста
+  @@unique([testResultId, questionId])
+}
+
+model TestResult {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  testId      Int
+  test        Test      @relation(fields: [testId], references: [id])
+  score       Int       // Score percentage
+  answers     Answers[] // User's answers
+  passed      Boolean
+  completedAt DateTime  @default(now())
+  
+  // Дополнительная информация
+  timeSpent   Int?      // Общее время прохождения в секундах
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([userId])
   @@index([testId])

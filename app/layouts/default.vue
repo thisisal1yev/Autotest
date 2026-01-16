@@ -7,7 +7,7 @@ const toDashboard = computed(() => {
   if (authStore.user?.role === "SUPERADMIN") {
     return "/superadmin/";
   } else if (authStore.user?.role === "ADMIN") {
-    return "/admin/dashboard";
+    return "/admin/";
   } else {
     return "/student/";
   }
