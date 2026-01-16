@@ -21,7 +21,7 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
         users: {
           where: {
             role: {
-              in: ['USER', 'ADMIN']
+              in: ['STUDENT', 'ADMIN']
             }
           }
         },
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
           select: {
             users: {
               where: {
-                role: 'USER'
+                role: 'ADMIN'
               }
             }
           }
@@ -60,14 +60,14 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
     // Get all students
     const totalStudents = await prisma.user.count({
       where: {
-        role: 'USER',
+        role: 'STUDENT',
         isActive: true
       }
     })
 
     const inactiveStudents = await prisma.user.count({
       where: {
-        role: 'USER',
+        role: 'STUDENT',
         isActive: false
       }
     })
@@ -95,7 +95,7 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
 
     // School-by-school breakdown
     const schoolsSummary = schools.map(school => {
-      const schoolStudents = school.users.filter(u => u.role === 'USER')
+      const schoolStudents = school.users.filter(u => u.role === 'STUDENT')
       const schoolAdmins = school.users.filter(u => u.role === 'ADMIN')
       const activeStudents = schoolStudents.filter(u => u.isActive).length
       const inactiveStudents = schoolStudents.filter(u => !u.isActive).length

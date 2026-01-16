@@ -7,7 +7,7 @@ export default defineEventHandler(async (event): Promise<StudentAnalyticsRespons
   try {
     const user = await getCurrentUser(event)
 
-    if (user.role !== 'USER') {
+    if (user.role !== 'STUDENT') {
       throw createError({ statusCode: 403, message: 'Forbidden' })
     }
 

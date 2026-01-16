@@ -1,223 +1,222 @@
 <script setup lang="ts">
-import type { TableColumn } from '@nuxt/ui'
-import { upperFirst } from 'scule'
-import { getPaginationRowModel } from '@tanstack/table-core'
-import type { Row } from '@tanstack/table-core'
-import type { Test } from '~/stores/tests'
+import type { TableColumn } from "@nuxt/ui";
+import { upperFirst } from "scule";
+import { getPaginationRowModel } from "@tanstack/table-core";
+import type { Row } from "@tanstack/table-core";
+import type { Test } from "~~/generated/prisma/client";
 
-const UButton = resolveComponent('UButton')
-const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UCheckbox = resolveComponent('UCheckbox')
+const UButton = resolveComponent("UButton");
+const UDropdownMenu = resolveComponent("UDropdownMenu");
+const UCheckbox = resolveComponent("UCheckbox");
 
-const toast = useToast()
-const table = useTemplateRef('table')
-const router = useRouter()
+const toast = useToast();
+const table = useTemplateRef("table");
+const router = useRouter();
 
 const columnFilters = ref([
   {
-    id: 'title',
-    value: ''
-  }
-])
-const columnVisibility = ref()
-const rowSelection = ref({})
+    id: "title",
+    value: "",
+  },
+]);
+const columnVisibility = ref();
+const rowSelection = ref({});
 
-const { data, status } = useFetch<Test[]>('/api/admin/tests')
+const { data, status } = useFetch<Test[]>("/api/admin/tests");
 
 function getRowItems(row: Row<Test>) {
   return [
     {
-      type: 'label',
-      label: 'Actions'
+      type: "label",
+      label: "Actions",
     },
     {
-      label: 'Copy test ID',
-      icon: 'i-lucide-copy',
+      label: "Copy test title",
+      icon: "i-lucide-copy",
       onSelect() {
-        navigator.clipboard.writeText(row.original.id.toString())
+        navigator.clipboard.writeText(row.original.title.toString());
         toast.add({
-          title: 'Copied to clipboard',
-          description: 'Test ID copied to clipboard'
-        })
-      }
+          title: "Copied to clipboard",
+          description: "Test title copied to clipboard",
+        });
+      },
     },
     {
-      label: 'View test details',
-      icon: 'i-lucide-eye',
+      label: "View test details",
+      icon: "i-lucide-eye",
       onSelect() {
-        router.push(`/admin/tests/${row.original.id}`)
-      }
+        router.push(`/admin/tests/${row.original.id}`);
+      },
     },
     {
-      type: 'separator'
+      type: "separator",
     },
     {
-      label: 'Delete test',
-      icon: 'i-lucide-trash',
-      color: 'error',
+      label: "Delete test",
+      icon: "i-lucide-trash",
+      color: "error",
       async onSelect() {
         await $fetch(`/api/admin/tests/${row.original.id}`, {
-          method: 'DELETE'
-        })
+          method: "DELETE",
+        });
 
         toast.add({
-          title: 'Test deleted',
-          description: 'The test has been deleted.'
-        })
-      }
-    }
-  ]
+          title: "Test deleted",
+          description: "The test has been deleted.",
+        });
+      },
+    },
+  ];
 }
 
 function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function formatDuration(minutes: number | null | undefined): string {
-  if (!minutes) return '-'
-  const hours = Math.floor(minutes / 60)
-  const mins = minutes % 60
+  if (!minutes) return "-";
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
   if (hours > 0) {
-    return `${hours}h ${mins}m`
+    return `${hours}h ${mins}m`;
   }
-  return `${mins}m`
+  return `${mins}m`;
 }
 
 const columns: TableColumn<Test>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) =>
       h(UCheckbox, {
-        'modelValue': table.getIsSomePageRowsSelected()
-          ? 'indeterminate'
+        modelValue: table.getIsSomePageRowsSelected()
+          ? "indeterminate"
           : table.getIsAllPageRowsSelected(),
-        'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
+        "onUpdate:modelValue": (value: boolean | "indeterminate") =>
           table.toggleAllPageRowsSelected(!!value),
-        'ariaLabel': 'Select all'
+        ariaLabel: "Select all",
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
-        'modelValue': row.getIsSelected(),
-        'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
+        modelValue: row.getIsSelected(),
+        "onUpdate:modelValue": (value: boolean | "indeterminate") =>
           row.toggleSelected(!!value),
-        'ariaLabel': 'Select row'
-      })
+        ariaLabel: "Select row",
+      }),
   },
   {
-    accessorKey: 'id',
-    header: 'ID'
+    accessorKey: "id",
+    header: "ID",
   },
   {
-    accessorKey: 'title',
-    header: 'Title',
+    accessorKey: "title",
+    header: "Title",
     filterFn: (row, id, filterValue) => {
-      const searchValue = filterValue?.toLowerCase() || ''
-      if (!searchValue) return true
-      const title = (row.getValue(id) as string)?.toLowerCase() || ''
-      const description = (row.original.description as string)?.toLowerCase() || ''
-      return title.includes(searchValue) || description.includes(searchValue)
+      const searchValue = filterValue?.toLowerCase() || "";
+      if (!searchValue) return true;
+      const title = (row.getValue(id) as string)?.toLowerCase() || "";
+      const description =
+        (row.original.description as string)?.toLowerCase() || "";
+      return title.includes(searchValue) || description.includes(searchValue);
     },
     cell: ({ row }) => {
-      return h('div', { class: 'flex items-center gap-3' }, [
+      return h("div", { class: "flex items-center gap-3" }, [
         h(
-          'div',
+          "div",
           {
             class:
-                  'flex h-10 w-10 items-center justify-center rounded-full bg-primary/10'
+              "flex h-10 w-10 items-center justify-center rounded-full bg-primary/10",
           },
           [
             h(
-              'span',
-              { class: 'text-primary font-semibold' },
+              "span",
+              { class: "text-primary font-semibold" },
               firstLetter(row.original.title).toUpperCase()
-            )
+            ),
           ]
         ),
-        h('div', undefined, [
-          h('p', { class: 'font-medium text-highlighted' }, row.original.title),
+        h("div", undefined, [
+          h("p", { class: "font-medium text-highlighted" }, row.original.title),
           h(
-            'p',
-            { class: 'text-sm text-muted' },
-            row.original.description || 'No description'
-          )
-        ])
-      ])
-    }
+            "p",
+            { class: "text-sm text-muted" },
+            row.original.description || "No description"
+          ),
+        ]),
+      ]);
+    },
   },
   {
-    accessorKey: 'passingScore',
-    header: 'Passing Score',
-    cell: ({ row }) => `${row.original.passingScore}%`
+    accessorKey: "passingScore",
+    header: "Passing Score",
+    cell: ({ row }) => `${row.original.passingScore}%`,
   },
   {
-    accessorKey: 'timeLimit',
-    header: 'Time Limit',
-    cell: ({ row }) => formatDuration(row.original.timeLimit)
+    accessorKey: "timeLimit",
+    header: "Time Limit",
+    cell: ({ row }) => formatDuration(row.original.timeLimit),
   },
   {
-    accessorKey: 'questions',
-    header: 'Questions',
+    accessorKey: "questions",
+    header: "Questions",
     cell: ({ row }) => {
-      const questions = Array.isArray(row.original.questions)
-        ? row.original.questions
-        : []
-      return questions.length
-    }
+      const questions = (row.original as any).questions;
+      return Array.isArray(questions) ? questions.length : 0;
+    },
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Created',
-    cell: ({ row }) => formatDate(row.original.createdAt)
+    accessorKey: "createdAt",
+    header: "Created",
+    cell: ({ row }) => formatDate(row.original.createdAt),
   },
   {
-    id: 'actions',
+    id: "actions",
     cell: ({ row }) => {
       return h(
-        'div',
-        { class: 'text-right' },
+        "div",
+        { class: "text-right" },
         h(
           UDropdownMenu,
           {
             content: {
-              align: 'end'
+              align: "end",
             },
-            items: getRowItems(row)
+            items: getRowItems(row),
           },
           () =>
             h(UButton, {
-              icon: 'i-lucide-ellipsis-vertical',
-              color: 'neutral',
-              variant: 'ghost',
-              class: 'ml-auto'
+              icon: "i-lucide-ellipsis-vertical",
+              color: "neutral",
+              variant: "ghost",
+              class: "ml-auto",
             })
         )
-      )
-    }
-  }
-]
+      );
+    },
+  },
+];
 
 const searchQuery = computed({
   get: (): string => {
     return (
-      (table.value?.tableApi?.getColumn('title')?.getFilterValue() as string)
-      || ''
-    )
+      (table.value?.tableApi?.getColumn("title")?.getFilterValue() as string) ||
+      ""
+    );
   },
   set: (value: string) => {
     table.value?.tableApi
-      ?.getColumn('title')
-      ?.setFilterValue(value || undefined)
-  }
-})
+      ?.getColumn("title")
+      ?.setFilterValue(value || undefined);
+  },
+});
 
 const pagination = ref({
   pageIndex: 0,
-  pageSize: 10
-})
+  pageSize: 10,
+});
 </script>
 
 <template>
@@ -284,7 +283,7 @@ const pagination = ref({
     v-model:row-selection="rowSelection"
     v-model:pagination="pagination"
     :pagination-options="{
-      getPaginationRowModel: getPaginationRowModel()
+      getPaginationRowModel: getPaginationRowModel(),
     }"
     class="shrink-0"
     :data="data || []"
@@ -296,18 +295,13 @@ const pagination = ref({
       tbody: '[&>tr]:last:[&>td]:border-b-0',
       th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
       td: 'border-b border-default',
-      separator: 'h-0'
+      separator: 'h-0',
     }"
   >
     <template #empty-state>
       <div class="flex flex-col items-center justify-center py-12">
-        <UIcon
-          name="i-lucide-file-text"
-          class="w-12 h-12 text-muted mb-4"
-        />
-        <p class="text-muted">
-          No tests found
-        </p>
+        <UIcon name="i-lucide-file-text" class="w-12 h-12 text-muted mb-4" />
+        <p class="text-muted">No tests found</p>
       </div>
     </template>
   </UTable>

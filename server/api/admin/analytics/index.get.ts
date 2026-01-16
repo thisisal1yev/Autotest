@@ -24,7 +24,7 @@ export default defineEventHandler(async (event): Promise<AdminAnalyticsResponse>
     // Get students for this school
     const students = await prisma.user.findMany({
       where: {
-        role: 'USER',
+        role: 'STUDENT',
         drivingSchoolId: schoolId
       }
     })

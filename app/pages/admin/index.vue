@@ -70,7 +70,7 @@ const statsMock = [
     icon: "i-lucide-clipboard-check",
     value: stats.value?.passRate ?? 0,
     variation: 4,
-    to: "/superadmin/analytics",
+    to: "/admin/analytics",
   },
 ];
 </script>

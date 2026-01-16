@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     const [recentStudents, recentTestResults] = await Promise.all([
       prisma.user.findMany({
         where: {
-          role: 'USER',
+          role: 'STUDENT',
           drivingSchoolId: schoolId,
           isActive: true
         },

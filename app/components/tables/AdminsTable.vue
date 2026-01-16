@@ -18,7 +18,6 @@ interface Admin {
     phone?: string | null
     address?: string | null
   } | null
-  isActive: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -55,29 +54,19 @@ function getRowItems(row: Row<Admin>) {
       label: 'Actions'
     },
     {
-      label: 'Copy admin ID',
+      label: 'Copy admin name',
       icon: 'i-lucide-copy',
       onSelect() {
-        navigator.clipboard.writeText(row.original.id.toString())
+        navigator.clipboard.writeText(row.original.fullName.toString())
         toast.add({
           title: 'Copied to clipboard',
-          description: 'Admin ID copied to clipboard'
+          description: 'Admin fullname copied to clipboard'
         })
       }
     },
     {
-      type: 'separator'
-    },
-    {
       label: 'View admin details',
       icon: 'i-lucide-eye',
-      onSelect() {
-        router.push(`/superadmin/admins/${row.original.id}`)
-      }
-    },
-    {
-      label: 'Edit admin',
-      icon: 'i-lucide-edit',
       onSelect() {
         router.push(`/superadmin/admins/${row.original.id}`)
       }
@@ -190,18 +179,6 @@ const columns: TableColumn<Admin>[] = [
     cell: ({ row }) => {
       const school = row.original.drivingSchool
       return school ? school.name : '-'
-    }
-  },
-  {
-    accessorKey: 'isActive',
-    header: 'Status',
-    cell: ({ row }) => {
-      const color = row.original.isActive ? 'success' : 'error'
-      return h(UBadge, {
-        class: 'capitalize',
-        variant: 'subtle',
-        color
-      }, () => row.original.isActive ? 'Active' : 'Inactive')
     }
   },
   {

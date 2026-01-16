@@ -3,8 +3,8 @@ import type { TableColumn } from '@nuxt/ui'
 import { upperFirst } from 'scule'
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
-import type { Tutorial } from '~/stores/tutorials'
 import { formatDuration } from '~/utils/formatting'
+import type { Tutorial } from '~~/generated/prisma/client'
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -35,26 +35,16 @@ function getRowItems(row: Row<Tutorial>) {
       label: 'Copy tutorial ID',
       icon: 'i-lucide-copy',
       onSelect() {
-        navigator.clipboard.writeText(row.original.id.toString())
+        navigator.clipboard.writeText(row.original.title.toString())
         toast.add({
           title: 'Copied to clipboard',
-          description: 'Tutorial ID copied to clipboard'
+          description: 'Tutorial title copied to clipboard'
         })
       }
     },
     {
-      type: 'separator'
-    },
-    {
       label: 'View tutorial details',
       icon: 'i-lucide-eye',
-      onSelect() {
-        router.push(`/admin/tutorials/${row.original.id}`)
-      }
-    },
-    {
-      label: 'Edit tutorial',
-      icon: 'i-lucide-edit',
       onSelect() {
         router.push(`/admin/tutorials/${row.original.id}`)
       }

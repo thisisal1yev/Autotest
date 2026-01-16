@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
         login: data.login,
         fullName: data.fullName,
         password: hashSync(data.password, 10),
-        role: 'USER',
+        role: 'STUDENT',
         drivingSchoolId: user.drivingSchoolId
       },
       include: {

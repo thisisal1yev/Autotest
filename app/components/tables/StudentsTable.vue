@@ -3,7 +3,7 @@ import type { TableColumn } from '@nuxt/ui'
 import { upperFirst } from 'scule'
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
-import type { User } from '~/stores/auth'
+import type { User } from '~~/generated/prisma/client'
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -170,6 +170,11 @@ const columns: TableColumn<User>[] = [
       })
     },
     cell: ({ row }) => row.original.login || '-'
+  },
+  {
+    accessorKey: 'email',
+    header:'Email',
+    cell: ({ row }) => row.original.email || '-'
   },
   {
     id: 'actions',

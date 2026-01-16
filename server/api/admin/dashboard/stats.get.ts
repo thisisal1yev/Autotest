@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     const [studentsCount, testsCount, tutorialsCount, testResults] = await Promise.all([
       prisma.user.count({
         where: {
-          role: 'USER',
+          role: 'STUDENT',
           drivingSchoolId: schoolId,
           isActive: true
         }
