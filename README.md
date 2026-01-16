@@ -2,7 +2,7 @@
 
 ---
 
-<img src="/demo.png" alt="Autotest Demo" width="800"/>
+<img src="./public/demo.png" alt="Autotest Demo" width="800"/>
 
 ## 🛠 Stack
 
