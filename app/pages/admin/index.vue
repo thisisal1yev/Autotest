@@ -8,6 +8,7 @@ definePageMeta({
   middleware: ["auth", "role"],
 });
 
+const { isNotificationsSlideoverOpen } = useDashboard();
 const items = [
   [
     {
@@ -33,7 +34,6 @@ const range = shallowRef<Range>({
   end: new Date(),
 });
 const period = ref<Period>("daily");
-const { isNotificationsSlideoverOpen } = useDashboard();
 
 const { data } = useFetch("/api/auth/me", { method: "GET", server: false });
 const { data: stats } = useFetch("/api/admin/dashboard/stats", {
@@ -239,6 +239,7 @@ const statsMock = [
                 </UButton>
               </div>
             </template>
+
             <div
               v-if="
                 !recent?.recentTestResults ||
@@ -252,6 +253,7 @@ const statsMock = [
               />
               <p class="text-sm text-muted">No test results yet</p>
             </div>
+
             <div v-else class="space-y-3">
               <div
                 v-for="result in recent.recentTestResults"
@@ -277,6 +279,7 @@ const statsMock = [
                       ]"
                     />
                   </div>
+
                   <div class="flex-1 min-w-0">
                     <p class="font-medium text-highlighted truncate">
                       {{ result.user.fullName }}
@@ -286,6 +289,7 @@ const statsMock = [
                     </p>
                   </div>
                 </div>
+
                 <div class="flex items-center gap-3 ml-4">
                   <div class="text-right">
                     <p
@@ -296,6 +300,7 @@ const statsMock = [
                     >
                       {{ result.score }}%
                     </p>
+
                     <p class="text-xs text-muted">
                       {{ formatDateTime(result.completedAt) }}
                     </p>
@@ -310,6 +315,7 @@ const statsMock = [
             <template #header>
               <div class="flex items-center justify-between">
                 <h4 class="font-semibold">Recent Students</h4>
+
                 <UButton
                   to="/admin/students"
                   variant="ghost"
@@ -327,7 +333,7 @@ const statsMock = [
               class="text-center py-8"
             >
               <UIcon
-                name="i-lucide-users-x"
+                name="i-lucide-user-x"
                 class="w-12 h-12 text-muted mx-auto mb-2"
               />
               <p class="text-sm text-muted">No students yet</p>

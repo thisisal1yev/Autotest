@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
-import { useAuthStore } from '~/stores/auth'
 
 defineProps<{
   collapsed?: boolean

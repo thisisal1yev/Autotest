@@ -43,7 +43,7 @@ const createStudent = async () => {
 
         <template #right>
           <UModal
-            v-modal:open="openCreateModal"
+            v-model:open="openCreateModal"
             title="Create student"
             portal="body"
           >

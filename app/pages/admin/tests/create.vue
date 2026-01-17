@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Question } from '~/stores/tests'
+import type { Question } from '~~/generated/prisma/client';
 
 definePageMeta({
   layout: "admin",

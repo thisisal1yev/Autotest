@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useStudentTestStore } from "~/stores/studentTest";
-
 definePageMeta({
   layout: "login",
   middleware: ["auth", "role"],
