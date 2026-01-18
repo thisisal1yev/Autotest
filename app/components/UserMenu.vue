@@ -19,7 +19,7 @@ const user = computed(() => ({
 
 const handleLogout = async () => {
   await authStore.logout()
-  await router.push('/login')
+  await router.push('/auth')
 }
 
 const getSettingsRoute = () => {

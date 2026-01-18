@@ -1,91 +1,82 @@
 <script lang="ts" setup>
 interface Props {
-  isAuthenticated: boolean;
-  to: string;
-  userName: string;
+  isAuthenticated?: boolean;
+  userDashboardUrl?: string;
+  userInitials?: string;
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  isAuthenticated: false,
+  userDashboardUrl: "/dashboard",
+  userInitials: "U",
+});
 
-const headerLinks = ref([
-  {
-    id: 1,
-    label: "How it works",
-    to: "/#how-it-works",
-  },
-  {
-    id: 2,
-    label: "Features",
-    to: "/#features",
-  },
-  {
-    id: 3,
-    label: "For schools",
-    to: "/#personas",
-  },
-  {
-    id: 4,
-    label: "Get started",
-    to: "/#get-started",
-  },
-]);
+const NAV_LINKS = [
+  { label: "Features", to: "/#features" },
+  { label: "How it works", to: "/#how-it-works" },
+  { label: "FAQ", to: "/#faq" },
+] as const;
+
+const isMobileMenuOpen = ref(false);
 </script>
 
 <template>
-  <header
-    class="bg-default/75 backdrop-blur border-b border-default sticky top-0 z-50 flex flex-col"
-  >
-    <div
-      class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6"
-    >
-      <NuxtLink to="/" class="flex items-center gap-2">
-        <NuxtImg
-          alt="logo"
-          src="/logo.jpg"
-          width="32"
-          height="32"
-          class="rounded-xl"
-        />
-
-        <div class="flex flex-col">
-          <span class="text-sm font-semibold"> EDU Autotest </span>
-
-          <span class="text-xs text-gray-500 dark:text-gray-400">
-            Driving school testing platform
-          </span>
+  <header class="sticky top-0 z-50 border-b border-default bg-default/80 backdrop-blur-lg">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <NuxtLink to="/" class="flex items-center gap-2.5">
+        <NuxtImg src="/logo.jpg" alt="EDU Autotest" width="36" height="36" class="rounded-lg" />
+        <div class="flex-col flex">
+          <span class="text-sm font-semibold leading-tight">EDU Autotest</span>
+          <span class="text-xs text-muted hidden sm:inline-block">Driving school platform</span>
         </div>
       </NuxtLink>
 
-      <nav
-        class="hidden md:flex items-center gap-6 text-sm text-gray-600 dark:text-gray-300"
-      >
-        <NuxtLink
-          v-for="{ id, label, to } in headerLinks"
-          :to="to"
-          :key="id"
-          class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-        >
-          {{ label }}
-        </NuxtLink>
+      <nav class="hidden items-center gap-1 md:flex">
+        <UButton v-for="link in NAV_LINKS" :key="link.to" :to="link.to" variant="ghost" color="neutral">
+          {{ link.label }}
+        </UButton>
       </nav>
 
-      <div class="flex items-center gap-3">
-        <UButton to="/pricing" size="sm" variant="ghost"> Pricing </UButton>
+      <div class="flex items-center gap-2">
+        <UButton to="/pricing" variant="ghost" color="neutral" class="hidden sm:inline-flex">
+          Pricing
+        </UButton>
 
         <template v-if="isAuthenticated">
-          <NuxtLink :to="to">
-            <div
-              class="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-semibold"
-            >
-              {{ userName }}
-            </div>
-          </NuxtLink>
+          <UButton :to="userDashboardUrl" color="primary" variant="soft" class="user">
+            {{ userInitials }}
+          </UButton>
         </template>
 
         <template v-else>
-          <UButton to="/login" size="sm"> Sign in </UButton>
+          <UButton to="/auth">
+            Sign in
+          </UButton>
         </template>
+
+        <UButton variant="ghost" color="neutral" class="md:hidden"
+          :icon="isMobileMenuOpen ? 'i-lucide-x' : 'i-lucide-menu'" @click="isMobileMenuOpen = !isMobileMenuOpen" />
       </div>
     </div>
+
+    <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0 -translate-y-2"
+      enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 -translate-y-2">
+      <nav v-if="isMobileMenuOpen" class="border-t border-default bg-default px-4 py-3 md:hidden">
+        <div class="flex flex-col gap-1">
+          <UButton v-for="link in NAV_LINKS" :key="link.to" :to="link.to" variant="ghost" color="neutral"
+            block class="justify-start" @click="isMobileMenuOpen = false">
+            {{ link.label }}
+          </UButton>
+
+          <USeparator class="my-2" />
+          
+          <UButton to="/pricing" variant="ghost" color="neutral" block class="justify-start"
+            @click="isMobileMenuOpen = false">
+            Pricing
+          </UButton>
+        </div>
+      </nav>
+    </Transition>
   </header>
 </template>

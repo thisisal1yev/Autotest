@@ -3,18 +3,6 @@
 
 @theme static {
   --font-sans: "Montserrat", sans-serif;
-
-  --color-green-50: #effdf5;
-  --color-green-100: #d9fbe8;
-  --color-green-200: #b3f5d1;
-  --color-green-300: #75edae;
-  --color-green-400: #00dc82;
-  --color-green-500: #00c16a;
-  --color-green-600: #00a155;
-  --color-green-700: #007f45;
-  --color-green-800: #016538;
-  --color-green-900: #0a5331;
-  --color-green-950: #052e16;
 }
 
 @layer base {
@@ -24,45 +12,7 @@
 }
 
 @layer utilities {
-  .answer-button {
-    @apply bg-blue-500 font-medium py-1.5 px-2 rounded w-full text-left;
+  .user {
+    @apply flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold;
   }
-
-  .correct {
-    @apply bg-green-600;
-  }
-
-  .incorrect {
-    @apply bg-red-600;
-  }
-}
-
-.floating-button {
-  @apply flex items-center gap-2 overflow-hidden;
-  width: 0px;
-  transition: width 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  white-space: nowrap;
-}
-
-.floating-button.expanded {
-  width: 150px;
-  transition: width 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.floating-text {
-  opacity: 0;
-  margin-left: 0.5rem;
-  color: #1f2937;
-  font-weight: 600;
-  transition: opacity 250ms ease 120ms;
-}
-
-.floating-button.expanded .floating-text {
-  opacity: 1;
-}
-
-.floating-button img {
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
 }

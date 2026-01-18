@@ -142,8 +142,8 @@ const columns: TableColumn<DrivingSchoolWithSubscriptions>[] = [
     },
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
-        h('div', { class: 'flex h-10 w-10 items-center justify-center rounded-full bg-primary/10' }, [
-          h('span', { class: 'text-primary font-semibold' }, firstLetter(row.original.name).toUpperCase())
+        h('div', { class: 'user' }, [
+          h('span', firstLetter(row.original.name).toUpperCase())
         ]),
         h('div', undefined, [
           h('p', { class: 'font-medium text-highlighted' }, row.original.name),

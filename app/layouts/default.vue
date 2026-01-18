@@ -15,7 +15,7 @@ const userName = firstLetter(authStore.user?.fullName || "");
 </script>
 
 <template>
-  <Header :to="toDashboard" :isAuthenticated="authStore.isAuthenticated" :userName="userName" />
+  <Header :userDashboardUrl="toDashboard" :isAuthenticated="authStore.isAuthenticated" :userInitials="userName" />
 
   <main class="min-h-screen relative">
     <svg

@@ -8,14 +8,14 @@ export const ROLES = {
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
 export const ROLE_ROUTES: Record<Role, string> = {
-  GUEST: "/login",
+  GUEST: "/auth",
   STUDENT: "/student",
   ADMIN: "/admin",
   SUPERADMIN: "/superadmin",
 };
 
 export function getRoleRoute(role: Role): string {
-  return ROLE_ROUTES[role] || "/login";
+  return ROLE_ROUTES[role] || "/auth";
 }
 
 export function firstLetter(text: string): string {
