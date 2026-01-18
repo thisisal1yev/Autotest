@@ -1,156 +1,110 @@
 <script setup lang="ts">
-import type { Question } from '~~/generated/prisma/client';
+import type { Option, Question } from '~~/generated/prisma/client';
 
 definePageMeta({
   layout: "admin",
   middleware: ["auth", "role"],
 });
 
+interface QuestionForm extends Question {
+  options: Option[];
+}
+
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 
-// Генерация уникального ID
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+const title = route.query.title as string || '';
+const description = route.query.description as string || '';
+const timeLimit = route.query.timeLimit ? Number(route.query.timeLimit) : null;
+
+const items = [
+  {
+    label: 'Description',
+    value: description
+  },
+  {
+    label: 'Time limit',
+    value: (timeLimit) + ' min'
+  }
+]
+
+const questions = ref<QuestionForm[]>([]);
+
+function generateId(): number {
+  return Date.now() + Math.floor(Math.random() * 10000);
 }
 
-// Инициализация пустого массива вопросов
-const questions = ref<Question[]>([]);
-
-const formState = reactive({
-  title: (route.query.title as string) || '',
-  description: (route.query.description as string) || '',
-  timeLimit: route.query.timeLimit ? parseInt(route.query.timeLimit as string) : null,
-  questions: questions,
-});
-
-// Добавление нового вопроса
 function addQuestion() {
+  const now = new Date();
   questions.value.push({
     id: generateId(),
-    text: '',
-    type: 'single',
-    options: [
-      { id: generateId(), text: '', isCorrect: false },
-      { id: generateId(), text: '', isCorrect: false }
-    ],
-    points: 1
-  })
+    title: '',
+    comment: '',
+    imgPath: '',
+    options: [],
+    testId: 0,
+    createdAt: now,
+    updatedAt: now
+  });
 }
 
-// Удаление вопроса
 function removeQuestion(index: number) {
-  questions.value.splice(index, 1)
+  questions.value.splice(index, 1);
 }
 
-// Обновление вопроса
-function updateQuestion(index: number, updatedQuestion: Question) {
-  questions.value[index] = updatedQuestion
-}
-
-// Валидация перед отправкой
-function validateForm(): boolean {
-  if (!formState.title) {
-    toast.add({
-      title: 'Validation Error',
-      description: 'Test title is required',
-      color: 'error'
-    })
-    return false
+function validate(): boolean {
+  if (!title) {
+    toast.add({ title: 'Error', description: 'Test title is required', color: 'error' });
+    return false;
   }
 
   if (questions.value.length === 0) {
-    toast.add({
-      title: 'Validation Error',
-      description: 'At least one question is required',
-      color: 'error'
-    })
-    return false
+    toast.add({ title: 'Error', description: 'Add at least one question', color: 'error' });
+    return false;
   }
 
-  // Валидация каждого вопроса
   for (let i = 0; i < questions.value.length; i++) {
-    const question = questions.value[i]
-    
-    if (!question) continue
-    
-    if (!question.text.trim()) {
-      toast.add({
-        title: 'Validation Error',
-        description: `Question ${i + 1}: Question text is required`,
-        color: 'error'
-      })
-      return false
+    const q = questions.value[i];
+
+    if (!q?.title.trim()) {
+      toast.add({ title: 'Error', description: `Question ${i + 1}: title is required`, color: 'error' });
+      return false;
     }
 
-    if (question.options.length < 2) {
-      toast.add({
-        title: 'Validation Error',
-        description: `Question ${i + 1}: At least 2 options are required`,
-        color: 'error'
-      })
-      return false
+    if ((q?.options.length ?? 0) < 2) {
+      toast.add({ title: 'Error', description: `Question ${i + 1}: add at least 3 options`, color: 'error' });
+      return false;
     }
 
-    const hasEmptyOption = question.options.some(opt => !opt.text.trim())
-    if (hasEmptyOption) {
-      toast.add({
-        title: 'Validation Error',
-        description: `Question ${i + 1}: All options must have text`,
-        color: 'error'
-      })
-      return false
-    }
-
-    const hasCorrectAnswer = question.options.some(opt => opt.isCorrect)
-    if (!hasCorrectAnswer) {
-      toast.add({
-        title: 'Validation Error',
-        description: `Question ${i + 1}: At least one option must be correct`,
-        color: 'error'
-      })
-      return false
+    if (!q?.options.some(o => o.isCorrect)) {
+      toast.add({ title: 'Error', description: `Question ${i + 1}: mark correct answer`, color: 'error' });
+      return false;
     }
   }
 
-  return true
+  return true;
 }
 
-// Создание теста
-const createTest = async () => {
-  if (!validateForm()) {
-    return
-  }
+async function submit() {
+  if (!validate()) return;
 
   try {
     await $fetch("/api/admin/tests", {
       method: "POST",
       body: {
-        data: {
-          title: formState.title,
-          description: formState.description,
-          timeLimit: formState.timeLimit,
-          questions: questions.value
-        },
+        title,
+        questions: questions.value,
+        description,
+        timeLimit,
       },
-    })
+    });
 
-    toast.add({
-      title: "Test created",
-      description: "The test has been successfully created.",
-      color: 'success'
-    })
-
-    router.push('/admin/tests')
+    toast.add({ title: "Success", description: "Test created", color: 'success' });
+    router.push('/admin/tests');
   } catch (error: unknown) {
-    toast.add({
-      title: "Error",
-      description: error && typeof error === 'object' && 'message' in error 
-        ? String(error.message) 
-        : 'Failed to create test',
-      color: 'error'
-    })
+    const message = error instanceof Error ? error.message : 'Failed to create test';
+    toast.add({ title: "Error", description: message, color: 'error' });
   }
 }
 </script>
@@ -158,76 +112,43 @@ const createTest = async () => {
 <template>
   <UDashboardPanel id="create-test">
     <template #header>
-      <UDashboardNavbar title="Create Test" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar title="Create Test">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
-
         <template #right>
-          <UButton
-            color="info"
-            label="Cancel"
-            @click="navigateTo('/admin')"
-          />
+          <UButton color="error" label="Cancel" @click="router.push('/admin/tests')" />
         </template>
       </UDashboardNavbar>
     </template>
 
     <template #body>
-      <h3 class="text-2xl font-bold">Test title: {{ route.query.title }}</h3>
+      <UForm @submit.prevent="submit" class="space-y-6">
+        <Description :title="title" :items="items" />
 
-      <div class="text-gray-600 dark:text-gray-400">
-        <p><b>Test description:</b> {{ route.query.description }}</p>
+        <div class="flex items-center justify-between">
+          <h4 class="text-lg font-semibold">Questions ({{ questions.length }})</h4>
 
-        <p><b>Test time limit:</b> {{ route.query.timeLimit }} minutes</p>
-      </div>
-
-      <UForm :state="formState" class="space-y-6" @submit.prevent="createTest">
-        <!-- Список вопросов -->
-        <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <h4 class="text-lg font-semibold">Questions</h4>
-            <UButton
-              color="primary"
-              variant="soft"
-              icon="i-lucide-plus"
-              @click="addQuestion"
-            >
-              Add Question
-            </UButton>
-          </div>
-
-          <div v-if="questions.length === 0" class="text-center py-8 border border-dashed border-default rounded-lg">
-            <UIcon name="i-lucide-help-circle" class="w-12 h-12 text-muted mx-auto mb-2" />
-            <p class="text-muted">No questions added yet</p>
-            <p class="text-sm text-muted mt-1">Click "Add Question" to get started</p>
-          </div>
-
-          <QuestionForm
-            v-for="(question, index) in questions"
-            :key="question.id"
-            :question="question"
-            :index="index"
-            @update:question="(updated: Question) => updateQuestion(index, updated)"
-            @remove="removeQuestion(index)"
-          />
+          <UButton icon="i-lucide-plus" @click="addQuestion">Add Question</UButton>
         </div>
 
-        <!-- Кнопка создания теста -->
-        <div class="flex justify-end gap-3 pt-4 border-t border-default">
-          <UButton
-            color="neutral"
-            variant="outline"
-            label="Cancel"
-            @click="router.push('/admin/tests')"
-          />
+        <div v-if="questions.length === 0" class="text-center py-12 border border-dashed border-default rounded-lg">
+          <UIcon name="i-lucide-help-circle" class="w-12 h-12 text-muted mx-auto mb-2" />
 
-          <UButton
-            type="submit"
-            color="primary"
-            label="Create Test"
-            :disabled="questions.length === 0"
-          />
+          <p class="text-muted">No questions yet</p>
+        </div>
+
+        <QuestionForm v-for="(question, index) in questions" :key="question.id" :model-value="question"
+          @update:model-value="(val) => questions[index] = val" :index="index" @remove="removeQuestion(index)" />
+
+        <div class="flex justify-end gap-3 pt-4">
+          <UButton color="neutral" variant="outline" @click="router.push('/admin/tests')">
+            Cancel
+          </UButton>
+
+          <UButton color="primary" :disabled="questions.length === 0" @click="submit">
+            Create Test
+          </UButton>
         </div>
       </UForm>
     </template>

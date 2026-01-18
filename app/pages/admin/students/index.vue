@@ -63,6 +63,7 @@ const createStudent = async () => {
                 <UFormField
                   name="fullName"
                   label="Full Name"
+                  required
                 >
                   <UInput
                     v-model="formState.fullName"
@@ -76,6 +77,7 @@ const createStudent = async () => {
                 <UFormField
                   name="email"
                   label="Email"
+                  required
                 >
                   <UInput
                     v-model="formState.email"
@@ -89,6 +91,7 @@ const createStudent = async () => {
                 <UFormField
                   name="login"
                   label="Login"
+                  required
                 >
                   <UInput
                     v-model="formState.login"
@@ -102,6 +105,7 @@ const createStudent = async () => {
                 <UFormField
                   name="password"
                   label="Password"
+                  required
                 >
                   <UInput
                     v-model="formState.password"

@@ -15,7 +15,11 @@ export default defineEventHandler(async (event) => {
         drivingSchoolId: true,
       },
       include: {
-        questions: true,
+        questions: {
+          include:{
+            options:true
+          }
+        },
       },
     });
 

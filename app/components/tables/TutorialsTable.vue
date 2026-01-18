@@ -32,7 +32,7 @@ function getRowItems(row: Row<Tutorial>) {
       label: 'Actions'
     },
     {
-      label: 'Copy tutorial ID',
+      label: 'Copy tutorial title',
       icon: 'i-lucide-copy',
       onSelect() {
         navigator.clipboard.writeText(row.original.title.toString())

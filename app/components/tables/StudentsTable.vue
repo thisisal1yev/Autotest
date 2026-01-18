@@ -41,7 +41,7 @@ function getRowItems(row: Row<User>) {
         navigator.clipboard.writeText(row.original.fullName.toString())
         toast.add({
           title: 'Copied to clipboard',
-          description: 'Student ID copied to clipboard'
+          description: 'Student fullname copied to clipboard'
         })
       }
     },

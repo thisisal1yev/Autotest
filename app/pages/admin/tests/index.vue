@@ -38,7 +38,7 @@ const formState = reactive({
                   )
                 "
               >
-                <UFormField name="title" label="Title">
+                <UFormField name="title" label="Title" required>
                   <UInput
                     v-model="formState.title"
                     size="lg"
@@ -58,13 +58,13 @@ const formState = reactive({
                   />
                 </UFormField>
 
-                <UFormField name="timeLimit" label="Time limit">
+                <UFormField name="timeLimit" label="Time limit" required>
                   <UInput
                     v-model="formState.timeLimit"
                     size="lg"
                     class="w-full"
                     type="number"
-                    placeholder="Enter time limit"
+                    placeholder="Enter time limit(minutes)"
                   />
                 </UFormField>
 
