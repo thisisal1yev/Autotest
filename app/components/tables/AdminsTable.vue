@@ -11,19 +11,12 @@ interface Admin {
   fullName: string
   role: 'ADMIN'
   drivingSchoolId: number | null
-  drivingSchool: {
-    id: number
-    name: string
-    email?: string | null
-    phone?: string | null
-    address?: string | null
-  } | null
+  drivingSchool: { id: number; name: string } | null
   createdAt: Date
   updatedAt: Date
 }
 
 const UButton = resolveComponent('UButton')
-const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UCheckbox = resolveComponent('UCheckbox')
 
@@ -31,69 +24,87 @@ const toast = useToast()
 const table = useTemplateRef('table')
 const router = useRouter()
 
-const columnFilters = ref([
-  {
-    id: 'fullName',
-    value: ''
-  }
-])
+const columnFilters = ref([{ id: 'fullName', value: '' }])
 const columnVisibility = ref()
 const rowSelection = ref({})
 
-const { data, status } = useFetch<Admin[]>(
-  '/api/superadmin/admins',
-  {
-    lazy: true
+const { data, status, refresh } = useFetch<Admin[]>('/api/superadmin/admins', { lazy: true })
+
+// Delete state
+const openDeleteModal = ref(false)
+const deleteLoading = ref(false)
+const itemToDelete = ref<Admin | null>(null)
+
+function getSelectedCount(): number {
+  return table.value?.tableApi?.getFilteredSelectedRowModel().rows.length || 0
+}
+
+function openSingleDelete(item: Admin) {
+  itemToDelete.value = item
+  openDeleteModal.value = true
+}
+
+function openBulkDelete() {
+  itemToDelete.value = null
+  openDeleteModal.value = true
+}
+
+const deleteMessage = computed(() => {
+  if (itemToDelete.value) {
+    return `Are you sure you want to delete "${itemToDelete.value.fullName}"?`
   }
-)
+  return `Are you sure you want to delete ${getSelectedCount()} admin(s)?`
+})
+
+async function handleDelete() {
+  deleteLoading.value = true
+  try {
+    if (itemToDelete.value) {
+      await $fetch(`/api/superadmin/admins/${itemToDelete.value.id}`, { method: 'DELETE' })
+      toast.add({ title: 'Admin deleted', color: 'success' })
+    } else {
+      const ids = table.value?.tableApi?.getFilteredSelectedRowModel().rows.map((r: Row<Admin>) => r.original.id) || []
+      await $fetch('/api/superadmin/admins', { method: 'DELETE', body: { ids } })
+      toast.add({ title: `${ids.length} admin(s) deleted`, color: 'success' })
+      table.value?.tableApi?.resetRowSelection()
+    }
+    openDeleteModal.value = false
+    refresh()
+  } catch {
+    toast.add({ title: 'Error deleting', color: 'error' })
+  } finally {
+    deleteLoading.value = false
+  }
+}
 
 function getRowItems(row: Row<Admin>) {
   return [
+    { type: 'label', label: 'Actions' },
     {
-      type: 'label',
-      label: 'Actions'
-    },
-    {
-      label: 'Copy admin name',
+      label: 'Copy name',
       icon: 'i-lucide-copy',
       onSelect() {
-        navigator.clipboard.writeText(row.original.fullName.toString())
-        toast.add({
-          title: 'Copied to clipboard',
-          description: 'Admin fullname copied to clipboard'
-        })
+        navigator.clipboard.writeText(row.original.fullName)
+        toast.add({ title: 'Copied to clipboard' })
       }
     },
     {
-      label: 'View admin details',
+      label: 'View details',
       icon: 'i-lucide-eye',
-      onSelect() {
-        router.push(`/superadmin/admins/${row.original.id}`)
-      }
+      onSelect: () => router.push(`/superadmin/admins/${row.original.id}`)
     },
+    { type: 'separator' },
     {
-      type: 'separator'
-    },
-    {
-      label: 'Delete admin',
+      label: 'Delete',
       icon: 'i-lucide-trash',
       color: 'error',
-      onSelect() {
-        toast.add({
-          title: 'Admin deleted',
-          description: 'The admin has been deleted.'
-        })
-      }
+      onSelect: () => openSingleDelete(row.original)
     }
   ]
 }
 
 function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
+  return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 const columns: TableColumn<Admin>[] = [
@@ -101,51 +112,33 @@ const columns: TableColumn<Admin>[] = [
     id: 'select',
     header: ({ table }) =>
       h(UCheckbox, {
-        'modelValue': table.getIsSomePageRowsSelected()
-          ? 'indeterminate'
-          : table.getIsAllPageRowsSelected(),
-        'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
-          table.toggleAllPageRowsSelected(!!value),
+        'modelValue': table.getIsSomePageRowsSelected() ? 'indeterminate' : table.getIsAllPageRowsSelected(),
+        'onUpdate:modelValue': (value: boolean | 'indeterminate') => table.toggleAllPageRowsSelected(!!value),
         'ariaLabel': 'Select all'
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
         'modelValue': row.getIsSelected(),
-        'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
-          row.toggleSelected(!!value),
+        'onUpdate:modelValue': (value: boolean | 'indeterminate') => row.toggleSelected(!!value),
         'ariaLabel': 'Select row'
       })
   },
-  {
-    accessorKey: 'id',
-    header: 'ID'
-  },
+  { accessorKey: 'id', header: 'ID' },
   {
     accessorKey: 'fullName',
     header: 'Full Name',
     filterFn: (row, id, filterValue) => {
-      const searchValue = filterValue?.toLowerCase() || ''
-      if (!searchValue) return true
+      const search = filterValue?.toLowerCase() || ''
+      if (!search) return true
       const fullName = (row.getValue(id) as string)?.toLowerCase() || ''
-      const email = (row.original.email as string)?.toLowerCase() || ''
-      return fullName.includes(searchValue) || email.includes(searchValue)
+      const email = row.original.email?.toLowerCase() || ''
+      return fullName.includes(search) || email.includes(search)
     },
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
-        h(
-          'div',
-          {
-            class:
-                  'flex h-10 w-10 items-center justify-center rounded-full bg-primary/10'
-          },
-          [
-            h(
-              'span',
-              { class: 'text-primary font-semibold' },
-              firstLetter(row.original.fullName).toUpperCase()
-            )
-          ]
-        ),
+        h('div', { class: 'flex h-10 w-10 items-center justify-center rounded-full bg-primary/10' }, [
+          h('span', { class: 'text-primary font-semibold' }, firstLetter(row.original.fullName).toUpperCase())
+        ]),
         h('div', undefined, [
           h('p', { class: 'font-medium text-highlighted' }, row.original.fullName),
           h('p', { class: 'text-sm text-muted' }, `@${row.original.login}`)
@@ -157,16 +150,9 @@ const columns: TableColumn<Admin>[] = [
     accessorKey: 'email',
     header: ({ column }) => {
       const isSorted = column.getIsSorted()
-
       return h(UButton, {
-        color: 'neutral',
-        variant: 'ghost',
-        label: 'Email',
-        icon: isSorted
-          ? isSorted === 'asc'
-            ? 'i-lucide-arrow-up-narrow-wide'
-            : 'i-lucide-arrow-down-wide-narrow'
-          : 'i-lucide-arrow-up-down',
+        color: 'neutral', variant: 'ghost', label: 'Email',
+        icon: isSorted ? (isSorted === 'asc' ? 'i-lucide-arrow-up-narrow-wide' : 'i-lucide-arrow-down-wide-narrow') : 'i-lucide-arrow-up-down',
         class: '-mx-2.5',
         onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
       })
@@ -176,174 +162,80 @@ const columns: TableColumn<Admin>[] = [
   {
     accessorKey: 'drivingSchool',
     header: 'Driving School',
-    cell: ({ row }) => {
-      const school = row.original.drivingSchool
-      return school ? school.name : '-'
-    }
+    cell: ({ row }) => row.original.drivingSchool?.name || '-'
   },
-  {
-    accessorKey: 'createdAt',
-    header: 'Created',
-    cell: ({ row }) => formatDate(row.original.createdAt)
-  },
+  { accessorKey: 'createdAt', header: 'Created', cell: ({ row }) => formatDate(row.original.createdAt) },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      return h(
-        'div',
-        { class: 'text-right' },
-        h(
-          UDropdownMenu,
-          {
-            content: {
-              align: 'end'
-            },
-            items: getRowItems(row)
-          },
-          () =>
-            h(UButton, {
-              icon: 'i-lucide-ellipsis-vertical',
-              color: 'neutral',
-              variant: 'ghost',
-              class: 'ml-auto'
-            })
-        )
+    cell: ({ row }) => h('div', { class: 'text-right' },
+      h(UDropdownMenu, { content: { align: 'end' }, items: getRowItems(row) }, () =>
+        h(UButton, { icon: 'i-lucide-ellipsis-vertical', color: 'neutral', variant: 'ghost', class: 'ml-auto' })
       )
-    }
+    )
   }
 ]
 
 const searchQuery = computed({
-  get: (): string => {
-    return (
-      (table.value?.tableApi?.getColumn('fullName')?.getFilterValue() as string)
-      || ''
-    )
-  },
-  set: (value: string) => {
-    table.value?.tableApi
-      ?.getColumn('fullName')
-      ?.setFilterValue(value || undefined)
-  }
+  get: (): string => (table.value?.tableApi?.getColumn('fullName')?.getFilterValue() as string) || '',
+  set: (value: string) => table.value?.tableApi?.getColumn('fullName')?.setFilterValue(value || undefined)
 })
 
-const pagination = ref({
-  pageIndex: 0,
-  pageSize: 10
-})
+const pagination = ref({ pageIndex: 0, pageSize: 10 })
 </script>
 
 <template>
   <div class="flex flex-wrap items-center justify-between gap-1.5">
-    <div class="flex flex-wrap items-center gap-1.5 flex-1">
-      <UInput
-        v-model="searchQuery"
-        class="w-sm"
-        size="md"
-        icon="i-lucide-search"
-        type="text"
-        placeholder="Search by name or email..."
-      />
-    </div>
+    <UInput v-model="searchQuery" class="w-sm" icon="i-lucide-search" placeholder="Search by name or email..." />
 
     <div class="flex flex-wrap items-center gap-1.5">
-      <UButton
-        v-if="table?.tableApi?.getFilteredSelectedRowModel().rows.length"
-        label="Delete"
-        color="error"
-        variant="subtle"
-        icon="i-lucide-trash"
-      >
+      <UButton v-if="getSelectedCount()" label="Delete" color="error" variant="subtle" icon="i-lucide-trash"
+        @click="openBulkDelete">
         <template #trailing>
-          <UKbd>
-            {{ table?.tableApi?.getFilteredSelectedRowModel().rows.length }}
-          </UKbd>
+          <UKbd>{{ getSelectedCount() }}</UKbd>
         </template>
       </UButton>
 
-      <UDropdownMenu
-        :items="
-          table?.tableApi
-            ?.getAllColumns()
-            .filter((column: any) => column.getCanHide())
-            .map((column: any) => ({
-              label: upperFirst(column.id),
-              type: 'checkbox' as const,
-              checked: column.getIsVisible(),
-              onUpdateChecked(checked: boolean) {
-                table?.tableApi?.getColumn(column.id)?.toggleVisibility(!!checked);
-              },
-              onSelect(e?: Event) {
-                e?.preventDefault();
-              }
-            }))
-        "
-        :content="{ align: 'end' }"
-      >
-        <UButton
-          label="Display"
-          color="neutral"
-          variant="outline"
-          trailing-icon="i-lucide-settings-2"
-        />
+      <UDropdownMenu :items="table?.tableApi?.getAllColumns().filter((c: any) => c.getCanHide()).map((c: any) => ({
+        label: upperFirst(c.id),
+        type: 'checkbox' as const,
+        checked: c.getIsVisible(),
+        onUpdateChecked: (checked: boolean) => c.toggleVisibility(!!checked),
+        onSelect: (e?: Event) => e?.preventDefault()
+      }))" :content="{ align: 'end' }">
+        <UButton label="Display" color="neutral" variant="outline" trailing-icon="i-lucide-settings-2" />
       </UDropdownMenu>
     </div>
   </div>
 
-  <UTable
-    v-if="data"
-    ref="table"
-    v-model:column-filters="columnFilters"
-    v-model:column-visibility="columnVisibility"
-    v-model:row-selection="rowSelection"
-    v-model:pagination="pagination"
-    :pagination-options="{
-      getPaginationRowModel: getPaginationRowModel()
-    }"
-    class="shrink-0"
-    :data="data || []"
-    :columns="columns"
-    :loading="status === 'pending'"
-    :ui="{
+  <UTable v-if="data" ref="table" v-model:column-filters="columnFilters" v-model:column-visibility="columnVisibility"
+    v-model:row-selection="rowSelection" v-model:pagination="pagination"
+    :pagination-options="{ getPaginationRowModel: getPaginationRowModel() }" class="shrink-0" :data="data"
+    :columns="columns" :loading="status === 'pending'" :ui="{
       base: 'table-fixed border-separate border-spacing-0',
       thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
       tbody: '[&>tr]:last:[&>td]:border-b-0',
       th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
       td: 'border-b border-default',
       separator: 'h-0'
-    }"
-  >
+    }">
     <template #empty-state>
       <div class="flex flex-col items-center justify-center py-12">
-        <UIcon
-          name="i-lucide-user-cog"
-          class="w-12 h-12 text-muted mb-4"
-        />
-        <p class="text-muted">
-          No admins found
-        </p>
+        <UIcon name="i-lucide-user-cog" class="w-12 h-12 text-muted mb-4" />
+        <p class="text-muted">No admins found</p>
       </div>
     </template>
   </UTable>
 
-  <div
-    class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto"
-  >
+  <div class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto">
     <div class="text-sm text-muted">
-      {{ table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0 }} of
-      {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s)
-      selected.
+      {{ getSelectedCount() }} of {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s) selected.
     </div>
-
-    <div class="flex items-center gap-1.5">
-      <UPagination
-        :default-page="
-          (table?.tableApi?.getState().pagination.pageIndex || 0) + 1
-        "
-        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
-        :total="table?.tableApi?.getFilteredRowModel().rows.length"
-        @update:page="(p: number) => table?.tableApi?.setPageIndex(p - 1)"
-      />
-    </div>
+    <UPagination :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+      :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+      :total="table?.tableApi?.getFilteredRowModel().rows.length"
+      @update:page="(p: number) => table?.tableApi?.setPageIndex(p - 1)" />
   </div>
+
+  <ConfirmModal v-model:open="openDeleteModal" title="Delete Admin" :message="deleteMessage" confirm-text="Delete"
+    confirm-color="error" :loading="deleteLoading" @confirm="handleDelete" />
 </template>

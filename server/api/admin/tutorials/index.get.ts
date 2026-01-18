@@ -17,9 +17,6 @@ export default defineEventHandler(async (event) => {
 
     const tutorials = await prisma.tutorial.findMany({
       where,
-      include: {
-        drivingSchool: true
-      },
       orderBy: {
         createdAt: 'desc'
       }

@@ -10,9 +10,6 @@ export default defineEventHandler(async (event) => {
 
     const students = await prisma.user.findMany({
       where: { role: "STUDENT", drivingSchoolId: user.drivingSchoolId },
-      include: {
-        drivingSchool: true,
-      },
       orderBy: {
         createdAt: "desc",
       },

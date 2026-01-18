@@ -17,9 +17,6 @@ export default defineEventHandler(async (event) => {
 
     const tests = await prisma.test.findMany({
       where,
-      include: {
-        questions: true
-      },
       omit: {
         drivingSchoolId: true,
       },
