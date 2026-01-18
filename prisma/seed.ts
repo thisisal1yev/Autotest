@@ -1,4 +1,3 @@
-// prisma/seed.ts
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hashSync } from "bcrypt";
 import { PrismaClient } from "../generated/prisma/client";
@@ -18,14 +17,12 @@ import {
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
-// Store created entity IDs for relationships
 const createdIds = {
   drivingSchools: [] as number[],
   students: [] as number[],
   tests: [] as { id: number; questionIds: number[] }[],
 };
 
-// Helper functions
 const hashPassword = (password: string) => hashSync(password, 10);
 
 const getSchoolId = (index: number) => createdIds.drivingSchools[index - 1];
@@ -60,7 +57,6 @@ const buildQuestionData = (key: QuestionKey) => {
   };
 };
 
-// Seed functions
 async function seedSuperAdmin() {
   console.log("🔑 Creating superadmin...");
   await prisma.user.create({
@@ -131,7 +127,6 @@ async function seedStudents() {
 async function seedGroups() {
   console.log("👥 Creating groups...");
   for (const group of GROUPS) {
-    // Map original student indices (1-based) to actual created IDs
     const studentIds = group.studentIds.map((idx) => createdIds.students[idx - 1]);
     await prisma.group.create({
       data: {
@@ -199,13 +194,11 @@ async function seedTestResults() {
     const studentId = createdIds.students[result.studentIndex - 1];
     const testData = createdIds.tests[result.testIndex - 1];
     
-    // Get questions with options for this test
     const questions = await prisma.question.findMany({
       where: { testId: testData.id },
       include: { options: true },
     });
 
-    // Create test result with answers
     await prisma.testResult.create({
       data: {
         userId: studentId,
@@ -216,7 +209,6 @@ async function seedTestResults() {
         completedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Random time in last 7 days
         answers: {
           create: questions.map((question, index) => {
-            // Simulate answering - correct answers based on score probability
             const shouldBeCorrect = Math.random() * 100 < result.score;
             const correctOption = question.options.find((o) => o.isCorrect);
             const wrongOptions = question.options.filter((o) => !o.isCorrect);
@@ -238,7 +230,6 @@ async function seedTestResults() {
   }
 }
 
-// Main seed function
 async function up() {
   console.log("🌱 Starting seed process...\n");
 
@@ -258,7 +249,6 @@ async function up() {
 async function down() {
   console.log("🧹 Cleaning database...\n");
 
-  // Delete in reverse order of dependencies
   await prisma.answers.deleteMany();
   await prisma.testResult.deleteMany();
   await prisma.option.deleteMany();
@@ -280,10 +270,8 @@ async function main() {
     if (args.includes("--down") || args.includes("-d")) {
       await down();
     } else if (args.includes("--seed-only") || args.includes("-s")) {
-      // Seed without cleaning (original behavior)
       await up();
     } else {
-      // Default: always reset (clean + seed)
       await down();
       await up();
     }

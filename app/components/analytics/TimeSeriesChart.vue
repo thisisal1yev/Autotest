@@ -37,7 +37,6 @@ const xTicks = (i: number) => {
   if (i === 0 || i === chartData.value.length - 1 || !chartData.value[i]) {
     return ''
   }
-  // Show every nth tick to avoid crowding
   const step = Math.max(1, Math.floor(chartData.value.length / 8))
   if (i % step !== 0 && i !== chartData.value.length - 1) {
     return ''

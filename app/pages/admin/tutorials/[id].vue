@@ -94,20 +94,16 @@ async function updateTutorial() {
         </template>
 
         <template #body>
-            <!-- Loading -->
             <div v-if="status === 'pending'" class="flex justify-center py-12">
                 <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin text-muted" />
             </div>
 
-            <!-- Error -->
             <div v-else-if="error" class="text-center py-12">
                 <UIcon name="i-lucide-alert-circle" class="w-12 h-12 text-error mx-auto mb-2" />
                 <p class="text-error">Failed to load tutorial</p>
             </div>
 
-            <!-- Content -->
             <div v-else-if="tutorial" class="space-y-6">
-                <!-- Video Player -->
                 <div class="aspect-video bg-black rounded-lg overflow-hidden">
                     <video v-if="tutorial.videoUrl" :src="tutorial.videoUrl"
                         :poster="tutorial.thumbnailUrl || undefined" controls class="w-full h-full object-contain">
@@ -118,11 +114,9 @@ async function updateTutorial() {
                     </div>
                 </div>
 
-                <!-- Tutorial Info -->
                 <Description :title="tutorial.title" :items="tutorialInfo" :loading="false" :error="false" />
             </div>
 
-            <!-- Edit Modal -->
             <UModal v-model:open="openEditModal" title="Edit Tutorial">
                 <template #body>
                     <form class="space-y-4" @submit.prevent="updateTutorial">

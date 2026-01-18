@@ -92,10 +92,8 @@ async function updateTest() {
       </div>
 
       <div v-else-if="test" class="space-y-6">
-        <!-- Test Info -->
         <Description :items="testInfo" :loading="status === 'idle'" :error="!!error" />
 
-        <!-- Questions -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <h4 class="text-lg font-semibold">Questions ({{ questions.length }})</h4>
@@ -112,7 +110,6 @@ async function updateTest() {
         </div>
       </div>
 
-      <!-- Edit Modal -->
       <UModal v-model:open="openEditModal" title="Edit Test">
         <template #body>
           <form class="space-y-4" @submit.prevent="updateTest">

@@ -30,7 +30,7 @@ const selectedRows = computed(() =>
 
 function openBulkDelete() {
   openDeleteModal.value = true
-  tutorialToDelete.value = null // null означает bulk delete
+  tutorialToDelete.value = null
 }
 
 function openSingleDelete(tutorial: Tutorial) {

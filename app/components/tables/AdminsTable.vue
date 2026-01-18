@@ -30,7 +30,6 @@ const rowSelection = ref({})
 
 const { data, status, refresh } = useFetch<Admin[]>('/api/superadmin/admins', { lazy: true })
 
-// Delete state
 const openDeleteModal = ref(false)
 const deleteLoading = ref(false)
 const itemToDelete = ref<Admin | null>(null)

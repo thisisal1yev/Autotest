@@ -1,6 +1,3 @@
-// prisma/constants.ts
-// Centralized constants for seed data
-
 export const USERS = {
   superadmin: {
     email: "torvaldsDev@gmail.com",
@@ -37,16 +34,13 @@ export const USERS = {
     },
   ],
   students: [
-    // School 1 students
     { email: "spaceElon@email.com", login: "elonM", fullName: "Elon Musk", password: "password", drivingSchoolId: 1 },
     { email: "student2@example.com", login: "student2", fullName: "John Doe", password: "password", drivingSchoolId: 1 },
     { email: "student3@example.com", login: "student3", fullName: "Alice Williams", password: "password", drivingSchoolId: 1 },
     { email: "student4@example.com", login: "student4", fullName: "Michael Brown", password: "password", drivingSchoolId: 1 },
-    // School 2 students
     { email: "student5@example.com", login: "student5", fullName: "Sarah Davis", password: "password", drivingSchoolId: 2 },
     { email: "student6@example.com", login: "student6", fullName: "David Wilson", password: "password", drivingSchoolId: 2 },
     { email: "student7@example.com", login: "student7", fullName: "Emma Martinez", password: "password", drivingSchoolId: 2 },
-    // School 3 students
     { email: "student8@example.com", login: "student8", fullName: "James Taylor", password: "password", drivingSchoolId: 3 },
     { email: "student9@example.com", login: "student9", fullName: "Olivia Anderson", password: "password", drivingSchoolId: 3 },
     { email: "student10@example.com", login: "student10", fullName: "Noah Thomas", password: "password", drivingSchoolId: 3 },
@@ -138,7 +132,6 @@ export const GROUPS = [
   },
 ] as const;
 
-// Question templates - reusable across tests
 export const QUESTIONS = {
   intersection: {
     title: "CHORRAHADAN BIRINCHI BO'LIB KIM O'TADI?",
@@ -233,7 +226,6 @@ Xulosa: Tartiblovchi ishoralarini bilish juda muhim. Har doim avval tartiblovchi
   },
 } as const;
 
-// Test configurations
 export const TESTS = [
   {
     title: "Basic Traffic Rules Test",
@@ -249,7 +241,6 @@ export const TESTS = [
     timeLimit: 20,
     passingScore: 75,
     drivingSchoolId: 1,
-    // Repeat questions multiple times as in original
     questionKeys: [
       "trafficController", "intersection", "noStoppingSign", "straightOnly", "rightHandRule",
       "trafficController", "intersection", "noStoppingSign", "straightOnly", "trafficController",
@@ -280,7 +271,6 @@ export const TESTS = [
   },
 ] as const;
 
-// Tutorial configurations
 export const TUTORIALS = [
   {
     title: "Yo'l belgilari asoslari",
@@ -338,25 +328,20 @@ export const TUTORIALS = [
   },
 ] as const;
 
-// Test results mock data (studentIndex is 1-based, testIndex is 1-based)
 export const TEST_RESULTS = [
-  // School 1 students taking tests
   { studentIndex: 1, testIndex: 1, score: 85, passed: true, timeSpent: 720 },
   { studentIndex: 1, testIndex: 2, score: 70, passed: false, timeSpent: 1100 },
   { studentIndex: 2, testIndex: 1, score: 90, passed: true, timeSpent: 600 },
   { studentIndex: 3, testIndex: 1, score: 65, passed: false, timeSpent: 850 },
-  { studentIndex: 3, testIndex: 1, score: 78, passed: true, timeSpent: 700 }, // Retake
+  { studentIndex: 3, testIndex: 1, score: 78, passed: true, timeSpent: 700 },
   { studentIndex: 4, testIndex: 2, score: 82, passed: true, timeSpent: 950 },
-  // School 2 students
   { studentIndex: 5, testIndex: 3, score: 88, passed: true, timeSpent: 1200 },
   { studentIndex: 6, testIndex: 3, score: 72, passed: false, timeSpent: 1400 },
   { studentIndex: 7, testIndex: 3, score: 95, passed: true, timeSpent: 1000 },
-  // School 3 students  
   { studentIndex: 8, testIndex: 4, score: 75, passed: true, timeSpent: 500 },
   { studentIndex: 9, testIndex: 4, score: 60, passed: false, timeSpent: 600 },
   { studentIndex: 10, testIndex: 4, score: 80, passed: true, timeSpent: 450 },
 ] as const;
 
-// Type exports for better type inference
 export type QuestionKey = keyof typeof QUESTIONS;
 export type Question = typeof QUESTIONS[QuestionKey];

@@ -49,16 +49,16 @@ model User {
 }
 
 model DrivingSchool {
-  id           Int            @id @default(autoincrement())
-  name         String
-  email        String?
-  phone        String?
-  address      String?
-  users        User[]
-  tests        Test[]
-  tutorials    Tutorial[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String?
+  phone         String?
+  address       String?
+  users         User[]
+  tests         Test[]
+  tutorials     Tutorial[]
   subscriptions Subscription[]
-  groups       Group[]
+  groups        Group[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,9 +68,9 @@ model Test {
   id              Int           @id @default(autoincrement())
   title           String
   description     String?
-  questions       Question[] // Array of question objects
-  timeLimit       Int? // Time limit in minutes
-  passingScore    Int?          @default(0) // Passing score percentage
+  questions       Question[]
+  timeLimit       Int?
+  passingScore    Int?          @default(0)
   drivingSchoolId Int
   drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
   testResults     TestResult[]
@@ -82,13 +82,13 @@ model Test {
 }
 
 model Question {
-  id      Int      @id @default(autoincrement())
+  id      Int    @id @default(autoincrement())
   imgPath String
   title   String
   comment String
 
   options Option[]
-  answers Answers[] // Добавить эту строку
+  answers Answers[]
 
   testId Int
   test   Test @relation(fields: [testId], references: [id])
@@ -100,11 +100,11 @@ model Question {
 }
 
 model Option {
-  id           Int       @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   answerOption String
   isCorrect    Boolean
-  
-  answers      Answers[] // Добавить эту строку
+
+  answers Answers[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,7 +121,7 @@ model Tutorial {
   description     String?
   videoUrl        String
   thumbnailUrl    String?
-  duration        Int? // Duration in seconds
+  duration        Int?
   order           Int           @default(0)
   drivingSchoolId Int
   drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
@@ -133,38 +133,30 @@ model Tutorial {
 }
 
 model Answers {
-  id           Int        @id @default(autoincrement())
-  
-  // Связь с результатом теста
+  id Int @id @default(autoincrement())
+
   testResultId Int
   testResult   TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
-  
-  // Связь с вопросом
-  questionId   Int
-  question     Question   @relation(fields: [questionId], references: [id])
-  
-  // Выбранный вариант ответа (может быть null если не ответил)
-  optionId     Int?
-  option       Option?    @relation(fields: [optionId], references: [id])
-  
-  // Правильность ответа
-  isCorrect    Boolean?
-  
-  // Порядок ответа (для отслеживания последовательности)
-  order        Int        @default(0)
-  
-  // Время, потраченное на этот вопрос (в секундах)
-  timeSpent    Int?
-  
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
 
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+
+  optionId Int?
+  option   Option? @relation(fields: [optionId], references: [id])
+
+  isCorrect Boolean?
+
+  order Int @default(0)
+
+  timeSpent Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([testResultId, questionId])
   @@index([testResultId])
   @@index([questionId])
   @@index([optionId])
-  
-  // Уникальность: один ответ на вопрос в рамках одного результата теста
-  @@unique([testResultId, questionId])
 }
 
 model TestResult {
@@ -173,35 +165,34 @@ model TestResult {
   user        User      @relation(fields: [userId], references: [id])
   testId      Int
   test        Test      @relation(fields: [testId], references: [id])
-  score       Int       // Score percentage
-  answers     Answers[] // User's answers
+  score       Int
+  answers     Answers[]
   passed      Boolean
   completedAt DateTime  @default(now())
-  
-  // Дополнительная информация
-  timeSpent   Int?      // Общее время прохождения в секундах
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+
+  timeSpent Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([testId])
 }
 
 model Subscription {
-  id            Int                @id @default(autoincrement())
+  id              Int                @id @default(autoincrement())
   drivingSchoolId Int
-  drivingSchool   DrivingSchool    @relation(fields: [drivingSchoolId], references: [id])
-  plan          SubscriptionPlan
-  status        SubscriptionStatus
-  startDate     DateTime
-  endDate       DateTime?
-  trialEndDate  DateTime?
-  price         Decimal            @db.Decimal(10, 2)
-  currency      String             @default("USD")
-  autoRenewal   Boolean            @default(true)
-  cancelledAt   DateTime?
-  paymentMethod String?
+  drivingSchool   DrivingSchool      @relation(fields: [drivingSchoolId], references: [id])
+  plan            SubscriptionPlan
+  status          SubscriptionStatus
+  startDate       DateTime
+  endDate         DateTime?
+  trialEndDate    DateTime?
+  price           Decimal            @db.Decimal(10, 2)
+  currency        String             @default("USD")
+  autoRenewal     Boolean            @default(true)
+  cancelledAt     DateTime?
+  paymentMethod   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -211,7 +202,7 @@ model Subscription {
 }
 
 model Group {
-  id              Int            @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   name            String
   description     String?
   drivingSchoolId Int

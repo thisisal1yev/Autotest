@@ -15,7 +15,6 @@ export default defineEventHandler(async (event): Promise<StudentAnalyticsRespons
     const startDate = query.startDate ? parseISO(query.startDate) : startOfDay(subDays(new Date(), 30))
     const endDate = query.endDate ? parseISO(query.endDate) : endOfDay(new Date())
 
-    // Get all test results for this student in date range
     const testResults = await prisma.testResult.findMany({
       where: {
         userId: user.id,
@@ -46,7 +45,6 @@ export default defineEventHandler(async (event): Promise<StudentAnalyticsRespons
       ? Math.round((passedTests / totalTestResults) * 100)
       : 0
 
-    // Time series data for test completions
     const days = eachDayOfInterval({ start: startDate, end: endDate })
     const testCompletionsOverTime = days.map(day => {
       const dayStart = startOfDay(day)
@@ -61,7 +59,6 @@ export default defineEventHandler(async (event): Promise<StudentAnalyticsRespons
       }
     })
 
-    // Recent test results (last 10)
     const recentTestResults = testResults.slice(0, 10).map(tr => ({
       id: tr.id,
       testId: tr.testId,

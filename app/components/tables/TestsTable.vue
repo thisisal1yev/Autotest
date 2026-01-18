@@ -19,7 +19,6 @@ const rowSelection = ref({})
 
 const { data, status, refresh } = useFetch<Test[]>('/api/admin/tests')
 
-// Delete state
 const openDeleteModal = ref(false)
 const deleteLoading = ref(false)
 const itemToDelete = ref<Test | null>(null)

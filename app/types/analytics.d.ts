@@ -1,7 +1,3 @@
-/**
- * Analytics types for role-specific analytics endpoints
- */
-
 export interface AnalyticsTimeSeriesPoint {
   date: string
   value: number
@@ -47,10 +43,8 @@ export interface SchoolAnalyticsSummary {
   }
   testCompletions: number
   subscriptionPlan: SubscriptionPlan
-  // For future: subscription status, billing info, etc.
 }
 
-// Superadmin Analytics Response
 export interface SuperadminAnalyticsResponse {
   overview: {
     totalSchools: number
@@ -68,7 +62,6 @@ export interface SuperadminAnalyticsResponse {
   adminsCreatedOverTime: AnalyticsTimeSeriesPoint[]
 }
 
-// Admin Analytics Response
 export interface AdminAnalyticsResponse {
   overview: {
     students: StudentBasics
@@ -89,7 +82,6 @@ export interface AdminAnalyticsResponse {
   }>
 }
 
-// Student Analytics Response
 export interface StudentAnalyticsResponse {
   overview: {
     totalTestsCompleted: number

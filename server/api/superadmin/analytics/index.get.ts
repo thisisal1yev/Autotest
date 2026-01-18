@@ -15,7 +15,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
     const startDate = query.startDate ? parseISO(query.startDate) : startOfDay(subDays(new Date(), 30))
     const endDate = query.endDate ? parseISO(query.endDate) : endOfDay(new Date())
 
-    // Get all schools with related data
     const schools = await prisma.drivingSchool.findMany({
       include: {
         users: {
@@ -42,7 +41,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
       }
     })
 
-    // Get all admins
     const allAdmins = await prisma.user.findMany({
       where: {
         role: 'ADMIN'
@@ -57,7 +55,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
       }
     })
 
-    // Get all students
     const totalStudents = await prisma.user.count({
       where: {
         role: 'STUDENT',
@@ -72,11 +69,9 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
       }
     })
 
-    // Calculate totals
     const totalTests = await prisma.test.count()
     const totalTutorials = await prisma.tutorial.count()
 
-    // Get test results for completions count
     const testResults = await prisma.testResult.findMany({
       where: {
         completedAt: {
@@ -93,7 +88,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
       }
     })
 
-    // School-by-school breakdown
     const schoolsSummary = schools.map(school => {
       const schoolStudents = school.users.filter(u => u.role === 'STUDENT')
       const schoolAdmins = school.users.filter(u => u.role === 'ADMIN')
@@ -103,8 +97,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
 
       const schoolTestResults = testResults.filter(tr => tr.user.drivingSchoolId === school.id)
 
-      // For MVP: all schools are on 'free' plan by default
-      // TODO: Add subscriptionPlan field to DrivingSchool model when implementing billing
       const subscriptionPlan: SubscriptionPlan = 'free'
 
       return {
@@ -133,7 +125,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
       }
     })
 
-    // Count schools by plan (for now all are 'free')
     const schoolsByPlan: Record<SubscriptionPlan, number> = {
       free: schools.length,
       basic: 0,
@@ -141,7 +132,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
       enterprise: 0
     }
 
-    // Time series data for schools created over time
     const days = eachDayOfInterval({ start: startDate, end: endDate })
     const schoolsCreatedOverTime = days.map(day => {
       const dayStart = startOfDay(day)
@@ -156,7 +146,6 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
       }
     })
 
-    // Time series data for admins created over time
     const adminsCreatedOverTime = days.map(day => {
       const dayStart = startOfDay(day)
       const dayEnd = endOfDay(day)

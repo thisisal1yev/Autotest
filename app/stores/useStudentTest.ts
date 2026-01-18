@@ -37,7 +37,6 @@ export const useStudentTestStore = defineStore("studentTest", () => {
   const questions = ref<Question[]>([]);
   const currentQuestionIndex = ref(0);
 
-  // key = questionId
   const answers = ref<AnswerEntry[]>([]);
 
   const timeRemaining = ref(0);
@@ -153,7 +152,6 @@ export const useStudentTestStore = defineStore("studentTest", () => {
   }
 
   return {
-    // state
     test,
     questions,
     answers,
@@ -161,16 +159,12 @@ export const useStudentTestStore = defineStore("studentTest", () => {
     currentQuestion,
     timeRemaining,
     isTestFinished,
-
-    // computed
     totalQuestions,
     isFirstQuestion,
     isLastQuestion,
     correctCount,
     incorrectCount,
     unansweredCount,
-
-    // actions
     initTest,
     answerQuestion,
     getAnswer,

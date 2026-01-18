@@ -201,7 +201,6 @@ const faqs = [
 </script>
 
 <template>
-  <!-- Hero Section -->
   <section
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 overflow-hidden"
   >
@@ -254,7 +253,6 @@ const faqs = [
     </div>
   </section>
 
-  <!-- Benefits Section -->
   <section
     id="benefits"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
@@ -291,7 +289,6 @@ const faqs = [
 
   <USeparator />
 
-  <!-- How It Works Section -->
   <section
     id="how-it-works"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
@@ -332,7 +329,6 @@ const faqs = [
 
   <USeparator />
 
-  <!-- Features Section -->
   <section
     id="features"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
@@ -367,7 +363,6 @@ const faqs = [
 
   <USeparator />
 
-  <!-- Testimonials Section -->
   <section
     id="testimonials"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
@@ -419,7 +414,6 @@ const faqs = [
 
   <USeparator />
 
-  <!-- FAQ Section -->
   <section
     id="faq"
     class="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
@@ -451,7 +445,6 @@ const faqs = [
 
   <USeparator />
 
-  <!-- CTA Section -->
   <section
     id="get-started"
     class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"

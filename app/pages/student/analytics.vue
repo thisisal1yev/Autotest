@@ -113,7 +113,6 @@ const statsCards = computed(() => {
         v-else-if="data"
         class="space-y-6"
       >
-        <!-- Overview Stats -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <UCard
             v-for="stat in statsCards"
@@ -147,7 +146,6 @@ const statsCards = computed(() => {
           </UCard>
         </div>
 
-        <!-- Charts -->
         <div class="grid grid-cols-1 gap-6">
           <TimeSeriesChart
             :data="[...data.testCompletionsOverTime]"
@@ -157,7 +155,6 @@ const statsCards = computed(() => {
           />
         </div>
 
-        <!-- Recent Test Results -->
         <UCard>
           <template #header>
             <div class="flex items-center justify-between">

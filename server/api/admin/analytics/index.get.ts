@@ -21,7 +21,6 @@ export default defineEventHandler(async (event): Promise<AdminAnalyticsResponse>
     const startDate = query.startDate ? parseISO(query.startDate) : startOfDay(subDays(new Date(), 30))
     const endDate = query.endDate ? parseISO(query.endDate) : endOfDay(new Date())
 
-    // Get students for this school
     const students = await prisma.user.findMany({
       where: {
         role: 'STUDENT',
@@ -32,14 +31,12 @@ export default defineEventHandler(async (event): Promise<AdminAnalyticsResponse>
     const activeStudents = students.filter(s => s.isActive).length
     const inactiveStudents = students.filter(s => !s.isActive).length
 
-    // Get tests for this school
     const testsCount = await prisma.test.count({
       where: {
         drivingSchoolId: schoolId
       }
     })
 
-    // Get test results for this school in date range
     const testResults = await prisma.testResult.findMany({
       where: {
         user: {
@@ -78,7 +75,6 @@ export default defineEventHandler(async (event): Promise<AdminAnalyticsResponse>
       ? Math.round((passedTests / totalTestResults) * 100)
       : 0
 
-    // Time series data for test completions
     const days = eachDayOfInterval({ start: startDate, end: endDate })
     const testCompletionsOverTime = days.map(day => {
       const dayStart = startOfDay(day)
@@ -93,7 +89,6 @@ export default defineEventHandler(async (event): Promise<AdminAnalyticsResponse>
       }
     })
 
-    // Time series data for pass rate
     const passRateOverTime = days.map(day => {
       const dayStart = startOfDay(day)
       const dayEnd = endOfDay(day)
@@ -111,7 +106,6 @@ export default defineEventHandler(async (event): Promise<AdminAnalyticsResponse>
       }
     })
 
-    // Recent test results (last 10)
     const recentTestResults = testResults.slice(0, 10).map(tr => ({
       id: tr.id,
       userId: tr.userId,

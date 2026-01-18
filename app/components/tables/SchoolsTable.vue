@@ -24,7 +24,6 @@ const rowSelection = ref({})
 
 const { data, status, refresh } = useFetch<DrivingSchoolWithSubscriptions[]>('/api/superadmin/driving-schools')
 
-// Delete state
 const openDeleteModal = ref(false)
 const deleteLoading = ref(false)
 const itemToDelete = ref<DrivingSchoolWithSubscriptions | null>(null)
@@ -58,7 +57,7 @@ async function handleDelete() {
       toast.add({ title: 'School deleted', color: 'success' })
     } else {
       const ids = table.value?.tableApi?.getFilteredSelectedRowModel().rows.map((r: Row<DrivingSchoolWithSubscriptions>) => r.original.id) || []
-      await $fetch('/api/superadmin/driving-schools/bulk-delete', { method: 'DELETE', body: { ids } })
+      await $fetch('/api/superadmin/driving-schools', { method: 'DELETE', body: { ids } })
       toast.add({ title: `${ids.length} school(s) deleted`, color: 'success' })
       table.value?.tableApi?.resetRowSelection()
     }
