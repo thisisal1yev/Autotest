@@ -97,7 +97,7 @@ async function seedSubscriptions() {
 }
 
 async function seedAdmins() {
-  console.log("🛡️ Creating admins...");
+  console.log("🛡️  Creating admins...");
   for (const admin of USERS.admins) {
     await prisma.user.create({
       data: {

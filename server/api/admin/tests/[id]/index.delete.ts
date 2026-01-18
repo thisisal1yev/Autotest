@@ -9,10 +9,6 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 403, message: "Forbidden" });
     }
 
-    await prisma.testResult.deleteMany({
-      where: { testId: parseInt(id) },
-    });
-
     await prisma.test.delete({
       where: { id: parseInt(id) },
     });

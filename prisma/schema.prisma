@@ -37,7 +37,7 @@ model User {
   fullName        String
   role            Role           @default(GUEST)
   drivingSchoolId Int?
-  drivingSchool   DrivingSchool? @relation(fields: [drivingSchoolId], references: [id])
+  drivingSchool   DrivingSchool? @relation(fields: [drivingSchoolId], references: [id], onDelete: Cascade)
   isActive        Boolean        @default(true)
   testResults     TestResult[]
   groups          Group[]
@@ -72,7 +72,7 @@ model Test {
   timeLimit       Int?
   passingScore    Int?          @default(0)
   drivingSchoolId Int
-  drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
+  drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id], onDelete: Cascade)
   testResults     TestResult[]
 
   createdAt DateTime @default(now())
@@ -91,7 +91,7 @@ model Question {
   answers Answers[]
 
   testId Int
-  test   Test @relation(fields: [testId], references: [id])
+  test   Test @relation(fields: [testId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,7 +110,7 @@ model Option {
   updatedAt DateTime @updatedAt
 
   questionId Int?
-  question   Question? @relation(fields: [questionId], references: [id])
+  question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
 }
@@ -124,7 +124,7 @@ model Tutorial {
   duration        Int?
   order           Int           @default(0)
   drivingSchoolId Int
-  drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
+  drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -139,10 +139,10 @@ model Answers {
   testResult   TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
 
   questionId Int
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   optionId Int?
-  option   Option? @relation(fields: [optionId], references: [id])
+  option   Option? @relation(fields: [optionId], references: [id], onDelete: Cascade)
 
   isCorrect Boolean?
 
@@ -162,9 +162,9 @@ model Answers {
 model TestResult {
   id          Int       @id @default(autoincrement())
   userId      Int
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   testId      Int
-  test        Test      @relation(fields: [testId], references: [id])
+  test        Test      @relation(fields: [testId], references: [id], onDelete: Cascade)
   score       Int
   answers     Answers[]
   passed      Boolean
@@ -182,7 +182,7 @@ model TestResult {
 model Subscription {
   id              Int                @id @default(autoincrement())
   drivingSchoolId Int
-  drivingSchool   DrivingSchool      @relation(fields: [drivingSchoolId], references: [id])
+  drivingSchool   DrivingSchool      @relation(fields: [drivingSchoolId], references: [id], onDelete: Cascade)
   plan            SubscriptionPlan
   status          SubscriptionStatus
   startDate       DateTime
@@ -206,7 +206,7 @@ model Group {
   name            String
   description     String?
   drivingSchoolId Int
-  drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id])
+  drivingSchool   DrivingSchool @relation(fields: [drivingSchoolId], references: [id], onDelete: Cascade)
   students        User[]
 
   createdAt DateTime @default(now())
