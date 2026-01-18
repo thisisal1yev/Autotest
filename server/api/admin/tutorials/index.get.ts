@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     const tutorials = await prisma.tutorial.findMany({
       where,
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'asc'
       }
     })
 

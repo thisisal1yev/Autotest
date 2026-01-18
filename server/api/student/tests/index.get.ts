@@ -8,6 +8,9 @@ export default defineEventHandler(async (event) => {
       where: {
         drivingSchoolId: user.drivingSchoolId ?? 0,
       },
+      orderBy: {
+        createdAt: 'asc'
+      }
     });
 
     return tests

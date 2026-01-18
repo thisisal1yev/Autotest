@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
     const drivingSchools = await prisma.drivingSchool.findMany({
       orderBy: {
-        createdAt: "desc",
+        createdAt: "asc",
       },
       include: {
         subscriptions: {

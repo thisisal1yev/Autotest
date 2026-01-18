@@ -189,11 +189,11 @@ async function seedTutorials() {
 
 async function seedTestResults() {
   console.log("📊 Creating test results with answers...");
-  
+
   for (const result of TEST_RESULTS) {
     const studentId = createdIds.students[result.studentIndex - 1];
     const testData = createdIds.tests[result.testIndex - 1];
-    
+
     const questions = await prisma.question.findMany({
       where: { testId: testData.id },
       include: { options: true },
@@ -213,9 +213,9 @@ async function seedTestResults() {
             const correctOption = question.options.find((o) => o.isCorrect);
             const wrongOptions = question.options.filter((o) => !o.isCorrect);
             const randomWrongOption = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
-            
+
             const selectedOption = shouldBeCorrect ? correctOption : randomWrongOption;
-            
+
             return {
               questionId: question.id,
               optionId: selectedOption?.id ?? null,
@@ -249,23 +249,27 @@ async function up() {
 async function down() {
   console.log("🧹 Cleaning database...\n");
 
-  await prisma.answers.deleteMany();
-  await prisma.testResult.deleteMany();
-  await prisma.option.deleteMany();
-  await prisma.question.deleteMany();
-  await prisma.test.deleteMany();
-  await prisma.group.deleteMany();
-  await prisma.tutorial.deleteMany();
-  await prisma.subscription.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.drivingSchool.deleteMany();
+  await prisma.$executeRawUnsafe(`
+    TRUNCATE TABLE 
+      "Answers",
+      "TestResult", 
+      "Option",
+      "Question",
+      "Test",
+      "Group",
+      "Tutorial",
+      "Subscription",
+      "User",
+      "DrivingSchool"
+    RESTART IDENTITY CASCADE
+  `);
 
   console.log("✅ Database cleaned!\n");
 }
 
 async function main() {
   const args = process.argv.slice(2);
-  
+
   try {
     if (args.includes("--down") || args.includes("-d")) {
       await down();

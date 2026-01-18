@@ -34,7 +34,7 @@ export async function getCurrentUser(event: H3Event): Promise<SessionUser> {
     include: {
       drivingSchool: true
     },
-    omit:{
+    omit: {
       password: true,
     }
   })

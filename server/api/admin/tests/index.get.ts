@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
         drivingSchoolId: true,
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'asc'
       }
     })
 

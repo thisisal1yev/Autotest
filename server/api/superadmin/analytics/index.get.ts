@@ -1,5 +1,4 @@
 import { prisma } from '~~/prisma/db'
-import { getCurrentUser } from '~~/server/utils/session'
 import type { SuperadminAnalyticsResponse, AnalyticsQueryParams, SubscriptionPlan } from '~/types/analytics'
 import { eachDayOfInterval, format, startOfDay, endOfDay, parseISO, subDays } from 'date-fns'
 
@@ -37,7 +36,7 @@ export default defineEventHandler(async (event): Promise<SuperadminAnalyticsResp
         }
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'asc'
       }
     })
 
